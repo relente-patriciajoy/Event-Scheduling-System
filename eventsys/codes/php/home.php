@@ -23,24 +23,44 @@ $stmt->close();
   <meta charset="UTF-8">
   <title>Dashboard</title>
   <link rel="stylesheet" href="css/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 
 <body class="dashboard-layout">
   <aside class="sidebar">
-      <h2 class="logo">EventSys</h2>
+      <h2 class="logo">Eventix</h2>
       <nav>
-          <a href="home.php" class="active">Home</a>
-          <a href="events.php">Browse Events</a>
-          <a href="my_events.php">My Events</a>
-          <a href="attendance.php">Attendance</a>
+          <a href="home.php" class="<?= basename($_SERVER['PHP_SELF']) === 'home.php' ? 'active' : '' ?>">
+            <i data-lucide="home"></i> Home
+          </a>
+          <a href="events.php" class="<?= basename($_SERVER['PHP_SELF']) === 'events.php' ? 'active' : '' ?>">
+            <i data-lucide="calendar"></i> Browse Events
+          </a>
+          <a href="my_events.php" class="<?= basename($_SERVER['PHP_SELF']) === 'my_events.php' ? 'active' : '' ?>">
+            <i data-lucide="user-check"></i> My Events
+          </a>
+          <a href="attendance.php" class="<?= basename($_SERVER['PHP_SELF']) === 'attendance.php' ? 'active' : '' ?>">
+            <i data-lucide="check-square"></i> Attendance
+          </a>
+
           <?php if ($role === 'event_head'): ?>
-            <a href="manage_events.php">Manage Events</a>
-          <?php endif; ?>
-          <?php if ($role === 'event_head'): ?>
-            <a href="view_attendance.php">View Attendance</a>
+            <a href="manage_events.php" class="<?= basename($_SERVER['PHP_SELF']) === 'manage_events.php' ? 'active' : '' ?>">
+              <i data-lucide="settings"></i> Manage Events
+            </a>
           <?php endif; ?>
 
-          <a href="logout.php">Logout</a>
+          <?php if ($role === 'event_head'): ?>
+            <a href="view_attendance.php" class="<?= basename($_SERVER['PHP_SELF']) === 'view_attendance.php' ? 'active' : '' ?>">
+              <i data-lucide="eye"></i> View Attendance
+            </a>
+          <?php endif; ?>
+
+          <a href="logout.php"><i data-lucide="log-out"></i> Logout</a>
+
+          <div style="text-align: right; margin-bottom: 10px;">
+            <button onclick="toggleTheme()" style="padding: 8px 12px; border-radius: 6px;">🌗 Toggle Theme</button>
+          </div>
       </nav>
   </aside>
 
@@ -75,5 +95,9 @@ $stmt->close();
         <?php endif; ?>
       </section>
   </main>
+  <script src="js/script.js"></script>
+  <script>
+   lucide.createIcons();
+  </script>
 </body>
 </html>

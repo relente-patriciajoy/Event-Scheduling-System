@@ -37,19 +37,28 @@ $result = $stmt->get_result();
     <meta charset="UTF-8">
     <title>My Registered Events</title>
     <link rel="stylesheet" href="css/style.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 
 <body class="dashboard-layout">
 <aside class="sidebar">
-    <h2 class="logo">EventSys</h2>
+    <h2 class="logo">Eventix</h2>
     <nav>
-        <a href="home.php">Home</a>
-        <a href="events.php">Browse Events</a>
-        <a class="active" href="my_events.php">My Events</a>
+        <a href="home.php" class="<?= basename($_SERVER['PHP_SELF']) === 'home.php' ? 'active' : '' ?>">
+            <i data-lucide="home"></i> Home
+        </a>
+        <a href="events.php" class="<?= basename($_SERVER['PHP_SELF']) === 'events.php' ? 'active' : '' ?>">
+            <i data-lucide="calendar"></i> Browse Events
+        </a>
+        <a href="my_events.php" class="<?= basename($_SERVER['PHP_SELF']) === 'my_events.php' ? 'active' : '' ?>">
+            <i data-lucide="user-check"></i> My Events
+        </a>
         <?php if ($role === 'event_head'): ?>
-            <a href="manage_events.php">Manage Events</a>
+            <a href="manage_events.php" class="<?= basename($_SERVER['PHP_SELF']) === 'manage_events.php' ? 'active' : '' ?>">
+                <i data-lucide="settings"></i> Manage Events
+            </a>
         <?php endif; ?>
-        <a href="logout.php">Logout</a>
+        <a href="logout.php"><i data-lucide="log-out"></i> Logout</a>
     </nav>
 </aside>
 
@@ -77,5 +86,8 @@ $result = $stmt->get_result();
         <?php endif; ?>
     </section>
 </main>
+<script>
+    lucide.createIcons();
+</script>
 </body>
 </html>

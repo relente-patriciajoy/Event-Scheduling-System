@@ -58,3 +58,17 @@ async function exportToPDF() {
 
     doc.save("attendance_export.pdf");
 }
+
+// Theme toggle functionality
+function toggleTheme() {
+    const body = document.body;
+    const newMode = body.classList.contains("dark-mode") ? "light-mode" : "dark-mode";
+    body.classList.remove("light-mode", "dark-mode");
+    body.classList.add(newMode);
+    localStorage.setItem("theme", newMode);
+}
+
+window.onload = () => {
+    const savedTheme = localStorage.getItem("theme") || "light-mode";
+    document.body.classList.add(savedTheme);
+};

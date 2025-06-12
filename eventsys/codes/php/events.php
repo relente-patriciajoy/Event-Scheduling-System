@@ -34,16 +34,27 @@ $result = $conn->query($query);
 </head>
 <body class="dashboard-layout">
 <aside class="sidebar">
-    <h2 class="logo">EventSys</h2>
+    <h2 class="logo">Eventix</h2>
     <nav>
-        <a href="home.php">Home</a>
-        <a class="active" href="events.php">Browse Events</a>
-        <a href="my_events.php">My Events</a>
-				<a href="attendance.php">Attendance</a>
+        <a href="home.php" class="<?= basename($_SERVER['PHP_SELF']) === 'home.php' ? 'active' : '' ?>">
+            <i data-lucide="home"></i> Home
+        </a>
+        <a href="events.php" class="<?= basename($_SERVER['PHP_SELF']) === 'events.php' ? 'active' : '' ?>">
+            <i data-lucide="calendar"></i> Browse Events
+        </a>
+        <a href="my_events.php" class="<?= basename($_SERVER['PHP_SELF']) === 'my_events.php' ? 'active' : '' ?>">
+            <i data-lucide="user-check"></i> My Events
+        </a>
+		<a href="attendance.php" class="<?= basename($_SERVER['PHP_SELF']) === 'attendance.php' ? 'active' : '' ?>">
+			<i data-lucide="check-square"></i> Attendance
+		</a>
         <?php if ($role === 'event_head'): ?>
-            <a href="manage_events.php">Manage Events</a>
+            <a href="manage_events.php" class="<?= basename($_SERVER['PHP_SELF']) === 'manage_events.php' ? 'active' : '' ?>">
+                <i data-lucide="settings"></i> Manage Events
+            </a>
         <?php endif; ?>
-        <a href="logout.php">Logout</a>
+
+        <a href="logout.php"><i data-lucide="log-out"></i> Logout</a>
     </nav>
 </aside>
 
@@ -72,5 +83,10 @@ $result = $conn->query($query);
         <?php endwhile; ?>
     </section>
 </main>
+<script src="https://unpkg.com/lucide@latest"></script>
+<script>
+    lucide.createIcons();
+</script>
+
 </body>
 </html>
