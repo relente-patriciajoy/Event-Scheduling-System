@@ -9,25 +9,41 @@ include('includes/db.php');
 $user_id = $_SESSION['user_id'];
 $full_name = $_SESSION['full_name'];
 
-// Verify role
-$stmt = $conn->prepare("SELECT role FROM user WHERE user_id = ?");
-$stmt->bind_param("i", $user_id);
-$stmt->execute();
-$stmt->bind_result($role);
-$stmt->fetch();
-$stmt->close();
+// Check role
+$role_stmt = $conn->prepare("SELECT role FROM user WHERE user_id = ?");
+$role_stmt->bind_param("i", $user_id);
+$role_stmt->execute();
+$role_stmt->bind_result($role);
+$role_stmt->fetch();
+$role_stmt->close();
 
 if ($role !== 'event_head') {
     die("Access denied.");
 }
 
-// Fetch events organized by this user
+// Get user email
+$user_stmt = $conn->prepare("SELECT email FROM user WHERE user_id = ?");
+$user_stmt->bind_param("i", $user_id);
+$user_stmt->execute();
+$user_stmt->bind_result($email);
+$user_stmt->fetch();
+$user_stmt->close();
+
+// Get organizer ID
+$org_stmt = $conn->prepare("SELECT organizer_id FROM organizer WHERE contact_email = ?");
+$org_stmt->bind_param("s", $email);
+$org_stmt->execute();
+$org_stmt->bind_result($organizer_id);
+$org_stmt->fetch();
+$org_stmt->close();
+
+// Fetch events created by this organizer
 $event_query = $conn->prepare("SELECT event_id, title FROM event WHERE organizer_id = ?");
-$event_query->bind_param("i", $user_id);
+$event_query->bind_param("i", $organizer_id);
 $event_query->execute();
 $events = $event_query->get_result();
 
-// Handle event selection
+// Handle selected event
 $selected_event = $_GET['event_id'] ?? null;
 $attendances = [];
 
@@ -52,17 +68,35 @@ if ($selected_event) {
     <meta charset="UTF-8">
     <title>View Attendance</title>
     <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body class="dashboard-layout">
 <aside class="sidebar">
-    <h2 class="logo">EventSys</h2>
+    <h2 class="logo">Eventix</h2>
     <nav>
-        <a href="home.php">Home</a>
-        <a href="events.php">Browse Events</a>
-        <a href="my_events.php">My Events</a>
-        <a href="manage_events.php">Manage Events</a>
-        <a href="view_attendance.php" class="active">View Attendance</a>
-        <a href="logout.php">Logout</a>
+        <a href="home.php" class="<?= basename($_SERVER['PHP_SELF']) === 'home.php' ? 'active' : '' ?>">
+            <i data-lucide="home"></i> Home
+        </a>
+        <a href="events.php" class="<?= basename($_SERVER['PHP_SELF']) === 'events.php' ? 'active' : '' ?>">
+            <i data-lucide="calendar"></i> Browse Events
+        </a>
+        <a href="my_events.php" class="<?= basename($_SERVER['PHP_SELF']) === 'my_events.php' ? 'active' : '' ?>">
+            <i data-lucide="user-check"></i> My Events
+        </a>
+        <a href="manage_events.php" class="<?= basename($_SERVER['PHP_SELF']) === 'manage_events.php' ? 'active' : '' ?>">
+            <i data-lucide="settings"></i> Manage Events
+        </a>
+        <a href="view_attendance.php" class="<?= basename($_SERVER['PHP_SELF']) === 'view_attendance.php' ? 'active' : '' ?>">
+            <i data-lucide="eye"></i> View Attendance
+        </a>
+        <a href="logout.php"><i data-lucide="log-out"></i> Logout</a>
+
+        <div style="text-align: right; margin-bottom: 10px;">
+            <button onclick="toggleTheme()" style="padding: 8px 12px; border-radius: 6px;">🌗 Toggle Theme</button>
+        </div>
     </nav>
 </aside>
 
@@ -70,7 +104,7 @@ if ($selected_event) {
     <header class="banner">
         <div>
             <h1>Attendance Records</h1>
-            <p>Select an event to view participant attendance.</p>
+            <p>Select an event to view participants’ attendance.</p>
         </div>
         <img src="images/banner-books.png" alt="Banner">
     </header>
@@ -94,6 +128,14 @@ if ($selected_event) {
         <section class="grid-section" style="margin-top: 30px;">
             <div class="card" style="grid-column: span 2;">
                 <h3>Attendance List</h3>
+
+                <input type="text" id="searchInput" placeholder="Search by name or email..." style="width: 100%; padding: 10px; margin-bottom: 15px; border-radius: 8px; border: 1px solid #ccc;">
+
+               <div style="margin-bottom: 10px;">
+                    <button onclick="exportToExcel()" style="margin-right: 10px;">Export to Excel</button>
+                    <button onclick="exportToPDF()">Export to PDF</button>
+                </div>
+
                 <table style="width: 100%; border-collapse: collapse;">
                     <thead>
                         <tr>
@@ -118,7 +160,14 @@ if ($selected_event) {
                 </table>
             </div>
         </section>
+    <?php elseif ($selected_event): ?>
+        <p>No participants yet for this event.</p>
     <?php endif; ?>
 </main>
+
+<script src="js/script.js"></script>
+<script>
+    lucide.createIcons();
+</script>
 </body>
 </html>
