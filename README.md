@@ -1,5 +1,9 @@
-# 🎉 Eventix
-### *One Place for Every Purpose.*
+<div align="center">
+  <img width="100%" src="./eventsys/codes/assets/logo.png" alt="Eventix Cover"/>
+
+  <p><strong>ONE PLACE FOR EVERY PURPOSE</strong></p>
+  <hr/>
+</div>
 
 Welcome to **Eventix**, an inclusive and centralized event registration system designed to seamlessly manage both sports and non-sports events for all types of participants. This is your one-stop hub for organizing, tracking, and participating in events that bring people together.
 
