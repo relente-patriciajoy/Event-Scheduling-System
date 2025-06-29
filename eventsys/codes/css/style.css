@@ -12,18 +12,9 @@ body.light-mode {
   color: var(--text-light);
 }
 
-body.dark-mode {
-  background: var(--bg-dark);
-  color: var(--text-dark);
-}
-
 .card {
   background: var(--card-light);
   transition: background 0.3s ease;
-}
-
-body.dark-mode .card {
-  background: var(--card-dark);
 }
 
 .sidebar,
@@ -33,22 +24,6 @@ select,
 textarea,
 button {
   transition: background 0.3s ease, color 0.3s ease;
-}
-
-body.dark-mode input,
-body.dark-mode select,
-body.dark-mode textarea {
-  background: #4b5563;
-  color: white;
-}
-
-body.dark-mode .sidebar {
-  background: #111827;
-  color: white;
-}
-
-body.dark-mode a {
-  color: #93c5fd;
 }
 
 * {
@@ -260,29 +235,6 @@ button:hover {
   background-color: #005fa3;
 }
 
-/* Dark mode styles */
-
-body.dark-mode button {
-  background: #60a5fa;
-  color: #111;
-}
-
-body.dark-mode .sidebar {
-  background-color: #111827;
-  color: #f9fafb;
-}
-
-body.dark-mode .sidebar nav a {
-  color: #cbd5e1;
-}
-
-body.dark-mode .sidebar nav a:hover,
-body.dark-mode .sidebar nav a.active {
-  background-color: #1e293b;
-  border-left-color: #60a5fa;
-  color: #60a5fa;
-}
-
 .error {
   color: red;
   text-align: center;
@@ -338,4 +290,109 @@ body.dark-mode .sidebar nav a.active {
   padding: 30px;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+/* Login/Register Page */
+.login-page {
+  background: url('../assets/login-bg.jpg') no-repeat center center fixed;
+  background-size: cover;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  font-family: 'Poppins', sans-serif;
+}
+
+.login-container {
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(16px);
+  padding: 40px;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  max-width: 420px;
+  width: 90%;
+  color: #fff;
+  text-align: center;
+}
+
+.login-box h2 {
+  font-size: 2rem;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.login-box p {
+  font-size: 0.95rem;
+  color: #d1d5db;
+  margin-bottom: 25px;
+}
+
+.input-group {
+  margin-bottom: 18px;
+  text-align: left;
+}
+
+.input-group label {
+  display: block;
+  margin-bottom: 6px;
+  color: #e5e7eb;
+  font-size: 0.9rem;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 12px;
+  border-radius: 8px;
+  border: none;
+  background: #f9fafb;
+  color: #111827;
+  font-size: 0.95rem;
+}
+
+.options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.85rem;
+  color: #d1d5db;
+  margin-bottom: 20px;
+}
+
+.options a {
+  color: #93c5fd;
+  text-decoration: none;
+}
+
+button[type="submit"],
+button {
+  width: 100%;
+  background: #3b82f6;
+  color: white;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+button[type="submit"]:hover {
+  background: #2563eb;
+}
+
+.register-link {
+  margin-top: 20px;
+  font-size: 0.9rem;
+  color: #e5e7eb;
+}
+
+.register-link a {
+  color: #93c5fd;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.login-box img.logo {
+  margin-bottom: 20px;
 }

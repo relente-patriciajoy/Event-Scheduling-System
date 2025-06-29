@@ -28,26 +28,54 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     } else {
         $error = "Email not found.";
     }
+
+    $stmt->close();
 }
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Login</title>
+    <meta charset="UTF-8">
+    <title>Eventix Login</title>
     <link rel="stylesheet" href="css/style.css">
-    <script src="js/script.js" defer></script>
 </head>
-<body>
-<div class="form-container">
-    <h2>Login</h2>
-    <form method="post">
-        <input type="email" name="email" placeholder="Email Address" required>
-        <input type="password" name="password" placeholder="Password" required>
-        <button type="submit">Login</button>
-        <p>Don’t have an account? <a href="register.php">Register</a></p>
-    </form>
-    <p class="error"><?= $error ?></p>
+<body class="login-page">
+
+<div class="login-container">
+    <div class="login-box">
+        <img src="assets/eventix-logo.png" alt="Eventix Logo" class="logo" style="max-width: 80px; margin-bottom: 20px;" />
+        <h2>Welcome Back!</h2>
+        <p>Please login to Eventix with your email address</p>
+
+        <?php if (!empty($error)): ?>
+            <p style="color: #f87171; font-size: 0.9rem; margin-bottom: 20px;"><?php echo $error; ?></p>
+        <?php endif; ?>
+
+        <form method="post">
+            <div class="input-group">
+                <label for="email">Email Address</label>
+                <input type="email" name="email" required>
+            </div>
+
+            <div class="input-group">
+                <label for="password">Password</label>
+                <input type="password" name="password" required>
+            </div>
+
+            <div class="options">
+                <label><input type="checkbox" name="remember"> Stay logged in</label>
+                <a href="#">Forgot your password?</a>
+            </div>
+
+            <button type="submit">Login</button>
+        </form>
+
+        <div class="register-link">
+            Don’t have an account? <a href="register.php">Register</a>
+        </div>
+    </div>
 </div>
+
 </body>
 </html>
