@@ -5,7 +5,7 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 
-include('includes/db.php');
+include('../includes/db.php');
 
 $user_id = $_SESSION['user_id'];
 $registration_id = $_GET['reg_id'] ?? null;
@@ -46,7 +46,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 <html>
 <head>
     <title>Pay for Event</title>
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
 <div class="form-container">

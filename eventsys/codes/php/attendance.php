@@ -5,7 +5,7 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 
-include('includes/db.php');
+include('../includes/db.php');
 
 $user_id = $_SESSION['user_id'];
 $full_name = $_SESSION['full_name'];
@@ -53,7 +53,7 @@ $result = $stmt->get_result();
 <head>
     <meta charset="UTF-8">
     <title>Event Attendance</title>
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="../css/style.css">
     <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body class="dashboard-layout">
@@ -82,7 +82,7 @@ $result = $stmt->get_result();
             <h1>Attendance Tracker</h1>
             <p>Check in and out of your events.</p>
         </div>
-        <img src="images/banner-books.png" alt="Banner">
+        <img src="../images/banner-books.png" alt="Banner">
     </header>
 
     <section class="grid-section">

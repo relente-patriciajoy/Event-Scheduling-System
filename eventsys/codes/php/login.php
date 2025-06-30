@@ -1,5 +1,5 @@
 <?php
-include('includes/db.php');
+include('../includes/db.php');
 session_start();
 
 $error = '';
@@ -41,7 +41,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <head>
   <meta charset="UTF-8">
   <title>Eventix Login</title>
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="../css/style.css">
 </head>
 <body class="login-page">
 

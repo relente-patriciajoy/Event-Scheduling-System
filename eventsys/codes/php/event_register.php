@@ -5,7 +5,7 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 
-include('includes/db.php');
+include('../includes/db.php');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['event_id'])) {
     $user_id = $_SESSION['user_id'];

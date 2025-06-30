@@ -4,7 +4,7 @@ if (!isset($_SESSION['user_id']) || $_SESSION['user_id'] !== 1) {
     die("Access denied. Admins only.");
 }
 
-include('includes/db.php');
+include('../includes/db.php');
 
 $message = "";
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
@@ -24,7 +24,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 <html>
 <head>
     <title>Promote User</title>
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="../css/style.css">
 </head>
 <body class="form-container">
     <h2>Promote User to Event Head</h2>

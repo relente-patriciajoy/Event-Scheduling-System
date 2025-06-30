@@ -294,7 +294,8 @@ button:hover {
 
 /* Login/Register Page */
 .login-page {
-  background: url('../assets/login-bg.jpg') no-repeat center center fixed;
+  /* background: url('../assets/login-bg.jpg') no-repeat center center fixed; */
+  background: #e0e4ea;
   background-size: cover;
   display: flex;
   align-items: center;
@@ -304,13 +305,14 @@ button:hover {
 }
 
 .login-container {
-  background: rgba(255, 255, 255, 0.12);
+  background: rgb(255, 255, 255);
   backdrop-filter: blur(16px);
-  padding: 40px;
+  padding: 8px 25px;
   border-radius: 16px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
   max-width: 420px;
   width: 90%;
+  height: 95vh;
   color: #fff;
   text-align: center;
 }
@@ -323,7 +325,7 @@ button:hover {
 
 .login-box p {
   font-size: 0.95rem;
-  color: #d1d5db;
+  color: black;
   margin-bottom: 25px;
 }
 
@@ -335,7 +337,7 @@ button:hover {
 .input-group label {
   display: block;
   margin-bottom: 6px;
-  color: #e5e7eb;
+  color: black;
   font-size: 0.9rem;
 }
 
@@ -343,8 +345,8 @@ button:hover {
   width: 100%;
   padding: 12px;
   border-radius: 8px;
-  border: none;
-  background: #f9fafb;
+  border: 1.5px solid #bfc5ce;
+  background: #e5e7eb;
   color: #111827;
   font-size: 0.95rem;
 }
@@ -354,18 +356,18 @@ button:hover {
   justify-content: space-between;
   align-items: center;
   font-size: 0.85rem;
-  color: #d1d5db;
+  color: black;
   margin-bottom: 20px;
 }
 
 .options a {
-  color: #93c5fd;
+  color: #1e86fb;
   text-decoration: none;
 }
 
 button[type="submit"],
 button {
-  width: 100%;
+  width: 85%;
   background: #3b82f6;
   color: white;
   padding: 12px;
@@ -384,15 +386,35 @@ button[type="submit"]:hover {
 .register-link {
   margin-top: 20px;
   font-size: 0.9rem;
-  color: #e5e7eb;
+  color: black;
 }
 
 .register-link a {
-  color: #93c5fd;
+  color: #1e86fb;
   text-decoration: none;
   font-weight: bold;
 }
 
 .login-box img.logo {
   margin-bottom: 20px;
+}
+
+.register-container {
+  background: rgb(255, 255, 255);
+  backdrop-filter: blur(16px);
+  padding: 8px 25px;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  max-width: 580px;
+  width: 105vw;
+  height: 95vh;
+  color: #fff;
+  text-align: center;
+}
+
+.first-input-group, .second-input-group {
+  display: flex;
+  flex-direction: row;  
+  justify-content: center;
+  gap: 15px;
 }

@@ -4,7 +4,7 @@ if (!isset($_SESSION['user_id'])) {
     header("Location: index.php");
     exit();
 }
-include('includes/db.php');
+include('../includes/db.php');
 
 $user_id = $_SESSION['user_id'];
 $full_name = $_SESSION['full_name'];
@@ -67,7 +67,7 @@ if ($selected_event) {
 <head>
     <meta charset="UTF-8">
     <title>View Attendance</title>
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="../css/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -106,7 +106,7 @@ if ($selected_event) {
             <h1>Attendance Records</h1>
             <p>Select an event to view participants’ attendance.</p>
         </div>
-        <img src="images/banner-books.png" alt="Banner">
+        <img src="../images/banner-books.png" alt="Banner">
     </header>
 
     <section>
@@ -165,7 +165,7 @@ if ($selected_event) {
     <?php endif; ?>
 </main>
 
-<script src="js/script.js"></script>
+<script src="../js/script.js"></script>
 <script>
     lucide.createIcons();
 </script>
