@@ -5,7 +5,7 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 
-include('includes/db.php');
+include('../includes/db.php');
 
 $user_id = $_SESSION['user_id'];
 $full_name = $_SESSION['full_name'];
@@ -30,7 +30,7 @@ $result = $conn->query($query);
 <head>
     <meta charset="UTF-8">
     <title>Browse Events</title>
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="../css/style.css">
 </head>
 <body class="dashboard-layout">
 <aside class="sidebar">

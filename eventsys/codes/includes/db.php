@@ -2,7 +2,7 @@
 $host = 'localhost';
 $user = 'root';
 $password = '';
-$dbname = 'event_registration';
+$dbname = 'test';
 
 $conn = new mysqli($host, $user, $password, $dbname);
 

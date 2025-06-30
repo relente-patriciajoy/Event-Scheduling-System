@@ -4,7 +4,7 @@ if (!isset($_SESSION['user_id'])) {
     header("Location: index.php");
     exit();
 }
-include('includes/db.php');
+include('../includes/db.php');
 
 $user_id = $_SESSION['user_id'];
 $full_name = $_SESSION['full_name'];
@@ -36,7 +36,7 @@ $result = $stmt->get_result();
 <head>
     <meta charset="UTF-8">
     <title>My Registered Events</title>
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="../css/style.css">
     <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 

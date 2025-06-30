@@ -1,5 +1,5 @@
 <?php
-include('includes/db.php');
+include('../includes/db.php');
 session_start();
 
 $error = "";
@@ -38,15 +38,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <head>
     <meta charset="UTF-8">
     <title>Eventix Login</title>
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="../css/style.css">
 </head>
 <body class="login-page">
 
 <div class="login-container">
     <div class="login-box">
-        <img src="assets/eventix-logo.png" alt="Eventix Logo" class="logo" style="max-width: 80px; margin-bottom: 20px;" />
+        <img src="../assets/eventix-logo.png" alt="Eventix Logo" class="logo" style="max-width: 80px; margin-bottom: 20px;" />
         <h2>Welcome Back!</h2>
-        <p>Please login to Eventix with your email address</p>
+        <p>Please login to <strong>Eventix</strong> with your email address</p>
 
         <?php if (!empty($error)): ?>
             <p style="color: #f87171; font-size: 0.9rem; margin-bottom: 20px;"><?php echo $error; ?></p>
