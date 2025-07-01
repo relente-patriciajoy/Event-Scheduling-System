@@ -10,18 +10,29 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	$email = $_POST['email'];
 	$phone = $_POST['phone'];
 	$password = password_hash($_POST['password'], PASSWORD_DEFAULT);
-	$role = $_POST['role']; // usually "attendee"
+	$role = $_POST['role'];
 
-	$stmt = $conn->prepare("INSERT INTO user (first_name, last_name, email, phone, password, role) VALUES (?, ?, ?, ?, ?, ?)");
-	$stmt->bind_param("ssssss", $first_name, $last_name, $email, $phone, $password, $role);
+	// ✅ Check if email already exists
+	$check_stmt = $conn->prepare("SELECT email FROM user WHERE email = ?");
+	$check_stmt->bind_param("s", $email);
+	$check_stmt->execute();
+	$check_stmt->store_result();
 
-	if ($stmt->execute()) {
-			$message = "Registration successful! <a href='index.php'>Login</a>";
+	if ($check_stmt->num_rows > 0) {
+		$message = "This email is already registered.";
 	} else {
-			$message = "Error: " . $stmt->error;
+		$stmt = $conn->prepare("INSERT INTO user (first_name, last_name, email, phone, password, role) VALUES (?, ?, ?, ?, ?, ?)");
+		$stmt->bind_param("ssssss", $first_name, $last_name, $email, $phone, $password, $role);
+
+		if ($stmt->execute()) {
+			$message = "Registration successful! <a href='index.php'>Login</a>";
+		} else {
+			$message = "Error during registration. Please try again.";
+		}
 	}
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -38,9 +49,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 		<h2>Create Your Account</h2>
 		<p>Please fill in the form below to register.</p>
 
-		<?php if (!empty($message)): ?>
-			<p style="color: #f87171; font-size: 0.9rem; margin-bottom: 20px;"><?php echo $message; ?></p>
-		<?php endif; ?>
+        <?php if (!empty($message)): ?>
+            <p style="color: <?php echo (strpos($message, 'successful') !== false ? '#22c55e' : '#f87171'); ?>; font-size: 0.9rem; margin-bottom: 20px;">
+                <?php echo $message; ?>
+            </p>
+        <?php endif; ?>
 
 		<form method="post">
 			<div class="first-input-group">
