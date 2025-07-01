@@ -102,7 +102,7 @@ if ($selected_event) {
             <h1>Attendance Records</h1>
             <p>Select an event to view participants’ attendance.</p>
         </div>
-        <img src="../images/banner-books.png" alt="Banner">
+        <img src="../assets/eventix-logo.png" alt="Eventix logo" />
     </header>
 
     <section>
