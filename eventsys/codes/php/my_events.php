@@ -68,7 +68,7 @@ $result = $stmt->get_result();
             <h1>My Registered Events</h1>
             <p>See all the events you've registered for.</p>
         </div>
-        <img src="/eventsys/codes/assets/images-removebg-preview.png" alt="B1G logo" />
+        <img src="../assets/eventix-logo.png" alt="Eventix logo" />
     </header>
 
     <section class="grid-section">

@@ -82,7 +82,7 @@ $result = $stmt->get_result();
             <h1>Attendance Tracker</h1>
             <p>Check in and out of your events.</p>
         </div>
-        <img src="../images/banner-books.png" alt="Banner">
+        <img src="../assets/eventix-logo.png" alt="Eventix logo" />
     </header>
 
     <section class="grid-section">

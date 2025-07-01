@@ -66,7 +66,7 @@ $stmt->close();
               <h1>Hi, <?= htmlspecialchars($full_name) ?></h1>
               <p>Welcome to your dashboard. Let’s manage and discover events easily.</p>
           </div>
-          <img src="/eventsys/codes/assets/images-removebg-preview.png" alt="B1G logo" />
+          <img src="../assets/eventix-logo.png" alt="Eventix logo" />
       </header>
 
       <section class="grid-section">
