@@ -70,7 +70,7 @@ $stmt->close();
               <h1>Hi, <?= htmlspecialchars($full_name) ?></h1>
               <p>Welcome to your dashboard. Let’s manage and discover events easily.</p>
           </div>
-          <img src="images/banner-books.png" alt="Books" />
+          <img src="/eventsys/codes/assets/images-removebg-preview.png" alt="Books" />
       </header>
 
       <section class="grid-section">
