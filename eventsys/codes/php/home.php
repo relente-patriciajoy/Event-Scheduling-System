@@ -57,10 +57,6 @@ $stmt->close();
           <?php endif; ?>
 
           <a href="logout.php"><i data-lucide="log-out"></i> Logout</a>
-
-          <div style="text-align: right; margin-bottom: 10px;">
-            <button onclick="toggleTheme()" style="padding: 8px 12px; border-radius: 6px;">🌗 Toggle Theme</button>
-          </div>
       </nav>
   </aside>
 
