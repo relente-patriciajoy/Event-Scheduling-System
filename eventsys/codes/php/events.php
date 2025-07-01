@@ -1,8 +1,8 @@
 <?php
 session_start();
 if (!isset($_SESSION['user_id'])) {
-    header("Location: index.php");
-    exit();
+  header("Location: index.php");
+  exit();
 }
 
 include('../includes/db.php');
@@ -28,34 +28,34 @@ $result = $conn->query($query);
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Browse Events</title>
-    <link rel="stylesheet" href="../css/style.css">
+  <meta charset="UTF-8">
+  <title>Browse Events</title>
+  <link rel="stylesheet" href="../css/style.css">
 </head>
 <body class="dashboard-layout">
 <aside class="sidebar">
-    <h2 class="logo">Eventix</h2>
-    <nav>
-        <a href="home.php" class="<?= basename($_SERVER['PHP_SELF']) === 'home.php' ? 'active' : '' ?>">
-            <i data-lucide="home"></i> Home
+  <h2 class="logo">Eventix</h2>
+  <nav>
+    <a href="home.php" class="<?= basename($_SERVER['PHP_SELF']) === 'home.php' ? 'active' : '' ?>">
+        <i data-lucide="home"></i> Home
+    </a>
+    <a href="events.php" class="<?= basename($_SERVER['PHP_SELF']) === 'events.php' ? 'active' : '' ?>">
+        <i data-lucide="calendar"></i> Browse Events
+    </a>
+    <a href="my_events.php" class="<?= basename($_SERVER['PHP_SELF']) === 'my_events.php' ? 'active' : '' ?>">
+        <i data-lucide="user-check"></i> My Events
+    </a>
+  <a href="attendance.php" class="<?= basename($_SERVER['PHP_SELF']) === 'attendance.php' ? 'active' : '' ?>">
+    <i data-lucide="check-square"></i> Attendance
+  </a>
+    <?php if ($role === 'event_head'): ?>
+        <a href="manage_events.php" class="<?= basename($_SERVER['PHP_SELF']) === 'manage_events.php' ? 'active' : '' ?>">
+            <i data-lucide="settings"></i> Manage Events
         </a>
-        <a href="events.php" class="<?= basename($_SERVER['PHP_SELF']) === 'events.php' ? 'active' : '' ?>">
-            <i data-lucide="calendar"></i> Browse Events
-        </a>
-        <a href="my_events.php" class="<?= basename($_SERVER['PHP_SELF']) === 'my_events.php' ? 'active' : '' ?>">
-            <i data-lucide="user-check"></i> My Events
-        </a>
-		<a href="attendance.php" class="<?= basename($_SERVER['PHP_SELF']) === 'attendance.php' ? 'active' : '' ?>">
-			<i data-lucide="check-square"></i> Attendance
-		</a>
-        <?php if ($role === 'event_head'): ?>
-            <a href="manage_events.php" class="<?= basename($_SERVER['PHP_SELF']) === 'manage_events.php' ? 'active' : '' ?>">
-                <i data-lucide="settings"></i> Manage Events
-            </a>
-        <?php endif; ?>
+    <?php endif; ?>
 
-        <a href="logout.php"><i data-lucide="log-out"></i> Logout</a>
-    </nav>
+    <a href="logout.php"><i data-lucide="log-out"></i> Logout</a>
+  </nav>
 </aside>
 
 <main class="main-content">
@@ -66,6 +66,17 @@ $result = $conn->query($query);
         </div>
         <img src="../assets/eventix-logo.png" alt="Eventix logo" />
     </header>
+
+    <!-- Registration status indicator -->
+    <?php
+    if (isset($_SESSION['register_status'])) {
+        echo '<div id="register-alert" class="alert alert-warning">'
+            . htmlspecialchars($_SESSION['register_status']) .
+            '</div>';
+        unset($_SESSION['register_status']);
+        
+    }
+    ?>
 
     <section class="grid-section">
         <?php while ($row = $result->fetch_assoc()): ?>
@@ -86,6 +97,14 @@ $result = $conn->query($query);
 <script src="https://unpkg.com/lucide@latest"></script>
 <script>
     lucide.createIcons();
+</script>
+<script>
+  const alertBox = document.getElementById('register-alert');
+  if(alertBox) {
+    setTimeout(() => {
+        alertBox.style.display = 'none';
+    }, 3000);
+  }
 </script>
 
 </body>

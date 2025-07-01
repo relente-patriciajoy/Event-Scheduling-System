@@ -18,7 +18,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['event_id'])) {
     $result = $check->get_result();
 
     if ($result->num_rows > 0) {
-        echo "<script>alert('You have already registered for this event.'); window.location.href='events.php';</script>";
+        $_SESSION['register_status'] = "You have already registered for this event.";
+        header("Location: events.php");
+        exit();
     } else {
        $stmt = $conn->prepare("INSERT INTO registration (user_id, event_id) VALUES (?, ?)");
        $stmt->bind_param("ii", $user_id, $event_id);
