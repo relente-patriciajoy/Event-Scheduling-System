@@ -356,7 +356,8 @@ button:hover,
 .event-card .event-actions {
   display: flex;
   gap: 12px;
-  margin-top: 18px; /* Ensure space above the buttons */
+  margin-top: 18px;
+  /* Ensure space above the buttons */
 }
 
 /* Navigation */
