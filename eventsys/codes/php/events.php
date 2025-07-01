@@ -64,7 +64,7 @@ $result = $conn->query($query);
             <h1>Upcoming Events</h1>
             <p>Explore and register for exciting events.</p>
         </div>
-        <img src="images/banner-books.png" alt="Banner">
+        <img src="/eventsys/codes/assets/images-removebg-preview.png" alt="B1G logo" />
     </header>
 
     <section class="grid-section">
