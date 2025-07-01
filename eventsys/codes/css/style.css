@@ -357,7 +357,7 @@ button:hover {
   align-items: center;
   font-size: 0.85rem;
   color: black;
-  margin-bottom: 20px;
+  margin-bottom: 16px;
 }
 
 .options a {
@@ -365,9 +365,26 @@ button:hover {
   text-decoration: none;
 }
 
-button[type="submit"],
-button {
-  width: 85%;
+.remember-label {
+  display: flex;
+  align-items: center;
+  margin-right: 16px;
+  gap: 8px;
+}
+
+.remember-label span {
+  white-space: nowrap;
+  font-size: 0.95rem;
+  color: black;
+}
+
+.remember-checkbox {
+  margin: 0;
+  vertical-align: middle;
+}
+
+.login-button {
+  width: 100%;
   background: #3b82f6;
   color: white;
   padding: 12px;
@@ -379,7 +396,24 @@ button {
   transition: background 0.3s ease;
 }
 
-button[type="submit"]:hover {
+.login-button:hover {
+  background: #2563eb;
+}
+
+.register-button {
+  width: 84%;
+  background: #3b82f6;
+  color: white;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.register-button:hover {
   background: #2563eb;
 }
 

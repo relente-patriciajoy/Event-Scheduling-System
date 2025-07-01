@@ -64,11 +64,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </div>
 
             <div class="options">
-                <label><input type="checkbox" name="remember"> Stay logged in</label>
-                <a href="#">Forgot your password?</a>
+                <label class="remember-label">
+                    <input type="checkbox" name="remember" class="remember-checkbox"> 
+                    <span>Stay logged in</span>
+                </label>
+                <a href="#">Forgot password?</a>
             </div>
 
-            <button type="submit">Login</button>
+            <button type="submit" class="login-button">Login</button>
         </form>
 
         <div class="register-link">

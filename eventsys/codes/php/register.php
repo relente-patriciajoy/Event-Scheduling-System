@@ -42,33 +42,33 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         <form method="post">
             <div class="first-input-group">
-							<div class="input-group">
-								<label for="full_name">Full Name</label>
-								<input type="text" name="full_name" required>
-							</div>
+                <div class="input-group">
+                    <label for="full_name">Full Name</label>
+                    <input type="text" name="full_name" required>
+                </div>
 
-							<div class="input-group">
-								<label for="email">Email Address</label>
-								<input type="email" name="email" required>
-							</div>
+                <div class="input-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" name="email" required>
+                </div>
             </div>
 
-						<div class="second-input-group">
-							<div class="input-group">
-									<label for="phone">Phone Number</label>
-									<input type="text" name="phone">
-							</div>
+            <div class="second-input-group">
+                <div class="input-group">
+                        <label for="phone">Phone Number</label>
+                        <input type="text" name="phone">
+                </div>
 
-							<div class="input-group">
-									<label for="password">Password</label>
-									<input type="password" name="password" required>
-							</div>
-						</div>
+                <div class="input-group">
+                        <label for="password">Password</label>
+                        <input type="password" name="password" required>
+                </div>
+            </div>
 
             <input type="hidden" name="role" value="attendee">
 
-            <button type="submit">Register</button>
-        </form> 
+            <button type="submit" class="register-button">Register</button>
+        </form>
 
         <div class="register-link">
             Already have an account? <a href="index.php">Login</a>
