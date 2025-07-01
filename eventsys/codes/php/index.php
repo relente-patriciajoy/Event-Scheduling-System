@@ -8,18 +8,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = $_POST['email'];
     $password_input = $_POST['password'];
 
-    $stmt = $conn->prepare("SELECT user_id, password, full_name FROM user WHERE email = ?");
+    $stmt = $conn->prepare("SELECT user_id, password, first_name, middle_name, last_name FROM user WHERE email = ?");
     $stmt->bind_param("s", $email);
     $stmt->execute();
     $stmt->store_result();
 
     if ($stmt->num_rows === 1) {
-        $stmt->bind_result($user_id, $hashed_password, $full_name);
+        $stmt->bind_result($user_id, $hashed_password, $first_name, $middle_name, $_last_name);
         $stmt->fetch();
 
         if (password_verify($password_input, $hashed_password)) {
             $_SESSION['user_id'] = $user_id;
-            $_SESSION['full_name'] = $full_name;
+            $_SESSION['full_name'] = $first_name . ' '. $middle_name . ' ' . $_last_name;
             header("Location: home.php");
             exit();
         } else {

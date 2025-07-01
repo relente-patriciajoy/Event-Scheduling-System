@@ -49,7 +49,7 @@ $attendances = [];
 
 if ($selected_event) {
     $query = "
-        SELECT u.full_name, u.email, a.check_in_time, a.check_out_time, a.status
+        SELECT u.first_name, u.middle_name, u.last_name, u.email, a.check_in_time, a.check_out_time, a.status
         FROM registration r
         JOIN user u ON r.user_id = u.user_id
         LEFT JOIN attendance a ON r.registration_id = a.registration_id
@@ -145,7 +145,7 @@ if ($selected_event) {
                     <tbody>
                         <?php while ($row = $attendances->fetch_assoc()): ?>
                             <tr>
-                                <td><?= htmlspecialchars($row['full_name']) ?></td>
+                                <td><?= htmlspecialchars($row['first_name'] . ' ' . $row['middle_name'] . $row['last_name']) ?></td>
                                 <td><?= htmlspecialchars($row['email']) ?></td>
                                 <td><?= $row['check_in_time'] ?? '—' ?></td>
                                 <td><?= $row['check_out_time'] ?? '—' ?></td>
