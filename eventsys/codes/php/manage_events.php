@@ -99,11 +99,20 @@ $events = $stmt->get_result();
 </head>
 <body>
 <div class="dashboard">
-    <h1>Manage My Events</h1>
-    <a href="home.php">← Back to Dashboard</a>
-    <?php if ($role === 'event_head'): ?>
-        <a href="view_attendance.php">View Attendance</a>
-    <?php endif; ?>
+    <!-- Flex container for title and buttons -->
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
+        <h1 style="margin: 0;">Manage My Events</h1>
+        <div style="display: flex; gap: 12px;">
+            <a href="home.php" style="padding: 7px 18px; background: #0074d9; color: #fff; border-radius: 6px; text-decoration: none; font-weight: 500; transition: background 0.2s;">
+                &larr; Back to Dashboard
+            </a>
+            <?php if ($role === 'event_head'): ?>
+                <a href="view_attendance.php" style="padding: 7px 18px; background: #f4f4f4; color: #0074d9; border-radius: 6px; text-decoration: none; font-weight: 500; border: 1px solid #0074d9; transition: background 0.2s;">
+                    View Attendance
+                </a>
+            <?php endif; ?>
+        </div>
+    </div>
 
     <?php
     // Fetch event to edit
