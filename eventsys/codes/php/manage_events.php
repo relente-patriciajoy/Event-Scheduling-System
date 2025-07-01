@@ -109,11 +109,11 @@ $events = $stmt->get_result();
         <!-- Flex container for title and buttons -->
         <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
             <div style="display: flex; gap: 12px;">
-                <a href="home.php" style="padding: 7px 18px; background: #0074d9; color: #fff; border-radius: 6px; text-decoration: none; font-weight: 500; transition: background 0.2s;">
+                <a href="home.php" class="back-link">
                     &larr; Back to Dashboard
                 </a>
                 <?php if ($role === 'event_head'): ?>
-                    <a href="view_attendance.php" style="padding: 7px 18px; background: #f4f4f4; color: #0074d9; border-radius: 6px; text-decoration: none; font-weight: 500; border: 1px solid #0074d9; transition: background 0.2s;">
+                    <a href="view_attendance.php" class="attendance-link">
                         View Attendance
                     </a>
                 <?php endif; ?>
@@ -183,8 +183,10 @@ $events = $stmt->get_result();
                     <h3><?= htmlspecialchars($row['title']) ?></h3>
                     <p><strong>Venue:</strong> <?= htmlspecialchars($row['venue']) ?></p>
                     <p><strong>From:</strong> <?= $row['start_time'] ?><br><strong>To:</strong> <?= $row['end_time'] ?></p>
-                    <a href="manage_events.php?edit=<?= $row['event_id'] ?>">Edit</a> |
-                    <a href="manage_events.php?delete=<?= $row['event_id'] ?>" onclick="return confirm('Are you sure?')">Delete</a>
+                    <div class="event-actions" style="margin-top: 18px;">
+                        <a href="manage_events.php?edit=<?= $row['event_id'] ?>" class="edit-link">Edit</a>
+                        <a href="manage_events.php?delete=<?= $row['event_id'] ?>" class="delete-link" onclick="return confirm('Are you sure?')">Delete</a>
+                    </div>
                 </div>
             <?php endwhile; ?>
         </div>

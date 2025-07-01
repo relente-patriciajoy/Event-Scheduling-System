@@ -75,7 +75,7 @@ body {
 
 .sidebar {
   width: 220px;
-  background: #393E41;
+  background: #393e41;
   color: #ffffff;
   box-shadow: none;
   padding: 25px;
@@ -111,15 +111,15 @@ body {
 
 .sidebar nav a:hover {
   color: var(--text-main);
-  background-color: #4D4F50;
-  border-left: 4px solid #6E7476;
+  background-color: #4d4f50;
+  border-left: 4px solid #6e7476;
   padding-left: 10px;
 }
 
 .sidebar nav a.active {
   color: var(--text-main);
-  background-color: #4D4F50;
-  border-left: 4px solid #6E7476;
+  background-color: #4d4f50;
+  border-left: 4px solid #6e7476;
   font-weight: bold;
 }
 
@@ -128,7 +128,7 @@ body {
   flex-grow: 1;
   padding: 30px;
   background-color: #dfdfdf;
-  color: #1B1C1D;
+  color: #1b1c1d;
   border-radius: 12px;
 }
 
@@ -275,10 +275,25 @@ button:hover {
   background-color: var(--steel);
 }
 
+.back-link,
+.attendance-link,
+.edit-link,
+.delete-link {
+  border: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
 button,
 .login-button,
 .register-button,
-.card a {
+.card a,
+.back-link,
+.attendance-link,
+.edit-link,
+.delete-link {
   background: var(--color-button);
   color: var(--color-button-text);
   border: none;
@@ -288,7 +303,11 @@ button,
 button:hover,
 .login-button:hover,
 .register-button:hover,
-.card a:hover {
+.card a:hover,
+.back-link:hover,
+.attendance-link:hover,
+.edit-link:hover,
+.delete-link:hover {
   background: var(--color-secondary);
   color: var(--color-main);
 }
@@ -333,6 +352,14 @@ button:hover,
   transform: translateY(-5px);
 }
 
+/* Add spacing for action links in event-card */
+.event-card .event-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 18px; /* Ensure space above the buttons */
+}
+
+/* Navigation */
 .navigation {
   margin-top: 30px;
   display: flex;
@@ -525,9 +552,9 @@ button:hover,
 
 /* For Manage Events - Event Head */
 .navbar-container {
-  background: #ffffff;
   padding: 10px 20px;
-  background-color: black;
+  background: var(--color-highlight);
+  color: var(--color-main);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   height: 10vh;
 }
