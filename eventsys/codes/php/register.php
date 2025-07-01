@@ -21,8 +21,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	if ($check_stmt->num_rows > 0) {
 		$message = "This email is already registered.";
 	} else {
-		$stmt = $conn->prepare("INSERT INTO user (first_name, last_name, email, phone, password, role) VALUES (?, ?, ?, ?, ?, ?)");
-		$stmt->bind_param("ssssss", $first_name, $last_name, $email, $phone, $password, $role);
+		$stmt = $conn->prepare("INSERT INTO user (first_name, middle_name, last_name, email, phone, password, role) VALUES (?, ?, ?, ?, ?, ?, ?)");
+		$stmt->bind_param("sssssss", $first_name, $middle_name, $last_name, $email, $phone, $password, $role);
 
 		if ($stmt->execute()) {
 			$message = "Registration successful! <a href='index.php'>Login</a>";

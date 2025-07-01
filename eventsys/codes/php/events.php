@@ -17,10 +17,21 @@ $stmt->bind_result($role);
 $stmt->fetch();
 $stmt->close();
 
-$query = "SELECT e.event_id, e.title, e.description, e.start_time, e.end_time, e.price, v.name AS venue 
-          FROM event e
-          JOIN venue v ON e.venue_id = v.venue_id
-          ORDER BY e.start_time ASC";
+$query = "SELECT 
+            e.event_id, 
+            e.title, 
+            e.description, 
+            e.start_time, 
+            e.end_time, 
+            e.capacity, 
+            e.price, 
+            v.name AS venue,
+            (e.capacity - COUNT(r.registration_id)) AS available_seats
+        FROM event e
+        JOIN venue v ON e.venue_id = v.venue_id
+        LEFT JOIN registration r ON e.event_id = r.event_id
+        GROUP BY e.event_id
+        ORDER BY e.start_time ASC";
 
 $result = $conn->query($query);
 ?>
@@ -85,8 +96,10 @@ $result = $conn->query($query);
                 <p><strong>Venue:</strong> <?= htmlspecialchars($row['venue']) ?></p>
                 <p><strong>Date:</strong> <?= $row['start_time'] ?> – <?= $row['end_time'] ?></p>
                 <p><strong>Price:</strong> $<?= number_format($row['price'], 2) ?></p>
+                <p><strong>Available:</strong> <?= htmlspecialchars($row['available_seats'])?> seats</p>
                 <p><?= nl2br(htmlspecialchars($row['description'])) ?></p>
                 <form method="POST" action="event_register.php">
+                    <input type="hidden" name="capacity" value="<?= $row['capacity'] ?>">
                     <input type="hidden" name="event_id" value="<?= $row['event_id'] ?>">
                     <button type="submit">Register</button>
                 </form>
