@@ -26,9 +26,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $stmt = $conn->prepare("UPDATE user SET role = 'event_head' WHERE email = ?");
     $stmt->bind_param("s", $email);
     if ($stmt->execute()) {
-        $message = "✅ User promoted to event head!";
+        $message = "User promoted to event head!";
     } else {
-        $message = "❌ Error updating role.";
+        $message = "Error updating role.";
     }
 }
 ?>
