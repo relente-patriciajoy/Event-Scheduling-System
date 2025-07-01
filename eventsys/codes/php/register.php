@@ -33,8 +33,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <body class="login-page">
 
 <div class="register-container">
-	<div class="login-box">
-		<img src="../assets/eventix-logo.png" alt="Eventix Logo" class="logo" style="max-width: 80px; margin-bottom: 20px;" />
+	<div class="register-box">
+		<img src="../assets/eventix-logo.png" alt="Eventix Logo" class="logo" style="max-width: 80px;" />
 		<h2>Create Your Account</h2>
 		<p>Please fill in the form below to register.</p>
 
@@ -58,22 +58,26 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 					<label for="last_name">Last Name</label>
 					<input type="text" name="last_name" required>
 				</div>
-
-				<div class="input-group">
-					<label for="email">Email Address</label>
-					<input type="email" name="email" required>
-				</div>
 			</div>
 
 			<div class="second-input-group">
 				<div class="input-group">
-					<label for="phone">Phone Number</label>
-					<input type="text" name="phone">
+					<label for="email">Email Address</label>
+					<input type="email" name="email" class="max-width wide-input" required>
 				</div>
+			</div>
 
+			<div class="third-input-group">
+					<div class="input-group">
+					<label for="phone">Phone Number</label>
+					<input type="text" name="phone" class="max-width wide-input">
+				</div>
+			</div>
+
+			<div class="fourth-input-group">
 				<div class="input-group">
 					<label for="password">Password</label>
-					<input type="password" name="password" required>
+					<input type="password" name="password" class="max-width wide-input" required>
 				</div>
 			</div>
 
