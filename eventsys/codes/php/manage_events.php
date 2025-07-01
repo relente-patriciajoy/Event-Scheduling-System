@@ -41,10 +41,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['add_event'])) {
     $venue_stmt->close();
 
     // Fetch user's info
-    $user_stmt = $conn->prepare("SELECT full_name, email, phone FROM user WHERE user_id = ?");
+    $user_stmt = $conn->prepare("SELECT first_name, middle_name, last_name, email, phone FROM user WHERE user_id = ?");
     $user_stmt->bind_param("i", $user_id);
     $user_stmt->execute();
-    $user_stmt->bind_result($full_name, $email, $phone);
+    $user_stmt->bind_result($first_name, $middle_name, $last_name, $email, $phone);
     $user_stmt->fetch();
     $user_stmt->close();
 
@@ -98,87 +98,96 @@ $events = $stmt->get_result();
     <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
+
+<!-- Nav Bar -->
+ <div class="navbar-container">
+    <h1 style="margin: 5px 0px; color: white;">Manage My Events</h1>
+ </div>
+
 <div class="dashboard">
-    <!-- Flex container for title and buttons -->
-    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
-        <h1 style="margin: 0;">Manage My Events</h1>
-        <div style="display: flex; gap: 12px;">
-            <a href="home.php" style="padding: 7px 18px; background: #0074d9; color: #fff; border-radius: 6px; text-decoration: none; font-weight: 500; transition: background 0.2s;">
-                &larr; Back to Dashboard
-            </a>
-            <?php if ($role === 'event_head'): ?>
-                <a href="view_attendance.php" style="padding: 7px 18px; background: #f4f4f4; color: #0074d9; border-radius: 6px; text-decoration: none; font-weight: 500; border: 1px solid #0074d9; transition: background 0.2s;">
-                    View Attendance
+    <div class="manage-events-container">
+        <!-- Flex container for title and buttons -->
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
+            <div style="display: flex; gap: 12px;">
+                <a href="home.php" style="padding: 7px 18px; background: #0074d9; color: #fff; border-radius: 6px; text-decoration: none; font-weight: 500; transition: background 0.2s;">
+                    &larr; Back to Dashboard
                 </a>
-            <?php endif; ?>
+                <?php if ($role === 'event_head'): ?>
+                    <a href="view_attendance.php" style="padding: 7px 18px; background: #f4f4f4; color: #0074d9; border-radius: 6px; text-decoration: none; font-weight: 500; border: 1px solid #0074d9; transition: background 0.2s;">
+                        View Attendance
+                    </a>
+                <?php endif; ?>
+            </div>
         </div>
+
+        <?php
+        // Fetch event to edit
+        $edit_event = null;
+        if (isset($_GET['edit'])) {
+            $edit_id = $_GET['edit'];
+            $stmt = $conn->prepare("SELECT * FROM event WHERE event_id = ? AND organizer_id IN (SELECT organizer_id FROM organizer WHERE contact_email = (SELECT email FROM user WHERE user_id = ?))");
+            $stmt->bind_param("ii", $edit_id, $user_id);
+            $stmt->execute();
+            $edit_event = $stmt->get_result()->fetch_assoc();
+            $stmt->close();
+        }
+
+        // Handle update (venue editing skipped)
+        if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['update_event'])) {
+            $title = $_POST['title'];
+            $description = $_POST['description'];
+            $start_time = $_POST['start_time'];
+            $end_time = $_POST['end_time'];
+            $capacity = $_POST['capacity'];
+            $price = $_POST['price'];
+            $event_id = $_POST['event_id'];
+
+            $stmt = $conn->prepare("UPDATE event SET title=?, description=?, start_time=?, end_time=?, capacity=?, price=? WHERE event_id=? AND organizer_id IN (SELECT organizer_id FROM organizer WHERE contact_email = (SELECT email FROM user WHERE user_id = ?))");
+            $stmt->bind_param("ssssiddi", $title, $description, $start_time, $end_time, $capacity, $price, $event_id, $user_id);
+            $stmt->execute();
+            $stmt->close();
+            header("Location: manage_events.php");
+            exit();
+        }
+        ?>
+
+        <h2><?= $edit_event ? "Edit Event" : "Create New Event" ?></h2>
+        <form method="POST">
+            <input type="hidden" name="event_id" value="<?= $edit_event['event_id'] ?? '' ?>">
+            <input type="text" name="title" placeholder="Event Title" value="<?= $edit_event['title'] ?? '' ?>" required>
+            <textarea name="description" placeholder="Event Description" required><?= $edit_event['description'] ?? '' ?></textarea>
+            <input type="datetime-local" name="start_time" value="<?= $edit_event['start_time'] ?? '' ?>" required>
+            <input type="datetime-local" name="end_time" value="<?= $edit_event['end_time'] ?? '' ?>" required>
+
+            <?php if (!$edit_event): ?>
+                <input type="text" name="venue_name" placeholder="Venue Name" required>
+                <input type="text" name="venue_address" placeholder="Venue Address">
+                <input type="text" name="venue_city" placeholder="Venue City">
+            <?php else: ?>
+                <p><em>Venue cannot be edited for existing events.</em></p>
+            <?php endif; ?>
+
+            <input type="number" name="capacity" placeholder="Capacity" value="<?= $edit_event['capacity'] ?? '' ?>" required>
+            <input type="number" step="0.01" name="price" placeholder="Price" value="<?= $edit_event['price'] ?? '' ?>" required>
+            <button type="submit" name="<?= $edit_event ? 'update_event' : 'add_event' ?>">
+                <?= $edit_event ? 'Update Event' : 'Add Event' ?>
+            </button>
+        </form>
     </div>
 
-    <?php
-    // Fetch event to edit
-    $edit_event = null;
-    if (isset($_GET['edit'])) {
-        $edit_id = $_GET['edit'];
-        $stmt = $conn->prepare("SELECT * FROM event WHERE event_id = ? AND organizer_id IN (SELECT organizer_id FROM organizer WHERE contact_email = (SELECT email FROM user WHERE user_id = ?))");
-        $stmt->bind_param("ii", $edit_id, $user_id);
-        $stmt->execute();
-        $edit_event = $stmt->get_result()->fetch_assoc();
-        $stmt->close();
-    }
-
-    // Handle update (venue editing skipped)
-    if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['update_event'])) {
-        $title = $_POST['title'];
-        $description = $_POST['description'];
-        $start_time = $_POST['start_time'];
-        $end_time = $_POST['end_time'];
-        $capacity = $_POST['capacity'];
-        $price = $_POST['price'];
-        $event_id = $_POST['event_id'];
-
-        $stmt = $conn->prepare("UPDATE event SET title=?, description=?, start_time=?, end_time=?, capacity=?, price=? WHERE event_id=? AND organizer_id IN (SELECT organizer_id FROM organizer WHERE contact_email = (SELECT email FROM user WHERE user_id = ?))");
-        $stmt->bind_param("ssssiddi", $title, $description, $start_time, $end_time, $capacity, $price, $event_id, $user_id);
-        $stmt->execute();
-        $stmt->close();
-        header("Location: manage_events.php");
-        exit();
-    }
-    ?>
-
-    <h2><?= $edit_event ? "Edit Event" : "Create New Event" ?></h2>
-    <form method="POST">
-        <input type="hidden" name="event_id" value="<?= $edit_event['event_id'] ?? '' ?>">
-        <input type="text" name="title" placeholder="Event Title" value="<?= $edit_event['title'] ?? '' ?>" required>
-        <textarea name="description" placeholder="Event Description" required><?= $edit_event['description'] ?? '' ?></textarea>
-        <input type="datetime-local" name="start_time" value="<?= $edit_event['start_time'] ?? '' ?>" required>
-        <input type="datetime-local" name="end_time" value="<?= $edit_event['end_time'] ?? '' ?>" required>
-
-        <?php if (!$edit_event): ?>
-            <input type="text" name="venue_name" placeholder="Venue Name" required>
-            <input type="text" name="venue_address" placeholder="Venue Address">
-            <input type="text" name="venue_city" placeholder="Venue City">
-        <?php else: ?>
-            <p><em>Venue cannot be edited for existing events.</em></p>
-        <?php endif; ?>
-
-        <input type="number" name="capacity" placeholder="Capacity" value="<?= $edit_event['capacity'] ?? '' ?>" required>
-        <input type="number" step="0.01" name="price" placeholder="Price" value="<?= $edit_event['price'] ?? '' ?>" required>
-        <button type="submit" name="<?= $edit_event ? 'update_event' : 'add_event' ?>">
-            <?= $edit_event ? 'Update Event' : 'Add Event' ?>
-        </button>
-    </form>
-
+    <div class="my-events-container">
     <h2>My Events</h2>
-    <div class="event-list">
-        <?php while ($row = $events->fetch_assoc()): ?>
-            <div class="event-card">
-                <h3><?= htmlspecialchars($row['title']) ?></h3>
-                <p><strong>Venue:</strong> <?= htmlspecialchars($row['venue']) ?></p>
-                <p><strong>From:</strong> <?= $row['start_time'] ?><br><strong>To:</strong> <?= $row['end_time'] ?></p>
-                <a href="manage_events.php?edit=<?= $row['event_id'] ?>">Edit</a> |
-                <a href="manage_events.php?delete=<?= $row['event_id'] ?>" onclick="return confirm('Are you sure?')">Delete</a>
-            </div>
-        <?php endwhile; ?>
+        <div class="event-list">
+            <?php while ($row = $events->fetch_assoc()): ?>
+                <div class="event-card">
+                    <h3><?= htmlspecialchars($row['title']) ?></h3>
+                    <p><strong>Venue:</strong> <?= htmlspecialchars($row['venue']) ?></p>
+                    <p><strong>From:</strong> <?= $row['start_time'] ?><br><strong>To:</strong> <?= $row['end_time'] ?></p>
+                    <a href="manage_events.php?edit=<?= $row['event_id'] ?>">Edit</a> |
+                    <a href="manage_events.php?delete=<?= $row['event_id'] ?>" onclick="return confirm('Are you sure?')">Delete</a>
+                </div>
+            <?php endwhile; ?>
+        </div>
     </div>
 </div>
 </body>

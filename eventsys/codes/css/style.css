@@ -41,6 +41,9 @@ body {
 
 /* Layout */
 .dashboard {
+  display: flex;
+  flex-direction: row;
+  gap: 100px;
   padding: 30px;
   max-width: 900px;
   margin: auto;
@@ -168,6 +171,11 @@ body {
   border-radius: 8px;
   font-weight: bold;
   font-size: 0.9rem;
+}
+
+.card td {
+  padding: 10px;
+  border-bottom: 1px solid #e0e0e0;
 }
 
 .card:hover {
@@ -452,3 +460,21 @@ button:hover {
   justify-content: center;
   gap: 15px;
 }
+
+/* For Manage Events - Event Head */
+.navbar-container {
+  background: #ffffff;
+  padding: 10px 20px;
+  background-color: black;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  height: 10vh;
+}
+
+.my-events-container {
+  margin-top: 57px;
+}
+
+/* .event-actions {
+  display: flex;
+  flex-direction: row;
+} */

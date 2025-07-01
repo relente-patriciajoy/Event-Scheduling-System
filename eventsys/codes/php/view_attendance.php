@@ -121,7 +121,7 @@ if ($selected_event) {
     </section>
 
     <?php if ($selected_event && $attendances): ?>
-        <section class="grid-section" style="margin-top: 30px;">
+        <section style="margin-top: 30px;">
             <div class="card" style="grid-column: span 2;">
                 <h3>Attendance List</h3>
 
@@ -145,7 +145,7 @@ if ($selected_event) {
                     <tbody>
                         <?php while ($row = $attendances->fetch_assoc()): ?>
                             <tr>
-                                <td><?= htmlspecialchars($row['first_name'] . ' ' . $row['middle_name'] . $row['last_name']) ?></td>
+                                <td><?= htmlspecialchars($row['first_name'] . ' ' . $row['middle_name'] . ' ' . $row['last_name']) ?></td>
                                 <td><?= htmlspecialchars($row['email']) ?></td>
                                 <td><?= $row['check_in_time'] ?? '—' ?></td>
                                 <td><?= $row['check_out_time'] ?? '—' ?></td>
