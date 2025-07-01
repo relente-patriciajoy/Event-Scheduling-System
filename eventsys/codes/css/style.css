@@ -1,19 +1,30 @@
 :root {
-  --bg-light: #f5f7fa;
-  --bg-dark: #1f2937;
-  --text-light: #333;
-  --text-dark: #f9fafb;
-  --card-light: #fff;
-  --card-dark: #374151;
+  --color-bg: #f8f5f2;
+  --color-headline: #232323;
+  --color-paragraph: #222525;
+  --color-button: #078080;
+  --color-button-text: #232323;
+  --color-stroke: #232323;
+  --color-main: #ffffff;
+  --color-highlight: #078080;
+  --color-secondary: #f45d48;
+  --color-tertiary: #f8f5f2;
 }
 
-body.light-mode {
-  background: var(--bg-light);
-  color: var(--text-light);
+.bg-highlight {
+  background-color: var(--color-highlight);
+}
+
+.text-secondary {
+  color: var(--color-secondary);
+}
+
+.stroke {
+  border-color: var(--color-stroke);
 }
 
 .card {
-  background: var(--card-light);
+  background: var(--color-tertiary);
   transition: background 0.3s ease;
 }
 
@@ -34,9 +45,13 @@ button {
 
 body {
   margin: 0;
+  background: var(--color-bg);
+  color: var(--color-paragraph);
   font-family: 'Poppins', sans-serif;
-  background: #f7f9fc;
-  color: #333;
+}
+
+.highlight {
+  background-color: var(--color-highlight);
 }
 
 /* Layout */
@@ -47,20 +62,23 @@ body {
   padding: 30px;
   max-width: 900px;
   margin: auto;
+  background: var(--color-bg);
+  color: var(--color-paragraph);
 }
 
 .dashboard-layout {
   display: flex;
   font-family: 'Segoe UI', sans-serif;
-  background: #f5f7fa;
-  color: #333;
+  background: var(--color-bg);
+  color: var(--color-paragraph);
 }
 
 .sidebar {
   width: 220px;
-  background: #ffffff;
+  background: #393E41;
+  color: #ffffff;
+  box-shadow: none;
   padding: 25px;
-  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.05);
   min-height: 100vh;
   font-family: 'Segoe UI', 'Roboto', sans-serif;
   font-size: 16px;
@@ -69,7 +87,7 @@ body {
 .sidebar .logo {
   font-size: 1.6rem;
   font-weight: bold;
-  color: #0077cc;
+  color: white;
   margin-bottom: 40px;
 }
 
@@ -78,7 +96,7 @@ body {
   align-items: center;
   gap: 10px;
   padding: 12px 10px;
-  color: #333;
+  color: #ffffff;
   text-decoration: none;
   font-weight: 500;
   border-left: 4px solid transparent;
@@ -92,16 +110,16 @@ body {
 }
 
 .sidebar nav a:hover {
-  color: #0077cc;
-  border-left: 4px solid #0077cc;
-  background-color: #f0f9ff;
+  color: var(--text-main);
+  background-color: #4D4F50;
+  border-left: 4px solid #6E7476;
   padding-left: 10px;
 }
 
 .sidebar nav a.active {
-  color: #0077cc;
-  border-left: 4px solid #0077cc;
-  background-color: #e0f2fe;
+  color: var(--text-main);
+  background-color: #4D4F50;
+  border-left: 4px solid #6E7476;
   font-weight: bold;
 }
 
@@ -109,6 +127,9 @@ body {
 .main-content {
   flex-grow: 1;
   padding: 30px;
+  background-color: #dfdfdf;
+  color: #1B1C1D;
+  border-radius: 12px;
 }
 
 /* Banner */
@@ -116,7 +137,8 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: linear-gradient(to right, #dbeafe, #e0e7ff);
+  background: var(--color-highlight);
+  color: var(--color-main);
   border-radius: 12px;
   padding: 30px;
   margin-bottom: 40px;
@@ -125,11 +147,11 @@ body {
 .banner h1 {
   font-size: 2rem;
   margin-bottom: 10px;
-  color: #1e3a8a;
+  color: var(--color-headline);
 }
 
 .banner p {
-  color: #555;
+  color: var(--color-main);
   font-size: 1rem;
 }
 
@@ -155,21 +177,21 @@ body {
 .card h3 {
   font-size: 1.2rem;
   margin-bottom: 10px;
+  color: var(--color-headline);
 }
 
 .card p {
   font-size: 0.9rem;
   margin-bottom: 15px;
-  color: #555;
+  color: var(--color-paragraph);
 }
 
 .card a {
   text-decoration: none;
-  background: #0077cc;
   color: #fff;
   padding: 8px 16px;
+  border: 1px solid #e0e0e0;
   border-radius: 8px;
-  font-weight: bold;
   font-size: 0.9rem;
 }
 
@@ -182,9 +204,19 @@ body {
   transform: translateY(-4px);
 }
 
+.card,
+.event-card,
+.form-container,
+.card.welcome {
+  background: var(--color-tertiary);
+  color: var(--color-headline);
+  border: 1px solid var(--color-stroke);
+}
+
 h1,
-h2 {
-  color: #202b3f;
+h2,
+.banner h1 {
+  color: var(--color-headline);
 }
 
 textarea,
@@ -230,8 +262,8 @@ button {
 }
 
 button {
-  background: #0077cc;
-  color: white;
+  background: var(--color-button);
+  color: var(--color-button-text);
   border: none;
   padding: 10px 16px;
   border-radius: 8px;
@@ -240,7 +272,36 @@ button {
 }
 
 button:hover {
-  background-color: #005fa3;
+  background-color: var(--steel);
+}
+
+button,
+.login-button,
+.register-button,
+.card a {
+  background: var(--color-button);
+  color: var(--color-button-text);
+  border: none;
+  font-weight: bold;
+}
+
+button:hover,
+.login-button:hover,
+.register-button:hover,
+.card a:hover {
+  background: var(--color-secondary);
+  color: var(--color-main);
+}
+
+.button-secondary {
+  background: var(--color-secondary);
+  color: var(--color-main);
+}
+
+.button-outline {
+  background: transparent;
+  color: var(--color-button);
+  border: 2px solid var(--color-button);
 }
 
 .error {
@@ -261,7 +322,7 @@ button:hover {
 }
 
 .event-card {
-  background: white;
+  background: var(--charcoal);
   padding: 20px;
   border-radius: 12px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.07);
@@ -454,9 +515,10 @@ button:hover {
   text-align: center;
 }
 
-.first-input-group, .second-input-group {
+.first-input-group,
+.second-input-group {
   display: flex;
-  flex-direction: row;  
+  flex-direction: row;
   justify-content: center;
   gap: 15px;
 }
