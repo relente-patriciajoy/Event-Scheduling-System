@@ -89,16 +89,35 @@ $result = $conn->query($query);
     }
     ?>
 
+    <div id="overlay_container" class="overlay hidden">
+        <div id= "view_details_container" class="view-details-container">
+            <h2 id="event_title">Title</h2>
+            <p id="event_description">
+                Lorem ipsum dolor sit, amet consectetur adipisicing elit. Perferendis, 
+                hic laborum possimus suscipit ab error ullam incidunt maxime, explicabo quisquam omnis 
+                minima quia inventore nihil beatae aspernatur tenetur sit repellat!
+            </p>
+            <br>
+            <label id="event_start"><strong>Start:</strong> 2025-06-20 22:25:00</label><br>
+            <label id="event_end"><strong>End:</strong> 2025-06-24 22:25:00</label>
+            <button class="close-button" onClick="showEventDetails()" style="margin-top: 60px">Close</button>
+        </div>
+    </div>
+
     <section class="grid-section">
         <?php while ($row = $result->fetch_assoc()): ?>
             <div class="card">
                 <h3><?= htmlspecialchars($row['title']) ?></h3>
                 <p><strong>Venue:</strong> <?= htmlspecialchars($row['venue']) ?></p>
-                <p><strong>Date:</strong> <?= $row['start_time'] ?> – <?= $row['end_time'] ?></p>
+                <p><strong>Date:</strong>  
+                <?= date("M d, Y h:i A", strtotime($row['start_time'])) ?>
+                        –<br>   
+                <?= date("M d, Y h:i A", strtotime($row['end_time'])) ?></p>
                 <p><strong>Price:</strong> $<?= number_format($row['price'], 2) ?></p>
-                <p><strong>Available:</strong> <?= htmlspecialchars($row['available_seats'])?> seats</p>
+                <p><strong>Available:</strong> <?= htmlspecialchars($row['available_seats'])?> slot/s</p>
                 <p><?= nl2br(htmlspecialchars($row['description'])) ?></p>
                 <form method="POST" action="event_register.php">
+                    <button type="button" onClick="showEventDetails(<?= $row['event_id']?>)">View Details</button>
                     <input type="hidden" name="capacity" value="<?= $row['capacity'] ?>">
                     <input type="hidden" name="event_id" value="<?= $row['event_id'] ?>">
                     <button type="submit">Register</button>
@@ -119,6 +138,7 @@ $result = $conn->query($query);
     }, 3000);
   }
 </script>
+<script src="../js/script.js"></script>
 
 </body>
 </html>

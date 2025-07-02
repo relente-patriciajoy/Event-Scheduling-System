@@ -200,9 +200,9 @@ body {
   border-bottom: 1px solid #e0e0e0;
 }
 
-.card:hover {
+/* .card:hover {
   transform: translateY(-4px);
-}
+} */
 
 .card,
 .event-card,
@@ -348,13 +348,14 @@ button:hover,
   transition: transform 0.2s ease;
 }
 
-.event-card:hover {
+/* .event-card:hover {
   transform: translateY(-5px);
-}
+} */
 
 /* Add spacing for action links in event-card */
 .event-card .event-actions {
   display: flex;
+  align-items: center;
   gap: 12px;
   margin-top: 18px;
   /* Ensure space above the buttons */
@@ -598,4 +599,71 @@ button:hover,
   padding: 10px;
   border-radius: 5px;
   margin-bottom: 15px;
+    color: #b45309;
+    background: #fef3c7;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 15px;
+}
+
+#view_details {
+  display: block;           
+  width: 100%;              
+  padding: 10px 0px;           
+  font-weight: bold;
+  border-radius: 8px;
+  text-align: center;
+  margin-bottom: 12px;     
+  border: none;
+  transition: background 0.2s;
+}
+
+.overlay {
+  background-color: rgba(0, 0, 0, 0.8);
+  position: fixed;
+  top: 0;
+  left: 0;
+  margin: 0px 0px 0px 0px;
+  width: 100%;
+  height: 100%;
+}
+
+.view-details-container {
+  position: absolute;
+  right: 350px;
+  top: 200px;
+  background-color: var(--color-bg);
+  border: 1px solid var(--color-stroke);
+  width: 40vw;
+  height: 45vh;
+  padding: 20px;
+  z-index: 99999;
+  border-radius: 10px;
+}
+
+.hidden {
+  display: none;
+}
+
+.delete-event-container {
+  position: absolute;
+  right: 450px;
+  top: 200px;
+  background-color: var(--color-bg);
+  border: 1px solid var(--color-stroke);
+  width: 30vw;
+  height: 38vh;
+  padding: 30px;
+  z-index: 99999;
+  border-radius: 10px ;
+}
+
+.delete-personal {
+  width: 80px;
+  height: 38px;
+}
+
+#delete_prompt_text {
+  display: block;
+  text-align: center;
 }
