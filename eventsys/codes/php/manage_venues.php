@@ -107,18 +107,151 @@ if (!empty($search)) {
     <meta charset="UTF-8">
     <title>Manage Venues</title>
     <link rel="stylesheet" href="../css/style.css">
-</head>
-<body class="dashboard-layout">
-<main class="main-content">
-    <div class="navbar-container">
-        <h1>Manage Venues</h1>
-    </div>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8f9fc;
+            margin: 0;
+            padding: 0;
+        }
 
-    <div class="card" style="margin-bottom: 30px;">
+        .main-content {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        .card {
+            background: white;
+            padding: 24px;
+            margin-bottom: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+        }
+
+        h1 {
+            font-size: 26px;
+            margin-bottom: 20px;
+        }
+
+        input, button {
+            padding: 10px;
+            margin: 8px 0;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #4f8aff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #376fd6;
+        }
+
+        .alert {
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-weight: 500;
+            position: relative;
+        }
+
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .alert span {
+            position: absolute;
+            top: 8px;
+            right: 15px;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 12px;
+            border-bottom: 1px solid #e0e0e0;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        .btn-edit, .btn-delete {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.9em;
+            text-decoration: none;
+            cursor: pointer;
+            color: white;
+            display: inline-block;
+        }
+
+        .btn-edit {
+            background-color: #ffa600;
+        }
+        .btn-edit:hover {
+            background-color: #cc8400;
+        }
+
+        .btn-delete {
+            background-color: #ff4f4f;
+        }
+        .btn-delete:hover {
+            background-color: #cc3b3b;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            margin-bottom: 20px;
+        }
+
+        .actions {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+<main class="main-content">
+    <div class="card">
+        <h1>Manage Venues</h1>
+
         <?php if ($success): ?>
-            <p style="color: green;"><?= $success ?></p>
+            <div class="alert alert-success">
+                <?= $success ?>
+                <span onclick="this.parentElement.style.display='none';">&times;</span>
+            </div>
         <?php elseif ($error): ?>
-            <p style="color: red;"><?= $error ?></p>
+            <div class="alert alert-error">
+                <?= $error ?>
+                <span onclick="this.parentElement.style.display='none';">&times;</span>
+            </div>
         <?php endif; ?>
 
         <form method="POST">
@@ -136,11 +269,11 @@ if (!empty($search)) {
     </div>
 
     <div class="card">
-        <form method="GET" style="margin-bottom: 20px;">
-            <input type="text" name="search" placeholder="Search venue by name or city" value="<?= htmlspecialchars($search) ?>" style="width: 100%; padding: 10px;">
+        <form method="GET" class="search-box">
+            <input type="text" name="search" placeholder="Search venue by name or city" value="<?= htmlspecialchars($search) ?>">
         </form>
 
-        <table style="width: 100%; border-collapse: collapse;">
+        <table>
             <thead>
                 <tr>
                     <th>Name</th>
@@ -157,9 +290,9 @@ if (!empty($search)) {
                         <td><?= htmlspecialchars($venue['address']) ?></td>
                         <td><?= htmlspecialchars($venue['city']) ?></td>
                         <td><?= $venue['capacity'] ?></td>
-                        <td>
-                            <a href="?edit=<?= $venue['venue_id'] ?>">Edit</a> |
-                            <a href="?delete=<?= $venue['venue_id'] ?>" onclick="return confirm('Are you sure?')">Delete</a>
+                        <td class="actions">
+                            <a class="btn-edit" href="?edit=<?= $venue['venue_id'] ?>">Edit</a>
+                            <a class="btn-delete" href="?delete=<?= $venue['venue_id'] ?>" onclick="return confirm('Are you sure you want to delete this venue?')">Delete</a>
                         </td>
                     </tr>
                 <?php endwhile; ?>
@@ -167,5 +300,13 @@ if (!empty($search)) {
         </table>
     </div>
 </main>
+
+<script>
+    // Auto-dismiss alerts
+    setTimeout(() => {
+        const alerts = document.querySelectorAll('.alert');
+        alerts.forEach(alert => alert.style.display = 'none');
+    }, 5000);
+</script>
 </body>
 </html>

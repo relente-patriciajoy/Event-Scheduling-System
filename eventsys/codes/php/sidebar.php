@@ -35,7 +35,6 @@
         <a href="manage_venues.php">Manage Venues</a>
         <a href="manage_categories.php">Manage Categories</a>
         <a href="manage_organizers.php">Manage Organizers</a>
-        <a href="manage_payments.php">Manage Payments</a>
       </div>
     <?php endif; ?>
 

@@ -6,7 +6,7 @@ if (!isset($_SESSION['user_id'])) {
 }
 include('../includes/db.php');
 
-// Check role (optional: restrict to admin)
+// Check role (admin only)
 $user_id = $_SESSION['user_id'];
 $role_stmt = $conn->prepare("SELECT role FROM user WHERE user_id = ?");
 $role_stmt->bind_param("i", $user_id);
@@ -87,6 +87,7 @@ $categories = $stmt->get_result();
             display: flex;
             gap: 10px;
             margin-bottom: 10px;
+            flex-wrap: wrap;
         }
 
         input[type="text"], select {
@@ -126,10 +127,21 @@ $categories = $stmt->get_result();
         }
 
         .alert {
-            background: #def;
-            padding: 12px;
-            border-radius: 6px;
+            background: #d4edda;
+            padding: 12px 18px;
+            border-radius: 8px;
+            color: #155724;
+            border: 1px solid #c3e6cb;
             margin-bottom: 15px;
+            position: relative;
+        }
+
+        .alert span {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            cursor: pointer;
+            font-weight: bold;
         }
 
         .actions a {
@@ -164,21 +176,21 @@ $categories = $stmt->get_result();
             cursor: pointer;
             white-space: nowrap;
         }
-
     </style>
 </head>
 <body>
     <div class="container">
         <h2>Manage Event Categories</h2>
 
-        <!-- Alert messages -->
+        <!-- Success alert messages -->
         <?php if (isset($_GET['status'])): ?>
             <div class="alert">
                 <?php
-                    if ($_GET['status'] === 'added') echo "Category added successfully.";
-                    elseif ($_GET['status'] === 'updated') echo "Category updated successfully.";
-                    elseif ($_GET['status'] === 'deleted') echo "Category deleted.";
+                    if ($_GET['status'] === 'added') echo "✅ Category added successfully.";
+                    elseif ($_GET['status'] === 'updated') echo "✏️ Category updated successfully.";
+                    elseif ($_GET['status'] === 'deleted') echo "🗑️ Category deleted successfully.";
                 ?>
+                <span onclick="this.parentElement.style.display='none';">&times;</span>
             </div>
         <?php endif; ?>
 
@@ -228,5 +240,12 @@ $categories = $stmt->get_result();
             </tbody>
         </table>
     </div>
+
+    <script>
+        setTimeout(() => {
+            const alert = document.querySelector('.alert');
+            if (alert) alert.style.display = 'none';
+        }, 5000);
+    </script>
 </body>
 </html>
