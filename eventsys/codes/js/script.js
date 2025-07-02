@@ -2,6 +2,7 @@ window.onload = () => {
     document.querySelector('.form-container').classList.add('show');
 };
 
+let eventIdToDelete = null;
 //  Filter search functionality for attendance table
 document.getElementById("searchInput").addEventListener("keyup", function () {
     const input = this.value.toLowerCase();
@@ -72,3 +73,60 @@ window.onload = () => {
     const savedTheme = localStorage.getItem("theme") || "light-mode";
     document.body.classList.add(savedTheme);
 };
+
+function showEventDetails(event_id) {
+    const detailsContainer = document.getElementById("overlay_container");
+    const eventTitle = document.querySelector("#event_title");
+    const eventDes = document.querySelector("#event_description");
+    const eventStart = document.querySelector("#event_start");
+    const eventEnd = document.querySelector("#event_end");
+
+    fetch('get-description.php?event_id=' + event_id)
+    .then((response) => response.json()) 
+    .then((data) => {
+        eventTitle.innerHTML = data.title;
+        eventDes.innerHTML = data.description;
+        eventStart.innerHTML = "<strong>Start:</strong> " + data.start_time;
+        eventEnd.innerHTML = "<strong>End:</strong> " + data.end_time;
+    });
+
+    detailsContainer.classList.toggle('hidden');
+}
+
+function deleteEvent(event_id) {
+    fetch("delete-event.php?delete=" + event_id, {
+    method: "DELETE",
+    headers: {
+        "Content-type": "application/x-www-form-urlencoded",
+    },
+  })
+  .then((response) => response.text())
+  .then((responseText) => {
+    // alert(responseText);
+  });
+}
+
+function showDeletePrompt(event_id) {
+    eventIdToDelete = event_id;
+    document.getElementById("overlay_container").classList.toggle('hidden');
+    const confirmBtn = document.getElementById("confirmDeleteBtn");
+
+    if (confirmBtn) {
+        confirmBtn.onclick = function() {
+            if (eventIdToDelete) {
+                deleteEvent(eventIdToDelete);
+                window.location.reload();
+            }
+        };
+    }
+}
+
+function logout() {
+    window.location.href = 'logout.php';
+}
+
+function showLogoutButton() {
+    const detailsContainer = document.getElementById("overlay_container");
+
+    detailsContainer.classList.toggle('hidden');
+}

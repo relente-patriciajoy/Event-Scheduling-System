@@ -53,6 +53,16 @@ $stmt->close();
           </a>
         <?php endif; ?>
 
+        <div id="overlay_container" class="overlay hidden">
+          <div id="delete_event_container" class="delete-event-container">
+              <label id="delete_prompt_text">Are you sure to logout?</label>
+              <div class="event-options">
+                  <button class="close-button" style="margin-top: 60px" onClick="logout()">Logout</button>
+                  <button class="close-button" onClick="showDeletePrompt()">Cancel</button>
+              </div>
+          </div>
+        </div>
+
         <?php if ($role === 'admin'): ?>
           <div class="dropdown-nav">
             <div class="dropdown-toggle" onclick="toggleDropdown(this)">
@@ -70,7 +80,7 @@ $stmt->close();
           </div>
         <?php endif; ?>
 
-        <a href="logout.php"><i data-lucide="log-out"></i> Logout</a>
+        <a onClick="showLogoutButton()" style="cursor: pointer;"><i data-lucide="log-out"></i> Logout</a>
       </nav>
   </aside>
 
