@@ -120,3 +120,13 @@ function showDeletePrompt(event_id) {
         };
     }
 }
+
+function logout() {
+    window.location.href = 'logout.php';
+}
+
+function showLogoutButton() {
+    const detailsContainer = document.getElementById("overlay_container");
+
+    detailsContainer.classList.toggle('hidden');
+}
