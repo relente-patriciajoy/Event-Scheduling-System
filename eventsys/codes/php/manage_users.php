@@ -33,7 +33,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['add_user'])) {
     $stmt->bind_param("sssssss", $first_name, $middle_name, $last_name, $email, $phone, $password, $role);
     $stmt->execute();
     $stmt->close();
-    header("Location: manage_users.php");
+    header("Location: manage_users.php?status=added");
     exit();
 }
 
@@ -51,7 +51,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['update_user'])) {
     $stmt->bind_param("ssssssi", $first_name, $middle_name, $last_name, $email, $phone, $role, $user_id_edit);
     $stmt->execute();
     $stmt->close();
-    header("Location: manage_users.php");
+    header("Location: manage_users.php?status=updated");
     exit();
 }
 
@@ -62,7 +62,7 @@ if (isset($_GET['delete'])) {
     $stmt->bind_param("i", $delete_id);
     $stmt->execute();
     $stmt->close();
-    header("Location: manage_users.php");
+    header("Location: manage_users.php?status=deleted");
     exit();
 }
 
@@ -154,9 +154,36 @@ if (isset($_GET['edit'])) {
             display: flex;
             gap: 12px;
         }
+        .alert {
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            position: relative;
+        }
+        .alert span {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            cursor: pointer;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
+
+    <?php if (isset($_GET['status'])): ?>
+        <div class="alert">
+            <?php
+                if ($_GET['status'] === 'added') echo "✅ User added successfully.";
+                elseif ($_GET['status'] === 'updated') echo "✏️ User updated successfully.";
+                elseif ($_GET['status'] === 'deleted') echo "🗑️ User deleted successfully.";
+            ?>
+            <span onclick="this.parentElement.style.display='none';">×</span>
+        </div>
+    <?php endif; ?>
 
     <h1>Manage Users</h1>
 
