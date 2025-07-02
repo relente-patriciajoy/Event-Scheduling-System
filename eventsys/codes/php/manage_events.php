@@ -32,6 +32,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['add_event'])) {
     $venue_city = $_POST['venue_city'];
     $capacity = $_POST['capacity'];
     $price = $_POST['price'];
+    $category_id = $_POST['category_id'];
 
     // Insert venue and get ID
     $venue_stmt = $conn->prepare("INSERT INTO venue (name, address, city) VALUES (?, ?, ?)");
@@ -65,8 +66,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['add_event'])) {
     }
 
     // Insert event
-    $stmt = $conn->prepare("INSERT INTO event (title, description, start_time, end_time, venue_id, organizer_id, capacity, price) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-    $stmt->bind_param("ssssiiid", $title, $description, $start_time, $end_time, $venue_id, $organizer_id, $capacity, $price);
+    $stmt = $conn->prepare("INSERT INTO event (title, description, start_time, end_time, venue_id, organizer_id, capacity, price, category_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+    $stmt->bind_param("ssssiiidi", $title, $description, $start_time, $end_time, $venue_id, $organizer_id, $capacity, $price, $category_id);
     $stmt->execute();
     $stmt->close();
     header("Location: manage_events.php");
@@ -140,10 +141,11 @@ $events = $stmt->get_result();
             $end_time = $_POST['end_time'];
             $capacity = $_POST['capacity'];
             $price = $_POST['price'];
+            $category_id = $_POST['category_id'];
             $event_id = $_POST['event_id'];
 
-            $stmt = $conn->prepare("UPDATE event SET title=?, description=?, start_time=?, end_time=?, capacity=?, price=? WHERE event_id=? AND organizer_id IN (SELECT organizer_id FROM organizer WHERE contact_email = (SELECT email FROM user WHERE user_id = ?))");
-            $stmt->bind_param("ssssiddi", $title, $description, $start_time, $end_time, $capacity, $price, $event_id, $user_id);
+            $stmt = $conn->prepare("UPDATE event SET title=?, description=?, start_time=?, end_time=?, capacity=?, price=?, category_id=? WHERE event_id=? AND organizer_id IN (SELECT organizer_id FROM organizer WHERE contact_email = (SELECT email FROM user WHERE user_id = ?))");
+            $stmt->bind_param("ssssiddi", $title, $description, $start_time, $end_time, $capacity, $price, $category_id, $event_id, $user_id);
             $stmt->execute();
             $stmt->close();
             header("Location: manage_events.php");
@@ -151,6 +153,9 @@ $events = $stmt->get_result();
         }
         ?>
 
+        <?php
+        $category_result = $conn->query("SELECT category_id, name FROM event_category");
+        ?>
         <h2><?= $edit_event ? "Edit Event" : "Create New Event" ?></h2>
         <form method="POST">
             <input type="hidden" name="event_id" value="<?= $edit_event['event_id'] ?? '' ?>">
@@ -169,9 +174,22 @@ $events = $stmt->get_result();
 
             <input type="number" name="capacity" placeholder="Capacity" value="<?= $edit_event['capacity'] ?? '' ?>" required>
             <input type="number" step="0.01" name="price" placeholder="Price" value="<?= $edit_event['price'] ?? '' ?>" required>
-            <button type="submit" name="<?= $edit_event ? 'update_event' : 'add_event' ?>">
-                <?= $edit_event ? 'Update Event' : 'Add Event' ?>
-            </button>
+
+            <select name="category_id" required>
+                <option value="">-- Select Category --</option>
+                <?php while ($cat = $category_result->fetch_assoc()): ?>
+                    <option value="<?= $cat['category_id'] ?>"
+                        <?= (isset($edit_event['category_id']) && $edit_event['category_id'] == $cat['category_id']) ? 'selected' : '' ?>>
+                        <?= htmlspecialchars($cat['category_name']) ?>
+                    </option>
+                <?php endwhile; ?>
+            </select>
+
+            <?php if ($edit_event): ?>
+                <button type="submit" name="update_event">Update Event</button>
+            <?php else: ?>
+                <button type="submit" name="add_event">Add Event</button>
+            <?php endif; ?>
         </form>
     </div>
 
