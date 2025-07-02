@@ -598,12 +598,37 @@ button:hover,
   background: #fef3c7;
   padding: 10px;
   border-radius: 5px;
+  color: #b45309;
+  background: #fef3c7;
+  padding: 10px;
+  border-radius: 5px;
   margin-bottom: 15px;
-    color: #b45309;
-    background: #fef3c7;
-    padding: 10px;
-    border-radius: 5px;
-    margin-bottom: 15px;
+  width: 1115px;
+  max-width: 90vw;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+  font-weight: 500;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
+}
+
+.no-events-alert {
+  color: #b45309;
+  background: #fef3c7;
+  padding: 10px;
+  border-radius: 5px;
+  color: #b45309;
+  background: #fef3c7;
+  padding: 10px;
+  border-radius: 5px;
+  margin-bottom: 15px;
+  width: 1115px;
+  max-width: 90vw;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+  font-weight: 500;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
 }
 
 #view_details {

@@ -64,7 +64,9 @@ $result = $stmt->get_result();
                 </div>
             <?php endwhile; ?>
         <?php else: ?>
-            <p>You haven’t registered for any events yet.</p>
+            <div id="no-events-alert" class="no-events-alert">
+                You haven’t registered for any events yet.
+            </div>
         <?php endif; ?>
     </section>
 </main>
