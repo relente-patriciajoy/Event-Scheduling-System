@@ -10,6 +10,14 @@ include('../includes/db.php');
 $user_id = $_SESSION['user_id'];
 $full_name = $_SESSION['full_name'];
 
+// Fetch role (for sidebar)
+$stmt = $conn->prepare("SELECT role FROM user WHERE user_id = ?");
+$stmt->bind_param("i", $user_id);
+$stmt->execute();
+$stmt->bind_result($role);
+$stmt->fetch();
+$stmt->close();
+
 // Handle check-in
 if (isset($_POST['check_in'])) {
     $registration_id = $_POST['registration_id'];
@@ -57,24 +65,7 @@ $result = $stmt->get_result();
     <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body class="dashboard-layout">
-<aside class="sidebar">
-    <h2 class="logo">Eventix</h2>
-    <nav>
-        <a href="home.php" class="<?= basename($_SERVER['PHP_SELF']) === 'home.php' ? 'active' : '' ?>">
-            <i data-lucide="home"></i> Home
-        </a>
-        <a href="events.php" class="<?= basename($_SERVER['PHP_SELF']) === 'events.php' ? 'active' : '' ?>">
-            <i data-lucide="calendar"></i> Browse Events
-        </a>
-        <a href="my_events.php" class="<?= basename($_SERVER['PHP_SELF']) === 'my_events.php' ? 'active' : '' ?>">
-            <i data-lucide="user-check"></i> My Events
-        </a>
-        <a href="attendance.php" class="<?= basename($_SERVER['PHP_SELF']) === 'attendance.php' ? 'active' : '' ?>">
-            <i data-lucide="check-square"></i> Attendance
-        </a>
-        <a href="logout.php"><i data-lucide="log-out"></i> Logout</a>
-    </nav>
-</aside>
+<?php include('sidebar.php'); ?>
 
 <main class="main-content">
     <header class="banner">
