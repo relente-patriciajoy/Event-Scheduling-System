@@ -180,6 +180,15 @@ $categories = $stmt->get_result();
 </head>
 <body>
     <div class="container">
+
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
+            <div style="display: flex; gap: 12px;">
+                <a href="home.php" class="back-link">
+                    &larr; Back to Dashboard
+                </a>
+            </div>
+        </div>
+
         <h2>Manage Event Categories</h2>
 
         <!-- Success alert messages -->

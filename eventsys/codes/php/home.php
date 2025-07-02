@@ -66,7 +66,6 @@ $stmt->close();
               <a href="manage_venues.php">Venues</a>
               <a href="manage_organizers.php">Organizers</a>
               <a href="manage_categories.php">Categories</a>
-              <a href="manage_payment.php">Payments</a>
             </div>
           </div>
         <?php endif; ?>
