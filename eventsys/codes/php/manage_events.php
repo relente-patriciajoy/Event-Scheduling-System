@@ -145,7 +145,7 @@ $events = $stmt->get_result();
             $event_id = $_POST['event_id'];
 
             $stmt = $conn->prepare("UPDATE event SET title=?, description=?, start_time=?, end_time=?, capacity=?, price=?, category_id=? WHERE event_id=? AND organizer_id IN (SELECT organizer_id FROM organizer WHERE contact_email = (SELECT email FROM user WHERE user_id = ?))");
-            $stmt->bind_param("ssssiddi", $title, $description, $start_time, $end_time, $capacity, $price, $category_id, $event_id, $user_id);
+            $stmt->bind_param("ssssiddii", $title, $description, $start_time, $end_time, $capacity, $price, $category_id, $event_id, $user_id);
             $stmt->execute();
             $stmt->close();
             header("Location: manage_events.php");
@@ -154,7 +154,7 @@ $events = $stmt->get_result();
         ?>
 
         <?php
-        $category_result = $conn->query("SELECT category_id, name FROM event_category");
+        $category_result = $conn->query("SELECT category_id, category_name FROM event_category");
         ?>
         <h2><?= $edit_event ? "Edit Event" : "Create New Event" ?></h2>
         <form method="POST">
