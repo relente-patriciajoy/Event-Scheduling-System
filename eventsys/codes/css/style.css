@@ -560,7 +560,7 @@ button:hover,
   text-align: center;
 }
 
-.first-input-group, 
+.first-input-group,
 .second-input-group,
 .third-input-group,
 .fourth-input-group {
@@ -592,15 +592,10 @@ button:hover,
   margin-top: 57px;
 }
 
-/* .event-actions {
-  display: flex;
-  flex-direction: row;
-} */
-
 .alert.alert-warning {
-    color: #b45309;
-    background: #fef3c7;
-    padding: 10px;
-    border-radius: 5px;
-    margin-bottom: 15px;
+  color: #b45309;
+  background: #fef3c7;
+  padding: 10px;
+  border-radius: 5px;
+  margin-bottom: 15px;
 }
