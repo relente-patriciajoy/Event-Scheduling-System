@@ -129,7 +129,6 @@ if ($selected_event) {
 
                <div style="margin-bottom: 10px;">
                     <button onclick="exportToExcel()" style="margin-right: 10px;">Export to Excel</button>
-                    <button onclick="exportToPDF()">Export to PDF</button>
                 </div>
 
                 <table style="width: 100%; border-collapse: collapse;">
@@ -163,7 +162,21 @@ if ($selected_event) {
 
 <script src="../js/script.js"></script>
 <script>
-    lucide.createIcons();
+lucide.createIcons();
+
+function exportToExcel() {
+    const table = document.querySelector("table");
+    let tableHTML = table.outerHTML.replace(/ /g, '%20');
+
+    const filename = 'attendance_data.xls';
+    const downloadLink = document.createElement("a");
+    document.body.appendChild(downloadLink);
+
+    downloadLink.href = 'data:application/vnd.ms-excel,' + tableHTML;
+    downloadLink.download = filename;
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
+}
 </script>
 </body>
 </html>
