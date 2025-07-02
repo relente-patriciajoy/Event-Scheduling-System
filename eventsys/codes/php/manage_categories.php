@@ -175,9 +175,9 @@ $categories = $stmt->get_result();
         <?php if (isset($_GET['status'])): ?>
             <div class="alert">
                 <?php
-                    if ($_GET['status'] === 'added') echo "✅ Category added successfully.";
-                    elseif ($_GET['status'] === 'updated') echo "✅ Category updated successfully.";
-                    elseif ($_GET['status'] === 'deleted') echo "✅ Category deleted.";
+                    if ($_GET['status'] === 'added') echo "Category added successfully.";
+                    elseif ($_GET['status'] === 'updated') echo "Category updated successfully.";
+                    elseif ($_GET['status'] === 'deleted') echo "Category deleted.";
                 ?>
             </div>
         <?php endif; ?>
