@@ -29,8 +29,8 @@ if (!$registration) {
     die("Unauthorized or invalid registration.");
 }
 
-// Handle payment submission
-if ($_SERVER["REQUEST_METHOD"] === "POST") {
+// Handle payment submission (only if price > 0)
+if ($_SERVER["REQUEST_METHOD"] === "POST" && $registration['price'] > 0) {
     $method = $_POST['payment_method'];
     $amount = $registration['price'];
 
@@ -51,12 +51,17 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 <body>
 <div class="form-container">
     <h2>Pay for: <?= htmlspecialchars($registration['title']) ?></h2>
-    <p><strong>Amount:</strong> $<?= number_format($registration['price'], 2) ?></p>
 
-    <?php if ($message): ?>
+    <?php if ($registration['price'] == 0): ?>
+        <p><strong>Amount:</strong> Free</p>
+        <p class="message">This event is free. No payment is required.</p>
+        <a href="my_events.php">Go to My Events</a>
+    <?php elseif ($message): ?>
+        <p><strong>Amount:</strong> $<?= number_format($registration['price'], 2) ?></p>
         <p class="message"><?= $message ?></p>
         <a href="my_events.php">Go to My Events</a>
     <?php else: ?>
+        <p><strong>Amount:</strong> $<?= number_format($registration['price'], 2) ?></p>
         <form method="post">
             <label>Payment Method</label>
             <select name="payment_method" required>
