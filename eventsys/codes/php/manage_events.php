@@ -154,7 +154,7 @@ $events = $stmt->get_result();
         ?>
 
         <?php
-        $category_result = $conn->query("SELECT category_id, name FROM event_category");
+        $category_result = $conn->query("SELECT category_id, category_name FROM event_category");
         ?>
         <h2><?= $edit_event ? "Edit Event" : "Create New Event" ?></h2>
         <form method="POST">
