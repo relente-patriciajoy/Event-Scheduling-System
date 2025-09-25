@@ -11,7 +11,7 @@ Welcome to **Eventix**, an inclusive and centralized event registration system d
 
 ## 📌 About the Project
 
-In a world where events range from athletic competitions to creative showcases, **Eventix** provides a **unified platform** to handle registrations, participant management, and table assignments. All in one sleek, automated system.
+**Eventix** provides a **unified platform** to handle registrations, participant management, and table assignments. All in one sleek, automated system.
 
 Originally built as a **school capstone project**, this system replaces traditional manual tracking with a clean, user-friendly digital solution that scales with organizational needs.
 
@@ -60,9 +60,21 @@ Originally built as a **school capstone project**, this system replaces traditio
 
 | Name | Role |
 |------|------|
+| 👩‍💻 Patricia Joy Relente | Project Manager/Developer |
+| 👩‍💻 John Carlo Nolluda | Documentation/Developer |
+---
+
+## 🙌 Credits – Former Information Management Team
+
+This project was originally started by the **Information Management Team**.
+We would like to acknowledge their contributions:
+
+| Name | Role |
+|------|------|
 | 👩‍💻 Patricia Joy Relente | Project Manager |
 | 👨‍💻 Justine Delima | Tech Lead |
 | 👨‍💻 John Matthew Arroyo | Documentation |
 | 👩‍💻 Ma. Bea Mae Ynion | Data Admin |
+
 
 ---
