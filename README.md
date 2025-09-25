@@ -1,38 +1,33 @@
 <div align="center">
-  <img width="100%" src="./eventsys/codes/assets/logo.png" alt="Eventix Cover"/>
 
-  <p><strong>ONE PLACE FOR EVERY PURPOSE</strong></p>
-  <hr/>
-</div>
+[![Typing SVG](https://readme-typing-svg.demolab.com?font=Fira+Code&pause=800&color=00BFFF&width=600&lines=Welcome+to+Eventix!;📅+Your+All-in-One+Event+Registration+System)](https://git.io/typing-svg)
 
-Welcome to **Eventix**, an inclusive and centralized event registration system designed to seamlessly manage both sports and non-sports events for all types of participants. This is your one-stop hub for organizing, tracking, and participating in events that bring people together.
+<br/>
+
+<img width="100%" src="./eventsys/codes/assets/logo.png" alt="Eventix Cover"/>
+
+**ONE PLACE FOR EVERY PURPOSE**
+![divider](https://capsule-render.vercel.app/api?type=waving&color=0:000428,100:004e92&height=80&section=footer)
 
 ---
 
+</div>
+
 ## 📌 About the Project
 
-**Eventix** provides a **unified platform** to handle registrations, participant management, and table assignments. All in one sleek, automated system.
+**Eventix** is a **centralized event registration system** designed to seamlessly manage **sports and non-sports events** for all participants.
 
-Originally built as a **school capstone project**, this system replaces traditional manual tracking with a clean, user-friendly digital solution that scales with organizational needs.
+It replaces manual tracking with a **clean, user-friendly, and scalable digital solution**.
 
 ---
 
 ## ✨ Features
 
-- 🔗 **Centralized Registration**
-  Manage multiple events from a single dashboard — no more paper forms or spreadsheets!
-
-- 🏃 **Supports Sports & Non-Sports Events**
-  From basketball tournaments to talent shows and seminars, Eventix can handle it all.
-
-- 👥 **Inclusive Design**
-  Welcomes all types of participants with an intuitive, user-friendly interface.
-
-- 📅 **Smart Scheduling & Table Assignment**
-  Automatically assigns tables or categories based on event type and participant info.
-
-- 📊 **Admin Dashboard**
-  Get real-time insights into registrations, participants, and event metrics.
+- 🔗 **Centralized Registration** – Manage all events in one place.
+- 🏃 **Supports Sports & Non-Sports** – From tournaments to seminars.
+- 👥 **Inclusive Design** – Easy to use for all participants.
+- 📅 **Smart Scheduling** – Auto-assigns tables/categories.
+- 📊 **Admin Dashboard** – Real-time insights on events & participants.
 
 ---
 
@@ -51,30 +46,40 @@ Originally built as a **school capstone project**, this system replaces traditio
 ![MySQL](https://img.shields.io/badge/MySQL-00758F?style=for-the-badge&logo=mysql&logoColor=white)
 
 ### Tools
-![XAMPP](https://img.shields.io/badge/XAMPP-FB7A24?style=flat&logo=xampp&logoColor=white)
-![PhpMyAdmin](https://img.shields.io/badge/PhpMyAdmin-6C78AF?style=flat&logo=php&logoColor=white)
+![XAMPP](https://img.shields.io/badge/XAMPP-FB7A24?style=for-the-badge&logo=xampp&logoColor=white)
+![PhpMyAdmin](https://img.shields.io/badge/PhpMyAdmin-6C78AF?style=for-the-badge&logo=phpmyadmin&logoColor=white)
+
+---
+
+## ⚡ Installation / Usage
+
+1. Clone this repository:
+   ```bash
+   git clone "git@github.com:relente-patriciajoy/Registration-System.git"
+2. Place inside htdocs (XAMPP)
+3. Import the database file (event_registration.sql) into PhpMyAdmin
+4. Start Apache & MySQL in XAMPP.
+5. Open http://localhost/Registration-System/eventsys/codes/php/ in your browser.
 
 ---
 
 ## 👥 Meet the Team
 
-| Name | Role |
-|------|------|
-| 👩‍💻 Patricia Joy Relente | Project Manager/Developer |
-| 👩‍💻 John Carlo Nolluda | Documentation/Developer |
+| Avatar | Name | Role |
+|--------|------|------|
+| <img src="https://github.com/relente-patriciajoy.png" width="70" style="border-radius:50%"> | **Patricia Joy Relente** | ![](https://img.shields.io/badge/Project_Manager_/_Developer-ff69b4) |
+| <img src="https://github.com/nolluda-johncarlo.png" width="70" style="border-radius:50%"> | **John Carlo Nolluda** | ![](https://img.shields.io/badge/Documentation_/_Developer-00bfff) |
+
 ---
 
 ## 🙌 Credits – Former Information Management Team
 
-This project was originally started by the **Information Management Team**.
-We would like to acknowledge their contributions:
+<div align="center">
 
-| Name | Role |
-|------|------|
-| 👩‍💻 Patricia Joy Relente | Project Manager |
-| 👨‍💻 Justine Delima | Tech Lead |
-| 👨‍💻 John Matthew Arroyo | Documentation |
-| 👩‍💻 Ma. Bea Mae Ynion | Data Admin |
+| <img src="https://github.com/relente-patriciajoy.png" width="90" style="border-radius:50%"> | <img src="https://github.com/delima-justine.png" width="90" style="border-radius:50%"> | <img src="https://github.com/arroyo-johnmatthew.png" width="90" style="border-radius:50%"> | <img src="https://github.com/ynion-mabeamae.png" width="90" style="border-radius:50%"> |
+|-------------------------------------------------|--------------------------------------------------|---------------------------------------------------|---------------------------------------------------|
+| **Patricia Joy Relente** <br> Project Manager | **Justine Delima** <br> Tech Lead | **John Matthew Arroyo** <br> Documentation | **Ma. Bea Mae Ynion** <br> Data Admin |
 
+</div>
 
 ---
