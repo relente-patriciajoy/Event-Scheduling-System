@@ -240,15 +240,6 @@ if (!empty($search)) {
 <body>
 <main class="main-content">
     <div class="card">
-
-        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
-            <div style="display: flex; gap: 12px;">
-                <a href="home.php" class="back-link">
-                    &larr; Back to Dashboard
-                </a>
-            </div>
-        </div>
-        
         <h1>Manage Venues</h1>
 
         <?php if ($success): ?>

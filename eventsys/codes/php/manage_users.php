@@ -185,14 +185,6 @@ if (isset($_GET['edit'])) {
         </div>
     <?php endif; ?>
 
-    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
-        <div style="display: flex; gap: 12px;">
-            <a href="home.php" class="back-link">
-                &larr; Back to Dashboard
-            </a>
-        </div>
-    </div>
-
     <h1>Manage Users</h1>
 
     <div class="card">

@@ -58,8 +58,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['add_event'])) {
     $org_stmt->close();
 
     if (!$organizer_id) {
-        $insert_org = $conn->prepare("INSERT INTO organizer (first_name, middle_name, last_name, contact_email, phone) VALUES (?, ?, ?, ?, ?)");
-        $insert_org->bind_param("sssss", $first_name, $middle_name, $last_name, $email, $phone);
+        $insert_org = $conn->prepare("INSERT INTO organizer (name, contact_email, phone) VALUES (?, ?, ?)");
+        $insert_org->bind_param("sss", $full_name, $email, $phone);
         $insert_org->execute();
         $organizer_id = $insert_org->insert_id;
         $insert_org->close();
@@ -75,15 +75,15 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['add_event'])) {
 }
 
 // Handle delete
-// if (isset($_GET['delete'])) {
-//     $delete_id = $_GET['delete'];
-//     $stmt = $conn->prepare("DELETE FROM event WHERE event_id = ? AND organizer_id IN (SELECT organizer_id FROM organizer WHERE contact_email = (SELECT email FROM user WHERE user_id = ?))");
-//     $stmt->bind_param("ii", $delete_id, $user_id);
-//     $stmt->execute();
-//     $stmt->close();
-//     header("Location: manage_events.php");
-//     exit();
-// }
+if (isset($_GET['delete'])) {
+    $delete_id = $_GET['delete'];
+    $stmt = $conn->prepare("DELETE FROM event WHERE event_id = ? AND organizer_id IN (SELECT organizer_id FROM organizer WHERE contact_email = (SELECT email FROM user WHERE user_id = ?))");
+    $stmt->bind_param("ii", $delete_id, $user_id);
+    $stmt->execute();
+    $stmt->close();
+    header("Location: manage_events.php");
+    exit();
+}
 
 // Fetch own events
 $stmt = $conn->prepare("SELECT e.event_id, e.title, e.start_time, e.end_time, v.name AS venue FROM event e JOIN venue v ON e.venue_id = v.venue_id JOIN organizer o ON e.organizer_id = o.organizer_id JOIN user u ON o.contact_email = u.email WHERE u.user_id = ?");
@@ -161,8 +161,8 @@ $events = $stmt->get_result();
             <input type="hidden" name="event_id" value="<?= $edit_event['event_id'] ?? '' ?>">
             <input type="text" name="title" placeholder="Event Title" value="<?= $edit_event['title'] ?? '' ?>" required>
             <textarea name="description" placeholder="Event Description" required><?= $edit_event['description'] ?? '' ?></textarea>
-            <input type="datetime-local" name="start_time" value="<?= date("M d, Y h:i A", strtotime($row['start_time'])) ?>" required>
-            <input type="datetime-local" name="end_time" value=" <?= date("M d, Y h:i A", strtotime($row['end_time'])) ?>" required>
+            <input type="datetime-local" name="start_time" value="<?= $edit_event['start_time'] ?? '' ?>" required>
+            <input type="datetime-local" name="end_time" value="<?= $edit_event['end_time'] ?? '' ?>" required>
 
             <?php if (!$edit_event): ?>
                 <input type="text" name="venue_name" placeholder="Venue Name" required>
@@ -192,16 +192,6 @@ $events = $stmt->get_result();
             <?php endif; ?>
         </form>
     </div>
-   
-    <div id="overlay_container" class="overlay hidden">
-        <div id="delete_event_container" class="delete-event-container">
-            <label id="delete_prompt_text">Are you sure to delete this event?</label>
-            <div class="event-options">
-                <button class="close-button" id="confirmDeleteBtn" style="margin-top: 60px">Delete</button>
-                <button class="close-button" onClick="showDeletePrompt()">Cancel</button>
-            </div>
-        </div>
-    </div>
 
     <div class="my-events-container">
     <h2>My Events</h2>
@@ -210,17 +200,15 @@ $events = $stmt->get_result();
                 <div class="event-card">
                     <h3><?= htmlspecialchars($row['title']) ?></h3>
                     <p><strong>Venue:</strong> <?= htmlspecialchars($row['venue']) ?></p>
-                    <p><strong>From:</strong> <?= date("M d, Y h:i A", strtotime($row['start_time'])) ?>
-                    <br><strong>To:</strong><?= date("M d, Y h:i A", strtotime($row['end_time'])) ?></p>
+                    <p><strong>From:</strong> <?= $row['start_time'] ?><br><strong>To:</strong> <?= $row['end_time'] ?></p>
                     <div class="event-actions" style="margin-top: 18px;">
                         <a href="manage_events.php?edit=<?= $row['event_id'] ?>" class="edit-link">Edit</a>
-                        <button type="button" class="delete-link delete-personal" onClick="showDeletePrompt(<?= $row['event_id']?>)">Delete</button>
+                        <a href="manage_events.php?delete=<?= $row['event_id'] ?>" class="delete-link" onclick="return confirm('Are you sure?')">Delete</a>
                     </div>
                 </div>
             <?php endwhile; ?>
         </div>
     </div>
 </div>
-<script src="../js/script.js"></script>
 </body>
 </html>
