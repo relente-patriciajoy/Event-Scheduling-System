@@ -145,6 +145,22 @@
   border-left: 4px solid #e63946;
 }
 
+.alert-error ul {
+  list-style: none;
+}
+
+.alert-error li {
+  position: relative;
+  padding-left: 20px;
+}
+
+.alert-error li::before {
+  content: '✕';
+  position: absolute;
+  left: 0;
+  font-weight: bold;
+}
+
 .alert-success {
   background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
   color: #065f46;
