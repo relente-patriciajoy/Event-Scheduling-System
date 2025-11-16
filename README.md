@@ -51,6 +51,12 @@ It replaces manual tracking with a **clean, user-friendly, and scalable digital 
 
 ---
 
+## 🗓️ Project Timeline
+
+- **Project Timeline:** [Eventix - Project Timeline](https://www.notion.so/Project-Timeline-2ad3fa52b79c8170b4d3e9276c72eff6)
+
+---
+
 ## ⚡ Installation / Usage
 
 1. Clone this repository:
