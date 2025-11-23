@@ -1,4 +1,7 @@
-/* Login & Register Pages */
+/* ============================================
+   AUTHENTICATION PAGES STYLES
+   Login & Register Pages
+   ============================================ */
 
 /* Page Container */
 .auth-page {
@@ -176,6 +179,7 @@
 .input-group {
   margin-bottom: 22px;
   text-align: left;
+  overflow: visible;
 }
 
 .input-group label {
@@ -198,17 +202,14 @@
   font-family: inherit;
   transition: all 0.3s ease;
   box-sizing: border-box;
-  min-height: 48px;
-  display: flex;
-  align-items: center;
 }
 
 .input-group input:focus {
   outline: none;
-  border-color: #e63946;
+  border-color: #d0d0d0;
   background: #ffffff;
-  box-shadow: 0 0 0 4px rgba(230, 57, 70, 0.1);
-  transform: translateY(-2px);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  transform: none;
 }
 
 .input-group input::placeholder {
@@ -220,29 +221,41 @@
   position: relative;
   display: flex;
   align-items: center;
-  height: 48px;
+  height: auto;
   border-radius: 10px;
   border: 2px solid #e0e0e0;
   background: #fafafa;
   transition: all 0.3s ease;
-  padding: 0 18px;
+  padding: 14px 18px;
+  overflow: visible;
 }
 
 .password-wrapper:focus-within {
-  border-color: #e63946;
+  border-color: #d0d0d0;
   background: #ffffff;
-  box-shadow: 0 0 0 4px rgba(230, 57, 70, 0.1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  transform: none;
 }
 
 .password-wrapper input {
   flex: 1;
-  border: none;
-  background: transparent;
+  border: none !important;
+  background: transparent !important;
   color: #1a1a1a;
   font-size: 0.95rem;
   font-family: inherit;
-  outline: none;
-  padding: 0;
+  outline: none !important;
+  padding: 0 !important;
+  min-height: auto !important;
+  height: auto !important;
+  box-shadow: none !important;
+  margin: 0 !important;
+}
+
+.password-wrapper input:focus {
+  background: transparent !important;
+  box-shadow: none !important;
+  border: none !important;
 }
 
 .password-toggle {
@@ -260,6 +273,7 @@
   width: 32px;
   height: 32px;
   z-index: 10;
+  flex-shrink: 0;
 }
 
 .password-toggle:hover {
