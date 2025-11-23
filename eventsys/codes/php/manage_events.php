@@ -97,6 +97,8 @@ $events = $stmt->get_result();
 <head>
     <title>Manage My Events</title>
     <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/sidebar.css">
+    <link rel="stylesheet" href="../css/management.css">
 </head>
 <body>
 

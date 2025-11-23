@@ -104,209 +104,195 @@ if (!empty($search)) {
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Manage Venues</title>
-    <link rel="stylesheet" href="../css/style.css">
-    <style>
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #f8f9fc;
-            margin: 0;
-            padding: 0;
-        }
-
-        .main-content {
-            max-width: 1000px;
-            margin: 40px auto;
-            padding: 20px;
-        }
-
-        .card {
-            background: white;
-            padding: 24px;
-            margin-bottom: 30px;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
-        }
-
-        h1 {
-            font-size: 26px;
-            margin-bottom: 20px;
-        }
-
-        input, button {
-            padding: 10px;
-            margin: 8px 0;
-            border-radius: 8px;
-            border: 1px solid #ccc;
-            width: 100%;
-            box-sizing: border-box;
-        }
-
-        button {
-            background-color: #4f8aff;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-
-        button:hover {
-            background-color: #376fd6;
-        }
-
-        .alert {
-            padding: 12px 20px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            font-weight: 500;
-            position: relative;
-        }
-
-        .alert-success {
-            background-color: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-
-        .alert-error {
-            background-color: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
-
-        .alert span {
-            position: absolute;
-            top: 8px;
-            right: 15px;
-            font-size: 18px;
-            cursor: pointer;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        th, td {
-            padding: 12px;
-            border-bottom: 1px solid #e0e0e0;
-            text-align: left;
-        }
-
-        th {
-            background-color: #f2f2f2;
-        }
-
-        .btn-edit, .btn-delete {
-            padding: 6px 12px;
-            border: none;
-            border-radius: 6px;
-            font-size: 0.9em;
-            text-decoration: none;
-            cursor: pointer;
-            color: white;
-            display: inline-block;
-        }
-
-        .btn-edit {
-            background-color: #ffa600;
-        }
-        .btn-edit:hover {
-            background-color: #cc8400;
-        }
-
-        .btn-delete {
-            background-color: #ff4f4f;
-        }
-        .btn-delete:hover {
-            background-color: #cc3b3b;
-        }
-
-        .search-box input {
-            width: 100%;
-            padding: 10px;
-            border-radius: 8px;
-            border: 1px solid #ccc;
-            margin-bottom: 20px;
-        }
-
-        .actions {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manage Venues - Eventix</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/sidebar.css">
+  <link rel="stylesheet" href="../css/management.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
 </head>
-<body>
-<main class="main-content">
-    <div class="card">
-        <h1>Manage Venues</h1>
 
-        <?php if ($success): ?>
-            <div class="alert alert-success">
-                <?= $success ?>
-                <span onclick="this.parentElement.style.display='none';">&times;</span>
-            </div>
-        <?php elseif ($error): ?>
-            <div class="alert alert-error">
-                <?= $error ?>
-                <span onclick="this.parentElement.style.display='none';">&times;</span>
-            </div>
-        <?php endif; ?>
+<body class="dashboard-layout">
+  <?php include('sidebar.php'); ?>
 
-        <form method="POST">
-            <?php if ($edit_venue): ?>
-                <input type="hidden" name="venue_id" value="<?= $edit_venue['venue_id'] ?>">
-            <?php endif; ?>
-            <input type="text" name="name" placeholder="Venue Name" value="<?= $edit_venue['name'] ?? '' ?>" required>
-            <input type="text" name="address" placeholder="Address" value="<?= $edit_venue['address'] ?? '' ?>" required>
-            <input type="text" name="city" placeholder="City" value="<?= $edit_venue['city'] ?? '' ?>" required>
-            <input type="number" name="capacity" placeholder="Capacity" value="<?= $edit_venue['capacity'] ?? '' ?>" required>
-            <button type="submit" name="<?= $edit_venue ? 'update_venue' : 'add_venue' ?>">
-                <?= $edit_venue ? 'Update Venue' : 'Add Venue' ?>
-            </button>
-        </form>
-    </div>
+  <main class="management-content">
+      <!-- Page Header -->
+      <div class="management-header">
+          <h1>Manage Venues</h1>
+          <p>Add, edit, and manage event venues</p>
+      </div>
 
-    <div class="card">
-        <form method="GET" class="search-box">
-            <input type="text" name="search" placeholder="Search venue by name or city" value="<?= htmlspecialchars($search) ?>">
-        </form>
+      <!-- Alert Messages -->
+      <?php if (isset($_GET['status'])): ?>
+          <div class="management-alert <?= $_GET['status'] === 'error' ? 'error' : 'success' ?>">
+              <?php
+                  if ($_GET['status'] === 'added') echo "✅ Venue added successfully.";
+                  elseif ($_GET['status'] === 'updated') echo "✏️ Venue updated successfully.";
+                  elseif ($_GET['status'] === 'deleted') echo "🗑️ Venue deleted successfully.";
+                  elseif ($_GET['status'] === 'error') echo "❌ Error: Venue might be linked to existing events.";
+              ?>
+              <span class="close-btn" onclick="this.parentElement.style.display='none';">×</span>
+          </div>
+      <?php endif; ?>
 
-        <table>
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Address</th>
-                    <th>City</th>
-                    <th>Capacity</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php while ($venue = $venues->fetch_assoc()): ?>
-                    <tr>
-                        <td><?= htmlspecialchars($venue['name']) ?></td>
-                        <td><?= htmlspecialchars($venue['address']) ?></td>
-                        <td><?= htmlspecialchars($venue['city']) ?></td>
-                        <td><?= $venue['capacity'] ?></td>
-                        <td class="actions">
-                            <a class="btn-edit" href="?edit=<?= $venue['venue_id'] ?>">Edit</a>
-                            <a class="btn-delete" href="?delete=<?= $venue['venue_id'] ?>" onclick="return confirm('Are you sure you want to delete this venue?')">Delete</a>
-                        </td>
-                    </tr>
-                <?php endwhile; ?>
-            </tbody>
-        </table>
-    </div>
-</main>
+      <!-- Search Card -->
+      <div class="management-card">
+          <form method="GET" class="management-search">
+              <input
+                  type="text"
+                  name="search"
+                  placeholder="Search by venue name or city..."
+                  value="<?= htmlspecialchars($search) ?>"
+              >
+              <button type="submit" class="btn btn-primary">
+                  <i data-lucide="search"></i>
+                  Search
+              </button>
+          </form>
+      </div>
 
-<script>
-    // Auto-dismiss alerts
+      <!-- Add/Edit Form Card -->
+      <div class="management-card">
+          <h2><?= $edit_venue ? 'Edit Venue' : 'Add New Venue' ?></h2>
+          <form method="POST" class="management-form">
+              <?php if ($edit_venue): ?>
+                  <input type="hidden" name="venue_id" value="<?= $edit_venue['venue_id'] ?>">
+              <?php endif; ?>
+
+              <div class="form-group">
+                  <label for="name">Venue Name <span class="text-danger">*</span></label>
+                  <input
+                      type="text"
+                      id="name"
+                      name="name"
+                      placeholder="Enter venue name"
+                      value="<?= $edit_venue['name'] ?? '' ?>"
+                      required
+                  >
+              </div>
+
+              <div class="form-row">
+                  <div class="form-group">
+                      <label for="address">Address <span class="text-danger">*</span></label>
+                      <input
+                          type="text"
+                          id="address"
+                          name="address"
+                          placeholder="Enter address"
+                          value="<?= $edit_venue['address'] ?? '' ?>"
+                          required
+                      >
+                  </div>
+
+                  <div class="form-group">
+                      <label for="city">City <span class="text-danger">*</span></label>
+                      <input
+                          type="text"
+                          id="city"
+                          name="city"
+                          placeholder="Enter city"
+                          value="<?= $edit_venue['city'] ?? '' ?>"
+                          required
+                      >
+                  </div>
+              </div>
+
+              <div class="form-group">
+                  <label for="capacity">Capacity <span class="text-danger">*</span></label>
+                  <input
+                      type="number"
+                      id="capacity"
+                      name="capacity"
+                      placeholder="Enter maximum capacity"
+                      value="<?= $edit_venue['capacity'] ?? '' ?>"
+                      min="1"
+                      required
+                  >
+              </div>
+
+              <div class="form-actions">
+                  <button type="submit" name="<?= $edit_venue ? 'update_venue' : 'add_venue' ?>" class="btn btn-primary">
+                      <i data-lucide="<?= $edit_venue ? 'save' : 'plus' ?>"></i>
+                      <?= $edit_venue ? 'Update Venue' : 'Add Venue' ?>
+                  </button>
+                  <?php if ($edit_venue): ?>
+                      <a href="manage_venues.php" class="btn btn-secondary">
+                          <i data-lucide="x"></i>
+                          Cancel
+                      </a>
+                  <?php endif; ?>
+              </div>
+          </form>
+      </div>
+
+      <!-- Venues Table Card -->
+      <div class="management-card">
+          <h2>All Venues</h2>
+          <?php if ($venues->num_rows > 0): ?>
+              <table class="management-table">
+                  <thead>
+                      <tr>
+                          <th>Venue Name</th>
+                          <th>Address</th>
+                          <th>City</th>
+                          <th>Capacity</th>
+                          <th>Actions</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                      <?php while ($venue = $venues->fetch_assoc()): ?>
+                          <tr>
+                              <td><?= htmlspecialchars($venue['name']) ?></td>
+                              <td><?= htmlspecialchars($venue['address']) ?></td>
+                              <td><?= htmlspecialchars($venue['city']) ?></td>
+                              <td>
+                                  <span class="badge badge-info">
+                                      <?= $venue['capacity'] ?> people
+                                  </span>
+                              </td>
+                              <td class="actions">
+                                  <a href="manage_venues.php?edit=<?= $venue['venue_id'] ?>" class="btn btn-edit btn-sm">
+                                      <i data-lucide="edit"></i>
+                                      Edit
+                                  </a>
+                                  <a
+                                      href="manage_venues.php?delete=<?= $venue['venue_id'] ?>"
+                                      class="btn btn-delete btn-sm"
+                                      onclick="return confirm('Are you sure you want to delete this venue?')"
+                                  >
+                                      <i data-lucide="trash-2"></i>
+                                      Delete
+                                  </a>
+                              </td>
+                          </tr>
+                      <?php endwhile; ?>
+                  </tbody>
+              </table>
+          <?php else: ?>
+              <div class="empty-state">
+                  <i data-lucide="map-pin"></i>
+                  <h3>No Venues Found</h3>
+                  <p>No venues match your search criteria.</p>
+              </div>
+          <?php endif; ?>
+      </div>
+  </main>
+
+  <script>
+    // Initialize Lucide icons
+    lucide.createIcons();
+
+    // Auto-dismiss alerts after 5 seconds
     setTimeout(() => {
-        const alerts = document.querySelectorAll('.alert');
-        alerts.forEach(alert => alert.style.display = 'none');
+        const alerts = document.querySelectorAll('.management-alert');
+        alerts.forEach(alert => {
+            alert.style.opacity = '0';
+            alert.style.transform = 'translateY(-10px)';
+            setTimeout(() => alert.remove(), 300);
+        });
     }, 5000);
-</script>
+  </script>
 </body>
 </html>

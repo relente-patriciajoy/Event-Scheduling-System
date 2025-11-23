@@ -1,6 +1,24 @@
 <?php
 session_start();
+if (!isset($_SESSION['user_id'])) {
+    header("Location: index.php");
+    exit();
+}
 include('../includes/db.php');
+
+// Check role
+$user_id = $_SESSION['user_id'];
+$role_stmt = $conn->prepare("SELECT role FROM user WHERE user_id = ?");
+$role_stmt->bind_param("i", $user_id);
+$role_stmt->execute();
+$role_stmt->bind_result($role);
+$role_stmt->fetch();
+$role_stmt->close();
+
+if ($role !== 'admin') {
+    echo "Access denied.";
+    exit();
+}
 
 // Handle add/update
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
@@ -65,115 +83,179 @@ $organizers = $stmt->get_result();
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Manage Organizers</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Organizers - Eventix</title>
     <link rel="stylesheet" href="../css/style.css">
-    <style>
-        .container { max-width: 900px; margin: auto; padding: 20px; font-family: 'Poppins', sans-serif; background: #f8f9fc; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { padding: 10px; border: 1px solid #ccc; text-align: left; }
-        form input, form button { margin: 5px 0; padding: 10px; width: 100%; border-radius: 8px; border: 1px solid #ccc; }
-        form button { background: #4f8aff; color: white; border: none; cursor: pointer; }
-        form button:hover { background: #3c6fdd; }
-        .actions a { margin-right: 8px; color: #0077cc; text-decoration: none; }
-        .actions a:hover { text-decoration: underline; }
-
-        .alert {
-            padding: 12px 20px;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            font-weight: 500;
-            position: relative;
-        }
-
-        .alert-success {
-            background-color: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-
-        .alert-info {
-            background-color: #d1ecf1;
-            color: #0c5460;
-            border: 1px solid #bee5eb;
-        }
-
-        .alert span {
-            position: absolute;
-            top: 8px;
-            right: 15px;
-            font-size: 18px;
-            cursor: pointer;
-        }
-    </style>
+    <link rel="stylesheet" href="../css/sidebar.css">
+    <link rel="stylesheet" href="../css/management.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
 </head>
-<body>
-<div class="container">
-    <h1>Manage Organizers</h1>
 
-    <!-- Alert Message -->
-    <?php if (isset($_GET['status'])): ?>
-        <div class="alert <?= $_GET['status'] === 'deleted' ? 'alert-info' : 'alert-success' ?>">
-            <?php
-                if ($_GET['status'] === 'added') echo "Organizer added successfully.";
-                elseif ($_GET['status'] === 'updated') echo "Organizer updated successfully.";
-                elseif ($_GET['status'] === 'deleted') echo "Organizer deleted.";
-            ?>
-            <span onclick="this.parentElement.style.display='none';">&times;</span>
+<body class="dashboard-layout">
+    <?php include('sidebar.php'); ?>
+
+    <main class="management-content">
+        <!-- Page Header -->
+        <div class="management-header">
+            <h1>Manage Organizers</h1>
+            <p>Manage event organizers and coordinators</p>
         </div>
-    <?php endif; ?>
 
-    <form method="GET" style="margin-bottom: 20px;">
-        <input type="text" name="search" placeholder="Search organizer..." value="<?= htmlspecialchars($search) ?>">
-        <button type="submit">Search</button>
-    </form>
+        <!-- Alert Messages -->
+        <?php if (isset($_GET['status'])): ?>
+            <div class="management-alert success">
+                <?php
+                    if ($_GET['status'] === 'added') echo "✅ Organizer added successfully.";
+                    elseif ($_GET['status'] === 'updated') echo "✏️ Organizer updated successfully.";
+                    elseif ($_GET['status'] === 'deleted') echo "🗑️ Organizer deleted successfully.";
+                ?>
+                <span class="close-btn" onclick="this.parentElement.style.display='none';">×</span>
+            </div>
+        <?php endif; ?>
 
-    <h2><?= $edit_organizer ? "Edit Organizer" : "Add Organizer" ?></h2>
-    <form method="POST">
-        <input type="hidden" name="organizer_id" value="<?= $edit_organizer['organizer_id'] ?? '' ?>">
-        <input type="text" name="name" placeholder="Organizer Name" value="<?= $edit_organizer['name'] ?? '' ?>" required>
-        <input type="email" name="contact_email" placeholder="Email" value="<?= $edit_organizer['contact_email'] ?? '' ?>" required>
-        <input type="text" name="phone" placeholder="Phone" value="<?= $edit_organizer['phone'] ?? '' ?>" required>
-        <button type="submit"><?= $edit_organizer ? "Update Organizer" : "Add Organizer" ?></button>
-    </form>
+        <!-- Search Card -->
+        <div class="management-card">
+            <form method="GET" class="management-search">
+                <input
+                    type="text"
+                    name="search"
+                    placeholder="Search by name, email, or phone..."
+                    value="<?= htmlspecialchars($search) ?>"
+                >
+                <button type="submit" class="btn btn-primary">
+                    <i data-lucide="search"></i>
+                    Search
+                </button>
+            </form>
+        </div>
 
-    <h2 style="margin-top: 40px;">Organizer List</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Phone</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
+        <!-- Add/Edit Form Card -->
+        <div class="management-card">
+            <h2><?= $edit_organizer ? 'Edit Organizer' : 'Add New Organizer' ?></h2>
+            <form method="POST" class="management-form">
+                <?php if ($edit_organizer): ?>
+                    <input type="hidden" name="organizer_id" value="<?= $edit_organizer['organizer_id'] ?>">
+                <?php endif; ?>
+
+                <div class="form-group">
+                    <label for="name">Organizer Name <span class="text-danger">*</span></label>
+                    <input
+                        type="text"
+                        id="name"
+                        name="name"
+                        placeholder="Enter organizer name"
+                        value="<?= $edit_organizer['name'] ?? '' ?>"
+                        required
+                    >
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="contact_email">Email Address <span class="text-danger">*</span></label>
+                        <input
+                            type="email"
+                            id="contact_email"
+                            name="contact_email"
+                            placeholder="Enter email address"
+                            value="<?= $edit_organizer['contact_email'] ?? '' ?>"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="phone">Phone Number <span class="text-danger">*</span></label>
+                        <input
+                            type="text"
+                            id="phone"
+                            name="phone"
+                            placeholder="Enter phone number"
+                            value="<?= $edit_organizer['phone'] ?? '' ?>"
+                            required
+                        >
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">
+                        <i data-lucide="<?= $edit_organizer ? 'save' : 'plus' ?>"></i>
+                        <?= $edit_organizer ? 'Update Organizer' : 'Add Organizer' ?>
+                    </button>
+                    <?php if ($edit_organizer): ?>
+                        <a href="manage_organizers.php" class="btn btn-secondary">
+                            <i data-lucide="x"></i>
+                            Cancel
+                        </a>
+                    <?php endif; ?>
+                </div>
+            </form>
+        </div>
+
+        <!-- Organizers Table Card -->
+        <div class="management-card">
+            <h2>All Organizers</h2>
             <?php if ($organizers->num_rows > 0): ?>
-                <?php while ($row = $organizers->fetch_assoc()): ?>
-                    <tr>
-                        <td><?= htmlspecialchars($row['name']) ?></td>
-                        <td><?= htmlspecialchars($row['contact_email']) ?></td>
-                        <td><?= htmlspecialchars($row['phone']) ?></td>
-                        <td class="actions">
-                            <a href="manage_organizers.php?edit=<?= $row['organizer_id'] ?>">Edit</a>
-                            <a href="manage_organizers.php?delete=<?= $row['organizer_id'] ?>" onclick="return confirm('Are you sure you want to delete this organizer?')">Delete</a>
-                        </td>
-                    </tr>
-                <?php endwhile; ?>
+                <table class="management-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php while ($row = $organizers->fetch_assoc()): ?>
+                            <tr>
+                                <td>
+                                    <strong><?= htmlspecialchars($row['name']) ?></strong>
+                                </td>
+                                <td><?= htmlspecialchars($row['contact_email']) ?></td>
+                                <td><?= htmlspecialchars($row['phone']) ?></td>
+                                <td class="actions">
+                                    <a href="manage_organizers.php?edit=<?= $row['organizer_id'] ?>" class="btn btn-edit btn-sm">
+                                        <i data-lucide="edit"></i>
+                                        Edit
+                                    </a>
+                                    <a
+                                        href="manage_organizers.php?delete=<?= $row['organizer_id'] ?>"
+                                        class="btn btn-delete btn-sm"
+                                        onclick="return confirm('Are you sure you want to delete this organizer?')"
+                                    >
+                                        <i data-lucide="trash-2"></i>
+                                        Delete
+                                    </a>
+                                </td>
+                            </tr>
+                        <?php endwhile; ?>
+                    </tbody>
+                </table>
             <?php else: ?>
-                <tr><td colspan="4">No organizers found.</td></tr>
+                <div class="empty-state">
+                    <i data-lucide="users"></i>
+                    <h3>No Organizers Found</h3>
+                    <p>No organizers match your search criteria.</p>
+                </div>
             <?php endif; ?>
-        </tbody>
-    </table>
-</div>
+        </div>
+    </main>
 
-<script>
-    // Auto-dismiss alert after 5 seconds
-    setTimeout(() => {
-        const alert = document.querySelector('.alert');
-        if (alert) alert.style.display = 'none';
-    }, 5000);
-</script>
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+
+        // Auto-dismiss alerts after 5 seconds
+        setTimeout(() => {
+            const alerts = document.querySelectorAll('.management-alert');
+            alerts.forEach(alert => {
+                alert.style.opacity = '0';
+                alert.style.transform = 'translateY(-10px)';
+                setTimeout(() => alert.remove(), 300);
+            });
+        }, 5000);
+    </script>
 </body>
 </html>

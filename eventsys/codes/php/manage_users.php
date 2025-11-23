@@ -87,174 +87,231 @@ if (isset($_GET['edit'])) {
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Manage Users</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Users - Eventix</title>
     <link rel="stylesheet" href="../css/style.css">
-    <style>
-        body {
-            font-family: 'Poppins', sans-serif;
-            margin: 20px;
-            background-color: #f8f9fc;
-        }
-        .card {
-            background: white;
-            padding: 24px;
-            margin-bottom: 30px;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
-        }
-        input, select, button {
-            padding: 10px;
-            margin: 8px 0;
-            border-radius: 8px;
-            border: 1px solid #ccc;
-            width: 100%;
-        }
-        button {
-            background-color: #4f8aff;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #376fd6;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 15px;
-        }
-        th, td {
-            padding: 12px;
-            border-bottom: 1px solid #e0e0e0;
-        }
-        th {
-            background-color: #f2f2f2;
-        }
-        .btn-edit {
-            background-color: #ffa600;
-            padding: 6px 12px;
-            color: white;
-            border-radius: 6px;
-            text-decoration: none;
-            font-size: 0.9em;
-        }
-        .btn-delete {
-            background-color: #ff4f4f;
-            padding: 6px 12px;
-            color: white;
-            border-radius: 6px;
-            text-decoration: none;
-            font-size: 0.9em;
-        }
-        .btn-edit:hover { background-color: #cc8400; }
-        .btn-delete:hover { background-color: #cc3b3b; }
-        .search-box {
-            display: flex;
-            gap: 12px;
-        }
-        .alert {
-            padding: 15px;
-            margin-bottom: 20px;
-            border-radius: 8px;
-            background-color: #d4edda;
-            border: 1px solid #c3e6cb;
-            color: #155724;
-            position: relative;
-        }
-        .alert span {
-            position: absolute;
-            top: 10px;
-            right: 15px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-    </style>
+    <link rel="stylesheet" href="../css/sidebar.css">
+    <link rel="stylesheet" href="../css/management.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
 </head>
-<body>
 
-    <?php if (isset($_GET['status'])): ?>
-        <div class="alert">
-            <?php
-                if ($_GET['status'] === 'added') echo "✅ User added successfully.";
-                elseif ($_GET['status'] === 'updated') echo "✏️ User updated successfully.";
-                elseif ($_GET['status'] === 'deleted') echo "🗑️ User deleted successfully.";
-            ?>
-            <span onclick="this.parentElement.style.display='none';">×</span>
-        </div>
-    <?php endif; ?>
+<body class="dashboard-layout">
+  <?php include('sidebar.php'); ?>
 
-    <h1>Manage Users</h1>
+  <main class="management-content">
+      <!-- Page Header -->
+      <div class="management-header">
+          <h1>Manage Users</h1>
+          <p>Add, edit, and manage user accounts</p>
+      </div>
 
-    <div class="card">
-        <form method="GET" class="search-box">
-            <input type="text" name="search" placeholder="Search users" value="<?= htmlspecialchars($search_term) ?>">
-            <button type="submit">Search</button>
-        </form>
-    </div>
+      <!-- Alert Messages -->
+      <?php if (isset($_GET['status'])): ?>
+          <div class="management-alert success">
+              <?php
+                  if ($_GET['status'] === 'added') echo "✅ User added successfully.";
+                  elseif ($_GET['status'] === 'updated') echo "✏️ User updated successfully.";
+                  elseif ($_GET['status'] === 'deleted') echo "🗑️ User deleted successfully.";
+              ?>
+              <span class="close-btn" onclick="this.parentElement.style.display='none';">×</span>
+          </div>
+      <?php endif; ?>
 
-    <div class="card">
-        <h2><?= $edit_user ? 'Edit User' : 'Add New User' ?></h2>
-        <form method="POST">
-            <?php if ($edit_user): ?>
-                <input type="hidden" name="user_id" value="<?= $edit_user['user_id'] ?>">
-            <?php endif; ?>
-            <input type="text" name="first_name" placeholder="First Name" value="<?= $edit_user['first_name'] ?? '' ?>" required>
-            <input type="text" name="middle_name" placeholder="Middle Name" value="<?= $edit_user['middle_name'] ?? '' ?>">
-            <input type="text" name="last_name" placeholder="Last Name" value="<?= $edit_user['last_name'] ?? '' ?>" required>
-            <input type="email" name="email" placeholder="Email" value="<?= $edit_user['email'] ?? '' ?>" required>
-            <input type="text" name="phone" placeholder="Phone" value="<?= $edit_user['phone'] ?? '' ?>" required>
-            <?php if (!$edit_user): ?>
-                <input type="password" name="password" placeholder="Password" required>
-            <?php endif; ?>
-            <select name="role" required>
-                <option value="">-- Select Role --</option>
-                <option value="user" <?= (isset($edit_user['role']) && $edit_user['role'] == 'user') ? 'selected' : '' ?>>User</option>
-                <option value="event_head" <?= (isset($edit_user['role']) && $edit_user['role'] == 'event_head') ? 'selected' : '' ?>>Event Head</option>
-                <option value="admin" <?= (isset($edit_user['role']) && $edit_user['role'] == 'admin') ? 'selected' : '' ?>>Admin</option>
-            </select>
-            <button type="submit" name="<?= $edit_user ? 'update_user' : 'add_user' ?>">
-                <?= $edit_user ? 'Update User' : 'Add User' ?>
-            </button>
-        </form>
-    </div>
+      <!-- Search Card -->
+      <div class="management-card">
+          <form method="GET" class="management-search">
+              <input
+                  type="text"
+                  name="search"
+                  placeholder="Search by name, email, or phone..."
+                  value="<?= htmlspecialchars($search_term) ?>"
+              >
+              <button type="submit" class="btn btn-primary">
+                  <i data-lucide="search"></i>
+                  Search
+              </button>
+          </form>
+      </div>
 
-    <div class="card">
-        <h2>Existing Users</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Phone</th>
-                    <th>Role</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php while ($row = $users->fetch_assoc()): ?>
-                    <tr>
-                        <td><?= htmlspecialchars($row['first_name'] . ' ' . $row['last_name']) ?></td>
-                        <td><?= htmlspecialchars($row['email']) ?></td>
-                        <td><?= htmlspecialchars($row['phone']) ?></td>
-                        <td><?= htmlspecialchars($row['role']) ?></td>
-                        <td>
-                            <a class="btn-edit" href="manage_users.php?edit=<?= $row['user_id'] ?>">Edit</a>
-                            <a class="btn-delete" href="manage_users.php?delete=<?= $row['user_id'] ?>" onclick="return confirm('Delete this user?')">Delete</a>
-                        </td>
-                    </tr>
-                <?php endwhile; ?>
-            </tbody>
-        </table>
-    </div>
+      <!-- Add/Edit Form Card -->
+      <div class="management-card">
+          <h2><?= $edit_user ? 'Edit User' : 'Add New User' ?></h2>
+          <form method="POST" class="management-form">
+              <?php if ($edit_user): ?>
+                  <input type="hidden" name="user_id" value="<?= $edit_user['user_id'] ?>">
+              <?php endif; ?>
 
-    <script>
-        setTimeout(() => {
-            const alert = document.querySelector('.alert');
-            if (alert) alert.style.display = 'none';
-        }, 5000);
-    </script>
+              <div class="form-row">
+                  <div class="form-group">
+                      <label for="first_name">First Name <span class="text-danger">*</span></label>
+                      <input
+                          type="text"
+                          id="first_name"
+                          name="first_name"
+                          placeholder="Enter first name"
+                          value="<?= $edit_user['first_name'] ?? '' ?>"
+                          required
+                      >
+                  </div>
 
+                  <div class="form-group">
+                      <label for="middle_name">Middle Name</label>
+                      <input
+                          type="text"
+                          id="middle_name"
+                          name="middle_name"
+                          placeholder="Enter middle name"
+                          value="<?= $edit_user['middle_name'] ?? '' ?>"
+                      >
+                  </div>
+
+                  <div class="form-group">
+                      <label for="last_name">Last Name <span class="text-danger">*</span></label>
+                      <input
+                          type="text"
+                          id="last_name"
+                          name="last_name"
+                          placeholder="Enter last name"
+                          value="<?= $edit_user['last_name'] ?? '' ?>"
+                          required
+                      >
+                  </div>
+              </div>
+
+              <div class="form-row">
+                  <div class="form-group">
+                      <label for="email">Email Address <span class="text-danger">*</span></label>
+                      <input
+                          type="email"
+                          id="email"
+                          name="email"
+                          placeholder="Enter email"
+                          value="<?= $edit_user['email'] ?? '' ?>"
+                          required
+                      >
+                  </div>
+
+                  <div class="form-group">
+                      <label for="phone">Phone Number <span class="text-danger">*</span></label>
+                      <input
+                          type="text"
+                          id="phone"
+                          name="phone"
+                          placeholder="Enter phone number"
+                          value="<?= $edit_user['phone'] ?? '' ?>"
+                          required
+                      >
+                  </div>
+              </div>
+
+              <?php if (!$edit_user): ?>
+                  <div class="form-group">
+                      <label for="password">Password <span class="text-danger">*</span></label>
+                      <input
+                          type="password"
+                          id="password"
+                          name="password"
+                          placeholder="Enter password"
+                          required
+                      >
+                  </div>
+              <?php endif; ?>
+
+              <div class="form-group">
+                  <label for="role">User Role <span class="text-danger">*</span></label>
+                  <select name="role" id="role" required>
+                      <option value="">-- Select Role --</option>
+                      <option value="user" <?= (isset($edit_user['role']) && $edit_user['role'] == 'user') ? 'selected' : '' ?>>User</option>
+                      <option value="event_head" <?= (isset($edit_user['role']) && $edit_user['role'] == 'event_head') ? 'selected' : '' ?>>Event Head</option>
+                      <option value="admin" <?= (isset($edit_user['role']) && $edit_user['role'] == 'admin') ? 'selected' : '' ?>>Admin</option>
+                  </select>
+              </div>
+
+              <div class="form-actions">
+                  <button type="submit" name="<?= $edit_user ? 'update_user' : 'add_user' ?>" class="btn btn-primary">
+                      <i data-lucide="<?= $edit_user ? 'save' : 'plus' ?>"></i>
+                      <?= $edit_user ? 'Update User' : 'Add User' ?>
+                  </button>
+                  <?php if ($edit_user): ?>
+                      <a href="manage_users.php" class="btn btn-secondary">
+                          <i data-lucide="x"></i>
+                          Cancel
+                      </a>
+                  <?php endif; ?>
+              </div>
+          </form>
+      </div>
+
+      <!-- Users Table Card -->
+      <div class="management-card">
+          <h2>All Users</h2>
+          <?php if ($users->num_rows > 0): ?>
+              <table class="management-table">
+                  <thead>
+                      <tr>
+                          <th>Name</th>
+                          <th>Email</th>
+                          <th>Phone</th>
+                          <th>Role</th>
+                          <th>Actions</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                      <?php while ($row = $users->fetch_assoc()): ?>
+                          <tr>
+                              <td><?= htmlspecialchars($row['first_name'] . ' ' . $row['last_name']) ?></td>
+                              <td><?= htmlspecialchars($row['email']) ?></td>
+                              <td><?= htmlspecialchars($row['phone']) ?></td>
+                              <td>
+                                  <span class="badge badge-<?= $row['role'] === 'admin' ? 'danger' : ($row['role'] === 'event_head' ? 'warning' : 'info') ?>">
+                                      <?= ucfirst(str_replace('_', ' ', $row['role'])) ?>
+                                  </span>
+                              </td>
+                              <td class="actions">
+                                  <a href="manage_users.php?edit=<?= $row['user_id'] ?>" class="btn btn-edit btn-sm">
+                                      <i data-lucide="edit"></i>
+                                      Edit
+                                  </a>
+                                  <a
+                                      href="manage_users.php?delete=<?= $row['user_id'] ?>"
+                                      class="btn btn-delete btn-sm"
+                                      onclick="return confirm('Are you sure you want to delete this user?')"
+                                  >
+                                      <i data-lucide="trash-2"></i>
+                                      Delete
+                                  </a>
+                              </td>
+                          </tr>
+                      <?php endwhile; ?>
+                  </tbody>
+              </table>
+          <?php else: ?>
+              <div class="empty-state">
+                  <i data-lucide="users"></i>
+                  <h3>No Users Found</h3>
+                  <p>No users match your search criteria.</p>
+              </div>
+          <?php endif; ?>
+      </div>
+  </main>
+
+  <script>
+      // Initialize Lucide icons
+      lucide.createIcons();
+
+      // Auto-dismiss alerts after 5 seconds
+      setTimeout(() => {
+          const alerts = document.querySelectorAll('.management-alert');
+          alerts.forEach(alert => {
+              alert.style.opacity = '0';
+              alert.style.transform = 'translateY(-10px)';
+              setTimeout(() => alert.remove(), 300);
+          });
+      }, 5000);
+  </script>
 </body>
 </html>

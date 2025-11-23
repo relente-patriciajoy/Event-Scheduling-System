@@ -53,6 +53,17 @@ if (isset($_GET['delete'])) {
     exit();
 }
 
+// EDIT LOAD
+$edit_category = null;
+if (isset($_GET['edit'])) {
+    $edit_id = $_GET['edit'];
+    $stmt = $conn->prepare("SELECT * FROM event_category WHERE category_id = ?");
+    $stmt->bind_param("i", $edit_id);
+    $stmt->execute();
+    $edit_category = $stmt->get_result()->fetch_assoc();
+    $stmt->close();
+}
+
 // SEARCH
 $search = $_GET['search'] ?? '';
 $query = "SELECT * FROM event_category WHERE category_name LIKE ?";
@@ -64,187 +75,162 @@ $categories = $stmt->get_result();
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Manage Event Categories</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Event Categories - Eventix</title>
     <link rel="stylesheet" href="../css/style.css">
-    <style>
-        .container {
-            max-width: 1000px;
-            margin: 40px auto;
-            padding: 20px;
-            background: #fff;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-        }
-
-        h2 {
-            margin-bottom: 20px;
-            font-size: 24px;
-        }
-
-        .form-group {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 10px;
-            flex-wrap: wrap;
-        }
-
-        input[type="text"], select {
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            width: 100%;
-        }
-
-        button {
-            padding: 10px 16px;
-            border: none;
-            background: #4f8aff;
-            color: #fff;
-            border-radius: 8px;
-            cursor: pointer;
-        }
-
-        button:hover {
-            background: #3c6fdd;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 25px;
-        }
-
-        th, td {
-            padding: 12px;
-            border-bottom: 1px solid #eee;
-            text-align: left;
-        }
-
-        th {
-            background: #f9f9f9;
-        }
-
-        .alert {
-            background: #d4edda;
-            padding: 12px 18px;
-            border-radius: 8px;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-            margin-bottom: 15px;
-            position: relative;
-        }
-
-        .alert span {
-            position: absolute;
-            top: 10px;
-            right: 15px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-
-        .actions a {
-            margin-right: 8px;
-            text-decoration: none;
-            color: #0077cc;
-        }
-
-        .actions a:hover {
-            text-decoration: underline;
-        }
-
-        .search-box {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-
-        .search-box input[type="text"] {
-            flex-grow: 1;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-        }
-
-        .search-box button {
-            padding: 10px 16px;
-            background: #4f8aff;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            white-space: nowrap;
-        }
-    </style>
+    <link rel="stylesheet" href="../css/sidebar.css">
+    <link rel="stylesheet" href="../css/management.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
 </head>
-<body>
-    <div class="container">
-        <h2>Manage Event Categories</h2>
 
-        <!-- Success alert messages -->
+<body class="dashboard-layout">
+    <?php include('sidebar.php'); ?>
+
+    <main class="management-content">
+        <!-- Page Header -->
+        <div class="management-header">
+            <h1>Manage Event Categories</h1>
+            <p>Organize events by categories</p>
+        </div>
+
+        <!-- Alert Messages -->
         <?php if (isset($_GET['status'])): ?>
-            <div class="alert">
+            <div class="management-alert success">
                 <?php
                     if ($_GET['status'] === 'added') echo "✅ Category added successfully.";
                     elseif ($_GET['status'] === 'updated') echo "✏️ Category updated successfully.";
                     elseif ($_GET['status'] === 'deleted') echo "🗑️ Category deleted successfully.";
                 ?>
-                <span onclick="this.parentElement.style.display='none';">&times;</span>
+                <span class="close-btn" onclick="this.parentElement.style.display='none';">×</span>
             </div>
         <?php endif; ?>
 
-        <!-- Search Form -->
-        <form method="GET" class="search-box">
-            <input type="text" name="search" placeholder="Search category..." value="<?= htmlspecialchars($search) ?>">
-            <button type="submit">Search</button>
-        </form>
-
-        <!-- Add / Update Form -->
-        <form method="POST">
-            <div class="form-group">
-                <input type="hidden" name="category_id" value="<?= $_GET['edit_id'] ?? '' ?>">
-                <input type="text" name="category_name" placeholder="Category Name" required value="<?= $_GET['edit_name'] ?? '' ?>">
-                <input type="text" name="description" placeholder="Description" value="<?= $_GET['edit_desc'] ?? '' ?>">
-                <button type="submit" name="<?= isset($_GET['edit_id']) ? 'update_category' : 'add_category' ?>">
-                    <?= isset($_GET['edit_id']) ? 'Update' : 'Add' ?>
+        <!-- Search Card -->
+        <div class="management-card">
+            <form method="GET" class="management-search">
+                <input
+                    type="text"
+                    name="search"
+                    placeholder="Search categories..."
+                    value="<?= htmlspecialchars($search) ?>"
+                >
+                <button type="submit" class="btn btn-primary">
+                    <i data-lucide="search"></i>
+                    Search
                 </button>
-                <?php if (isset($_GET['edit_id'])): ?>
-                    <a href="manage_categories.php" style="color: #666; align-self: center;">Cancel</a>
-                <?php endif; ?>
-            </div>
-        </form>
+            </form>
+        </div>
 
-        <!-- Category Table -->
-        <table>
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Category Name</th>
-                    <th>Description</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php while ($row = $categories->fetch_assoc()): ?>
-                    <tr>
-                        <td><?= $row['category_id'] ?></td>
-                        <td><?= htmlspecialchars($row['category_name']) ?></td>
-                        <td><?= htmlspecialchars($row['description']) ?></td>
-                        <td class="actions">
-                            <a href="manage_categories.php?edit_id=<?= $row['category_id'] ?>&edit_name=<?= urlencode($row['category_name']) ?>&edit_desc=<?= urlencode($row['description']) ?>">Edit</a>
-                            <a href="manage_categories.php?delete=<?= $row['category_id'] ?>" onclick="return confirm('Are you sure you want to delete this category?')">Delete</a>
-                        </td>
-                    </tr>
-                <?php endwhile; ?>
-            </tbody>
-        </table>
-    </div>
+        <!-- Add/Edit Form Card -->
+        <div class="management-card">
+            <h2><?= $edit_category ? 'Edit Category' : 'Add New Category' ?></h2>
+            <form method="POST" class="management-form">
+                <?php if ($edit_category): ?>
+                    <input type="hidden" name="category_id" value="<?= $edit_category['category_id'] ?>">
+                <?php endif; ?>
+
+                <div class="form-group">
+                    <label for="category_name">Category Name <span class="text-danger">*</span></label>
+                    <input
+                        type="text"
+                        id="category_name"
+                        name="category_name"
+                        placeholder="Enter category name"
+                        value="<?= $edit_category['category_name'] ?? '' ?>"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    <textarea
+                        id="description"
+                        name="description"
+                        placeholder="Enter category description (optional)"
+                        rows="4"
+                    ><?= $edit_category['description'] ?? '' ?></textarea>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" name="<?= $edit_category ? 'update_category' : 'add_category' ?>" class="btn btn-primary">
+                        <i data-lucide="<?= $edit_category ? 'save' : 'plus' ?>"></i>
+                        <?= $edit_category ? 'Update Category' : 'Add Category' ?>
+                    </button>
+                    <?php if ($edit_category): ?>
+                        <a href="manage_categories.php" class="btn btn-secondary">
+                            <i data-lucide="x"></i>
+                            Cancel
+                        </a>
+                    <?php endif; ?>
+                </div>
+            </form>
+        </div>
+
+        <!-- Categories Table Card -->
+        <div class="management-card">
+            <h2>All Categories</h2>
+            <?php if ($categories->num_rows > 0): ?>
+                <table class="management-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Category Name</th>
+                            <th>Description</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php while ($row = $categories->fetch_assoc()): ?>
+                            <tr>
+                                <td><?= $row['category_id'] ?></td>
+                                <td>
+                                    <strong><?= htmlspecialchars($row['category_name']) ?></strong>
+                                </td>
+                                <td><?= htmlspecialchars($row['description']) ?: '—' ?></td>
+                                <td class="actions">
+                                    <a href="manage_categories.php?edit=<?= $row['category_id'] ?>" class="btn btn-edit btn-sm">
+                                        <i data-lucide="edit"></i>
+                                        Edit
+                                    </a>
+                                    <a
+                                        href="manage_categories.php?delete=<?= $row['category_id'] ?>"
+                                        class="btn btn-delete btn-sm"
+                                        onclick="return confirm('Are you sure you want to delete this category?')"
+                                    >
+                                        <i data-lucide="trash-2"></i>
+                                        Delete
+                                    </a>
+                                </td>
+                            </tr>
+                        <?php endwhile; ?>
+                    </tbody>
+                </table>
+            <?php else: ?>
+                <div class="empty-state">
+                    <i data-lucide="folder"></i>
+                    <h3>No Categories Found</h3>
+                    <p>No categories match your search criteria.</p>
+                </div>
+            <?php endif; ?>
+        </div>
+    </main>
 
     <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+
+        // Auto-dismiss alerts after 5 seconds
         setTimeout(() => {
-            const alert = document.querySelector('.alert');
-            if (alert) alert.style.display = 'none';
+            const alerts = document.querySelectorAll('.management-alert');
+            alerts.forEach(alert => {
+                alert.style.opacity = '0';
+                alert.style.transform = 'translateY(-10px)';
+                setTimeout(() => alert.remove(), 300);
+            });
         }, 5000);
     </script>
 </body>
