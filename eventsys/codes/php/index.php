@@ -2,8 +2,14 @@
 // Start session
 session_start();
 
-// Redirect if already logged in
-if (isset($_SESSION['user_id'])) {
+// Check if user just logged out
+$just_logged_out = isset($_SESSION['just_logged_out']);
+if ($just_logged_out) {
+    unset($_SESSION['just_logged_out']);
+}
+
+// Only redirect if logged in AND didn't just log out
+if (isset($_SESSION['user_id']) && !$just_logged_out) {
     header("Location: home.php");
     exit();
 }
@@ -45,7 +51,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 
                 // Verify password
                 if (password_verify($password_input, $hashed_password)) {
-                    // Regenerate session ID to prevent session fixation
+                    // Destroy old session completely
+                    session_destroy();
+
+                    // Start new session
+                    session_start();
                     session_regenerate_id(true);
                     
                     // Set session variables
@@ -57,23 +67,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     
                     // Handle "Remember Me"
                     if ($remember) {
-                        // Set cookie for 30 days
                         $token = bin2hex(random_bytes(32));
                         setcookie('remember_token', $token, time() + (86400 * 30), "/", "", true, true);
-                        
-                        // Store token in database (you'll need a remember_tokens table)
-                        // $stmt_token = $conn->prepare("INSERT INTO remember_tokens (user_id, token, expires) VALUES (?, ?, ?)");
-                        // $expires = date('Y-m-d H:i:s', time() + (86400 * 30));
-                        // $stmt_token->bind_param("iss", $user_id, $token, $expires);
-                        // $stmt_token->execute();
                     }
-                    
-                    // Log successful login (optional)
-                    // $stmt_log = $conn->prepare("INSERT INTO login_logs (user_id, ip_address, user_agent) VALUES (?, ?, ?)");
-                    // $ip = $_SERVER['REMOTE_ADDR'];
-                    // $user_agent = $_SERVER['HTTP_USER_AGENT'];
-                    // $stmt_log->bind_param("iss", $user_id, $ip, $user_agent);
-                    // $stmt_log->execute();
                     
                     // Redirect to dashboard
                     header("Location: home.php");
@@ -126,6 +122,14 @@ $conn->close();
         <!-- Heading -->
         <h2>Welcome Back!</h2>
         <p>Please login to <strong>Eventix</strong> with your email address</p>
+
+        <!-- Logout Success Message -->
+        <?php if ($just_logged_out): ?>
+            <div class="alert alert-success">
+                <i data-lucide="check-circle" style="width: 18px; height: 18px; display: inline-block; vertical-align: middle; margin-right: 8px;"></i>
+                You have been successfully logged out.
+            </div>
+        <?php endif; ?>
 
         <!-- Error Message -->
         <?php if (!empty($error)): ?>
@@ -219,16 +223,28 @@ $conn->close();
         submitBtn.disabled = true;
     });
     
-    // Remove error message after 5 seconds
-    const errorAlert = document.querySelector('.alert-error');
-    if (errorAlert) {
+    // Remove alert messages after 5 seconds
+    const alerts = document.querySelectorAll('.alert');
+    alerts.forEach(alert => {
         setTimeout(() => {
-            errorAlert.style.opacity = '0';
-            errorAlert.style.transform = 'translateY(-10px)';
-            setTimeout(() => errorAlert.remove(), 300);
+            alert.style.opacity = '0';
+            alert.style.transform = 'translateY(-10px)';
+            setTimeout(() => alert.remove(), 300);
         }, 5000);
-    }
+    });
 </script>
+
+<style>
+    .alert-success {
+        background: #d4edda;
+        color: #155724;
+        padding: 1rem;
+        border-radius: 8px;
+        margin-bottom: 1.5rem;
+        border: 1px solid #c3e6cb;
+        transition: all 0.3s ease;
+    }
+</style>
 
 </body>
 </html>
