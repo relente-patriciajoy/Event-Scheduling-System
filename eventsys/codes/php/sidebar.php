@@ -24,16 +24,20 @@
     <?php endif; ?>
 
     <?php if ($role === 'admin'): ?>
-      <div class="dropdown-toggle" onclick="toggleDropdown(this)">
-        <i data-lucide="database"></i>
-        <span>Maintenance</span>
-        <span>▾</span>
-      </div>
-      <div class="dropdown-links">
-        <a href="manage_users.php">Manage Users</a>
-        <a href="manage_venues.php">Manage Venues</a>
-        <a href="manage_categories.php">Manage Categories</a>
-        <a href="manage_organizers.php">Manage Organizers</a>
+      <div class="dropdown-nav">
+        <div class="dropdown-toggle" onclick="toggleDropdown(this)">
+          <i data-lucide="database" style="margin-right: 8px;"></i>
+          <span>Maintenance</span>
+          <span style="margin-left:auto;">▾</span>
+        </div>
+
+        <div class="dropdown-menu">
+          <a href="manage_users.php">Users</a>
+          <a href="manage_venues.php">Venues</a>
+          <a href="manage_organizers.php">Organizers</a>
+          <a href="manage_categories.php">Categories</a>
+          <a href="manage_payment.php">Payments</a>
+        </div>
       </div>
     <?php endif; ?>
 
@@ -42,8 +46,8 @@
 </aside>
 
 <script>
-  function toggleDropdown(el) {
-    el.classList.toggle('open');
-    el.nextElementSibling.classList.toggle('open');
+  function toggleDropdown(toggle) {
+    const container = toggle.closest(".dropdown-nav");
+    container.classList.toggle("open");
   }
 </script>

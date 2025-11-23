@@ -62,6 +62,7 @@ $result = $stmt->get_result();
     <meta charset="UTF-8">
     <title>Event Attendance</title>
     <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/sidebar.css">
     <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body class="dashboard-layout">
@@ -102,8 +103,9 @@ $result = $stmt->get_result();
         <?php endwhile; ?>
     </section>
 </main>
+<script src="https://unpkg.com/lucide@latest"></script>
 <script>
-    lucide.createIcons();
+  lucide.createIcons();
 </script>
 </body>
 </html>

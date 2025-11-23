@@ -42,6 +42,8 @@ $result = $conn->query($query);
   <meta charset="UTF-8">
   <title>Browse Events</title>
   <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/sidebar.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body class="dashboard-layout">
 <?php include('sidebar.php'); ?>
@@ -86,9 +88,10 @@ $result = $conn->query($query);
 </main>
 <script src="https://unpkg.com/lucide@latest"></script>
 <script>
-    lucide.createIcons();
-</script>
-<script>
+  // Initialize icons after sidebar loads
+  lucide.createIcons();
+
+  // Alert auto-hide
   const alertBox = document.getElementById('register-alert');
   if(alertBox) {
     setTimeout(() => {
@@ -96,6 +99,5 @@ $result = $conn->query($query);
     }, 3000);
   }
 </script>
-
 </body>
 </html>
