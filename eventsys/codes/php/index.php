@@ -1,5 +1,8 @@
 <?php
-// Start session
+/**
+ * Login Page with OTP Authentication
+ * Step 1: Verify password, then send OTP
+ */
 session_start();
 
 // Check if user just logged out
@@ -14,31 +17,26 @@ if (isset($_SESSION['user_id']) && !$just_logged_out) {
     exit();
 }
 
-// Include database connection
 require_once('../includes/db.php');
+require_once __DIR__ . '/../includes/otp_function.php';
 
-// Initialize variables
 $error = "";
 $email_value = "";
 
-// Handle form submission
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Get and sanitize inputs
     $email = filter_var(trim($_POST['email']), FILTER_SANITIZE_EMAIL);
     $password_input = $_POST['password'];
     $remember = isset($_POST['remember']);
     
-    // Store email for form repopulation
     $email_value = htmlspecialchars($email);
-    
-    // Validate inputs
+
     if (empty($email) || empty($password_input)) {
         $error = "Please fill in all fields.";
     } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $error = "Please enter a valid email address.";
     } else {
-        // Prepare statement to prevent SQL injection
-        $stmt = $conn->prepare("SELECT user_id, password, first_name, middle_name, last_name, role FROM user WHERE email = ? AND status = 'active'");
+        // Verify user credentials
+        $stmt = $conn->prepare("SELECT user_id, password, first_name, middle_name, last_name, phone, role FROM user WHERE email = ? AND status = 'active'");
         
         if ($stmt) {
             $stmt->bind_param("s", $email);
@@ -46,42 +44,57 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $stmt->store_result();
             
             if ($stmt->num_rows === 1) {
-                $stmt->bind_result($user_id, $hashed_password, $first_name, $middle_name, $last_name, $role);
+                $stmt->bind_result($user_id, $hashed_password, $first_name, $middle_name, $last_name, $phone, $role);
                 $stmt->fetch();
-                
+
                 // Verify password
                 if (password_verify($password_input, $hashed_password)) {
-                    // Destroy old session completely
-                    session_destroy();
+                    $stmt->close();
 
-                    // Start new session
-                    session_start();
-                    session_regenerate_id(true);
-                    
-                    // Set session variables
-                    $_SESSION['user_id'] = $user_id;
-                    $_SESSION['full_name'] = trim($first_name . ' ' . $middle_name . ' ' . $last_name);
-                    $_SESSION['role'] = $role;
-                    $_SESSION['email'] = $email;
-                    $_SESSION['login_time'] = time();
-                    
-                    // Handle "Remember Me"
-                    if ($remember) {
-                        $token = bin2hex(random_bytes(32));
-                        setcookie('remember_token', $token, time() + (86400 * 30), "/", "", true, true);
+                    // Check OTP rate limiting
+                    if (!canRequestOTP($conn, $email)) {
+                        $error = "Too many OTP requests. Please wait before trying again.";
+                    } else {
+                        // Store login data in session temporarily
+                        $full_name = trim($first_name . ' ' . $middle_name . ' ' . $last_name);
+
+                        $_SESSION['pending_login'] = [
+                            'user_id' => $user_id,
+                            'full_name' => $full_name,
+                            'email' => $email,
+                            'phone' => $phone,
+                            'role' => $role,
+                            'remember' => $remember,
+                            'timestamp' => time()
+                        ];
+
+                        // Generate and send OTP
+                        $otp_result = createOTP($conn, $email, $phone, $user_id, 'login');
+
+                        if ($otp_result) {
+                            $delivery = sendOTPDual($email, $phone, $otp_result['otp_code'], $full_name);
+
+                            if ($delivery['email'] || $delivery['sms']) {
+                                $_SESSION['otp_id'] = $otp_result['otp_id'];
+                                header("Location: verify_otp.php?type=login");
+                                exit();
+                            } else {
+                                $error = "Failed to send OTP. Please try again.";
+                            }
+                        } else {
+                            $error = "Failed to generate OTP. Please try again.";
+                        }
                     }
-                    
-                    // Redirect to dashboard
-                    header("Location: home.php");
-                    exit();
                 } else {
                     $error = "Incorrect password. Please try again.";
                 }
             } else {
                 $error = "No account found with this email address.";
             }
-            
-            $stmt->close();
+
+            if ($stmt) {
+                $stmt->close();
+            }
         } else {
             $error = "An error occurred. Please try again later.";
         }
@@ -95,156 +108,129 @@ $conn->close();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Login - Eventix</title>
-    
-    <!-- Favicon -->
     <link rel="icon" type="image/png" href="../assets/eventix-logo.png">
-    
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
-    <!-- CSS Files -->
     <link rel="stylesheet" href="../css/auth.css">
-    
-    <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body class="auth-page">
 
 <div class="auth-container">
     <div class="auth-box">
-        <!-- Logo -->
         <img src="../assets/eventix-logo.png" alt="Eventix Logo" class="logo" />
         
-        <!-- Heading -->
         <h2>Welcome Back!</h2>
-        <p>Please login to <strong>Eventix</strong> with your email address</p>
+        <p>Login to <strong>Eventix</strong> with OTP verification</p>
 
-        <!-- Logout Success Message -->
         <?php if ($just_logged_out): ?>
             <div class="alert alert-success">
-                <i data-lucide="check-circle" style="width: 18px; height: 18px; display: inline-block; vertical-align: middle; margin-right: 8px;"></i>
+                <i data-lucide="check-circle" style="width: 18px; height: 18px;"></i>
                 You have been successfully logged out.
             </div>
         <?php endif; ?>
 
-        <!-- Error Message -->
         <?php if (!empty($error)): ?>
             <div class="alert alert-error">
-                <i data-lucide="alert-circle" style="width: 18px; height: 18px; display: inline-block; vertical-align: middle; margin-right: 8px;"></i>
+                <i data-lucide="alert-circle" style="width: 18px; height: 18px;"></i>
                 <?php echo htmlspecialchars($error); ?>
             </div>
         <?php endif; ?>
 
-        <!-- Login Form -->
         <form method="POST" action="" class="auth-form" autocomplete="on">
-            <!-- Email Input -->
             <div class="input-group">
                 <label for="email">Email Address</label>
-                <input 
-                    type="email" 
-                    id="email" 
-                    name="email" 
+                <input
+                    type="email"
+                    id="email"
+                    name="email"
                     value="<?php echo $email_value; ?>"
                     placeholder="Enter your email"
-                    required 
+                    required
                     autofocus
                     autocomplete="email"
                 >
             </div>
 
-            <!-- Password Input -->
             <div class="input-group">
                 <label for="password">Password</label>
                 <div class="password-wrapper">
-                    <input 
-                        type="password" 
-                        id="password" 
-                        name="password" 
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
                         placeholder="Enter your password"
                         required
                         autocomplete="current-password"
                     >
                     <button type="button" class="password-toggle" onclick="togglePassword(event)">
-                        <svg id="eye-icon" data-lucide="eye" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                        <svg id="eye-icon" data-lucide="eye"></svg>
                     </button>
                 </div>
             </div>
 
-            <!-- Options Row -->
             <div class="options">
                 <label class="remember-label">
-                    <input type="checkbox" name="remember" class="remember-checkbox"> 
+                    <input type="checkbox" name="remember" class="remember-checkbox">
                     <span>Stay logged in</span>
                 </label>
                 <a href="forgot_password.php">Forgot password?</a>
             </div>
 
-            <!-- Submit Button -->
-            <button type="submit" class="auth-button">Login</button>
+            <button type="submit" class="auth-button">
+                Continue to Verification
+            </button>
+
+            <div style="margin-top: 15px; padding: 12px; background: #f0f0f0; border-radius: 8px; font-size: 0.85rem; color: #666; text-align: left;">
+                <p style="margin: 0; display: flex; align-items: flex-start; gap: 8px;">
+                    <i data-lucide="shield-check" style="width: 16px; height: 16px; flex-shrink: 0; margin-top: 2px;"></i>
+                    <span>After entering your password, you'll receive a verification code via SMS and email.</span>
+                </p>
+            </div>
         </form>
 
-        <!-- Register Link -->
         <div class="auth-link">
             Don't have an account? <a href="register.php">Register</a>
         </div>
     </div>
 </div>
 
-<!-- Scripts -->
 <script>
-    // Initialize Lucide icons
     lucide.createIcons();
     
-    // Password toggle functionality
     function togglePassword(event) {
         event.preventDefault();
         const passwordInput = document.getElementById('password');
         const eyeIcon = document.getElementById('eye-icon');
-        
+
         if (passwordInput.type === 'password') {
             passwordInput.type = 'text';
-            eyeIcon.innerHTML = '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line>';
+            eyeIcon.setAttribute('data-lucide', 'eye-off');
         } else {
             passwordInput.type = 'password';
-            eyeIcon.innerHTML = '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle>';
+            eyeIcon.setAttribute('data-lucide', 'eye');
         }
+
+        lucide.createIcons();
     }
-    
-    // Add loading state to button on submit
+
     const form = document.querySelector('.auth-form');
     const submitBtn = document.querySelector('.auth-button');
-    
+
     form.addEventListener('submit', function() {
         submitBtn.classList.add('loading');
         submitBtn.disabled = true;
     });
-    
-    // Remove alert messages after 5 seconds
-    const alerts = document.querySelectorAll('.alert');
-    alerts.forEach(alert => {
-        setTimeout(() => {
+
+    setTimeout(() => {
+        const alerts = document.querySelectorAll('.alert');
+        alerts.forEach(alert => {
             alert.style.opacity = '0';
             alert.style.transform = 'translateY(-10px)';
             setTimeout(() => alert.remove(), 300);
-        }, 5000);
-    });
+        });
+    }, 5000);
 </script>
-
-<style>
-    .alert-success {
-        background: #d4edda;
-        color: #155724;
-        padding: 1rem;
-        border-radius: 8px;
-        margin-bottom: 1.5rem;
-        border: 1px solid #c3e6cb;
-        transition: all 0.3s ease;
-    }
-</style>
 
 </body>
 </html>
