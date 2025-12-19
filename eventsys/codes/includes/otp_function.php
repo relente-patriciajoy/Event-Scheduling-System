@@ -135,7 +135,7 @@ function sendOTPEmail($email, $otp_code, $name = 'User') {
     // You'll need to install PHPMailer via Composer
     // composer require phpmailer/phpmailer
     
-    require_once '../vendor/autoload.php'; // Adjust path as needed
+    require_once __DIR__ . '/../vendor/autoload.php';
     
     $mail = new PHPMailer\PHPMailer\PHPMailer(true);
     
