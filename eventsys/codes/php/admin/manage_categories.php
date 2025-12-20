@@ -20,6 +20,13 @@ if ($role !== 'admin') {
     exit();
 }
 
+$total_count = 0;
+$total_count_result = $conn->query("SELECT COUNT(*) as total FROM event_category");
+if ($total_count_result) {
+    $total_count = $total_count_result->fetch_assoc()['total'];
+}
+
+
 // ADD
 if (isset($_POST['add_category'])) {
     $name = $_POST['category_name'];
@@ -95,6 +102,44 @@ $categories = $stmt->get_result();
         <div class="management-header">
             <h1>Manage Event Categories</h1>
             <p>Organize events by categories</p>
+        </div>
+
+        <!-- Stats Row -->
+        <div class="stats-row">
+            <div class="stat-card">
+                <div class="stat-card-header">
+                    <h3>Total Categories</h3>
+                    <div class="stat-card-icon">
+                        <i data-lucide="folder" size="24"></i>
+                    </div>
+                </div>
+                <div class="stat-card-value"><?= $total_count ?></div>
+                <div class="stat-card-change">Active items</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-card-header">
+                    <h3>Search Results</h3>
+                    <div class="stat-card-icon">
+                        <i data-lucide="search" size="24"></i>
+                    </div>
+                </div>
+                <div class="stat-card-value"><?= $categories->num_rows ?></div>
+                <div class="stat-card-change">
+                    <?= !empty($search) ? 'Filtered results' : 'All categories' ?>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-card-header">
+                    <h3>Status</h3>
+                    <div class="stat-card-icon">
+                        <i data-lucide="check-circle" size="24"></i>
+                    </div>
+                </div>
+                <div class="stat-card-value"><?= $total_count > 0 ? 'Active' : 'Empty' ?></div>
+                <div class="stat-card-change">System status</div>
+            </div>
         </div>
 
         <!-- Alert Messages -->
