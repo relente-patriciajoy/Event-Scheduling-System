@@ -23,6 +23,27 @@ if ($role !== 'admin' && $role !== 'event_head') {
     die("Access denied.");
 }
 
+// Get stats for venues
+$total_venues = 0;
+$total_venue_result = $conn->query("SELECT COUNT(*) as total FROM venue");
+if ($total_venue_result) {
+    $total_venues = $total_venue_result->fetch_assoc()['total'];
+}
+
+// Get venues with events
+$venues_with_events = 0;
+$venue_events_result = $conn->query("SELECT COUNT(DISTINCT venue_id) as total FROM event WHERE venue_id IS NOT NULL");
+if ($venue_events_result) {
+    $venues_with_events = $venue_events_result->fetch_assoc()['total'];
+}
+
+// Get total capacity
+$total_capacity = 0;
+$capacity_result = $conn->query("SELECT SUM(capacity) as total FROM venue");
+if ($capacity_result) {
+    $total_capacity = $capacity_result->fetch_assoc()['total'] ?? 0;
+}
+
 // Handle Add Venue
 if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['add_venue'])) {
     $name = $_POST['name'];
@@ -137,6 +158,42 @@ if (!empty($search)) {
           <h1>Manage Venues</h1>
           <p>Add, edit, and manage event venues</p>
       </div>
+
+      <!-- Stats Row -->
+    <div class="stats-row">
+        <div class="stat-card">
+            <div class="stat-card-header">
+                <h3>Total Venues</h3>
+                <div class="stat-card-icon">
+                    <i data-lucide="map-pin" size="24"></i>
+                </div>
+            </div>
+            <div class="stat-card-value"><?= $total_venues ?></div>
+            <div class="stat-card-change">Available venues</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-card-header">
+                <h3>Active Venues</h3>
+                <div class="stat-card-icon">
+                    <i data-lucide="calendar" size="24"></i>
+                </div>
+            </div>
+            <div class="stat-card-value"><?= $venues_with_events ?></div>
+            <div class="stat-card-change">With events</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-card-header">
+                <h3>Total Capacity</h3>
+                <div class="stat-card-icon">
+                    <i data-lucide="users-round" size="24"></i>
+                </div>
+            </div>
+            <div class="stat-card-value"><?= number_format($total_capacity) ?></div>
+            <div class="stat-card-change">People capacity</div>
+        </div>
+    </div>
 
       <!-- Alert Messages -->
       <?php if (!empty($error)): ?>

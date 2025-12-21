@@ -20,12 +20,19 @@ if ($role !== 'admin') {
     exit();
 }
 
-$total_count = 0;
-$total_count_result = $conn->query("SELECT COUNT(*) as total FROM event_category");
-if ($total_count_result) {
-    $total_count = $total_count_result->fetch_assoc()['total'];
+// Get stats for categories
+$total_categories = 0;
+$total_cat_result = $conn->query("SELECT COUNT(*) as total FROM event_category");
+if ($total_cat_result) {
+    $total_categories = $total_cat_result->fetch_assoc()['total'];
 }
 
+// Get categories with events
+$cat_with_events = 0;
+$cat_events_result = $conn->query("SELECT COUNT(DISTINCT category_id) as total FROM event WHERE category_id IS NOT NULL");
+if ($cat_events_result) {
+    $cat_with_events = $cat_events_result->fetch_assoc()['total'];
+}
 
 // ADD
 if (isset($_POST['add_category'])) {
@@ -113,8 +120,19 @@ $categories = $stmt->get_result();
                         <i data-lucide="folder" size="24"></i>
                     </div>
                 </div>
-                <div class="stat-card-value"><?= $total_count ?></div>
-                <div class="stat-card-change">Active items</div>
+                <div class="stat-card-value"><?= $total_categories ?></div>
+                <div class="stat-card-change">All categories</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-card-header">
+                    <h3>In Use</h3>
+                    <div class="stat-card-icon">
+                        <i data-lucide="calendar-check" size="24"></i>
+                    </div>
+                </div>
+                <div class="stat-card-value"><?= $cat_with_events ?></div>
+                <div class="stat-card-change">Categories with events</div>
             </div>
 
             <div class="stat-card">
@@ -126,19 +144,8 @@ $categories = $stmt->get_result();
                 </div>
                 <div class="stat-card-value"><?= $categories->num_rows ?></div>
                 <div class="stat-card-change">
-                    <?= !empty($search) ? 'Filtered results' : 'All categories' ?>
+                    <?= !empty($search) ? 'Filtered' : 'All categories' ?>
                 </div>
-            </div>
-
-            <div class="stat-card">
-                <div class="stat-card-header">
-                    <h3>Status</h3>
-                    <div class="stat-card-icon">
-                        <i data-lucide="check-circle" size="24"></i>
-                    </div>
-                </div>
-                <div class="stat-card-value"><?= $total_count > 0 ? 'Active' : 'Empty' ?></div>
-                <div class="stat-card-change">System status</div>
             </div>
         </div>
 

@@ -20,6 +20,20 @@ if ($role !== 'admin') {
     exit();
 }
 
+// Get stats for organizers
+$total_organizers = 0;
+$total_org_result = $conn->query("SELECT COUNT(*) as total FROM organizer");
+if ($total_org_result) {
+    $total_organizers = $total_org_result->fetch_assoc()['total'];
+}
+
+// Get organizers with events count
+$org_with_events = 0;
+$org_events_result = $conn->query("SELECT COUNT(DISTINCT organizer_id) as total FROM event WHERE organizer_id IS NOT NULL");
+if ($org_events_result) {
+    $org_with_events = $org_events_result->fetch_assoc()['total'];
+}
+
 // Handle add/update
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $name = $_POST['name'];
@@ -103,6 +117,44 @@ $organizers = $stmt->get_result();
         <div class="management-header">
             <h1>Manage Organizers</h1>
             <p>Manage event organizers and coordinators</p>
+        </div>
+
+        <!-- Stats Row -->
+        <div class="stats-row">
+            <div class="stat-card">
+                <div class="stat-card-header">
+                    <h3>Total Organizers</h3>
+                    <div class="stat-card-icon">
+                        <i data-lucide="users" size="24"></i>
+                    </div>
+                </div>
+                <div class="stat-card-value"><?= $total_organizers ?></div>
+                <div class="stat-card-change">Registered organizers</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-card-header">
+                    <h3>Active Organizers</h3>
+                    <div class="stat-card-icon">
+                        <i data-lucide="user-check" size="24"></i>
+                    </div>
+                </div>
+                <div class="stat-card-value"><?= $org_with_events ?></div>
+                <div class="stat-card-change">With events</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-card-header">
+                    <h3>Search Results</h3>
+                    <div class="stat-card-icon">
+                        <i data-lucide="search" size="24"></i>
+                    </div>
+                </div>
+                <div class="stat-card-value"><?= $organizers->num_rows ?></div>
+                <div class="stat-card-change">
+                    <?= !empty($search) ? 'Filtered' : 'All organizers' ?>
+                </div>
+            </div>
         </div>
 
         <!-- Alert Messages -->

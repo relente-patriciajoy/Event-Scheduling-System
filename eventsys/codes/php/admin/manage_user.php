@@ -19,6 +19,34 @@ if ($role !== 'admin') {
     exit();
 }
 
+// Get stats for users
+$total_users = 0;
+$total_users_result = $conn->query("SELECT COUNT(*) as total FROM user");
+if ($total_users_result) {
+    $total_users = $total_users_result->fetch_assoc()['total'];
+}
+
+// Get admin count
+$admin_count = 0;
+$admin_result = $conn->query("SELECT COUNT(*) as total FROM user WHERE role = 'admin'");
+if ($admin_result) {
+    $admin_count = $admin_result->fetch_assoc()['total'];
+}
+
+// Get event head count
+$event_head_count = 0;
+$event_head_result = $conn->query("SELECT COUNT(*) as total FROM user WHERE role = 'event_head'");
+if ($event_head_result) {
+    $event_head_count = $event_head_result->fetch_assoc()['total'];
+}
+
+// Get regular user count
+$regular_user_count = 0;
+$regular_user_result = $conn->query("SELECT COUNT(*) as total FROM user WHERE role = 'user'");
+if ($regular_user_result) {
+    $regular_user_count = $regular_user_result->fetch_assoc()['total'];
+}
+
 // Add User
 if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['add_user'])) {
     $first_name = $_POST['first_name'];
@@ -107,6 +135,55 @@ if (isset($_GET['edit'])) {
       <div class="management-header">
           <h1>Manage Users</h1>
           <p>Add, edit, and manage user accounts</p>
+      </div>
+
+      <!-- Stats Row -->
+      <div class="stats-row">
+          <div class="stat-card">
+              <div class="stat-card-header">
+                  <h3>Total Users</h3>
+                  <div class="stat-card-icon">
+                      <i data-lucide="users" size="24"></i>
+                  </div>
+              </div>
+              <div class="stat-card-value"><?= $total_users ?></div>
+              <div class="stat-card-change">All registered users</div>
+          </div>
+
+          <div class="stat-card">
+              <div class="stat-card-header">
+                  <h3>Admins</h3>
+                  <div class="stat-card-icon">
+                      <i data-lucide="shield" size="24"></i>
+                  </div>
+              </div>
+              <div class="stat-card-value"><?= $admin_count ?></div>
+              <div class="stat-card-change"><?= $event_head_count ?> event heads</div>
+          </div>
+
+          <div class="stat-card">
+              <div class="stat-card-header">
+                  <h3>Regular Users</h3>
+                  <div class="stat-card-icon">
+                      <i data-lucide="user" size="24"></i>
+                  </div>
+              </div>
+              <div class="stat-card-value"><?= $regular_user_count ?></div>
+              <div class="stat-card-change">Standard accounts</div>
+          </div>
+
+          <div class="stat-card">
+              <div class="stat-card-header">
+                  <h3>Search Results</h3>
+                  <div class="stat-card-icon">
+                      <i data-lucide="search" size="24"></i>
+                  </div>
+              </div>
+              <div class="stat-card-value"><?= $users->num_rows ?></div>
+              <div class="stat-card-change">
+                  <?= !empty($search_term) ? 'Filtered' : 'All users' ?>
+              </div>
+          </div>
       </div>
 
       <!-- Alert Messages -->
