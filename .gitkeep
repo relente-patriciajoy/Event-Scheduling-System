@@ -1,0 +1,3 @@
+# Keep the libraries folder structure but not the files
+   touch eventsys/codes/libraries/.gitkeep
+   touch eventsys/codes/qr_codes/.gitkeep

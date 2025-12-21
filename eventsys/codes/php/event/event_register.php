@@ -6,6 +6,7 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 include('../../includes/db.php');
+require_once('../../includes/qr_function.php');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['event_id'])) {
     $user_id = $_SESSION['user_id'];
@@ -32,14 +33,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['event_id'])) {
         if($count == 0) {
             return $randomTable;
         } else {
-            return null; // No available table found
+            return null;
         }
     }
 
     $assignedTable = assignTableNumber($conn, $maxCapacity);
 
     if($assignedTable === null) {
-        echo "<script>alert('No available tables for this event. Please try again later.'); window.location.href='events.php';</script>";
+        echo "<script>alert('No available tables for this event. Please try again later.'); window.location.href='../dashboard/events.php';</script>";
         exit();
     }
 
@@ -51,21 +52,49 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['event_id'])) {
 
     if ($result->num_rows > 0) {
         $_SESSION['register_status'] = "You have already registered for this event.";
-        header("Location: events.php");
+        header("Location: ../dashboard/events.php");
         exit();
     } else {
-       $stmt = $conn->prepare("INSERT INTO registration (user_id, event_id, table_number) VALUES (?, ?, ?)");
+       // Insert registration
+       $stmt = $conn->prepare("INSERT INTO registration (user_id, event_id, table_number, status) VALUES (?, ?, ?, 'confirmed')");
        $stmt->bind_param("iii", $user_id, $event_id, $assignedTable);
 
        if ($stmt->execute()) {
             $registration_id = $stmt->insert_id;
-            header("Location: pay.php?reg_id=" . $registration_id);
+            $stmt->close();
+            
+            // Generate QR Code for this registration
+            $qr_filename = generateRegistrationQR($registration_id, $user_id, $event_id, $conn);
+            
+            if ($qr_filename) {
+                // Update registration with QR filename
+                $update_stmt = $conn->prepare("UPDATE registration SET qr_code = ? WHERE registration_id = ?");
+                $update_stmt->bind_param("si", $qr_filename, $registration_id);
+                $update_stmt->execute();
+                $update_stmt->close();
+            }
+            
+            // Check if event is free or requires payment
+            $price_stmt = $conn->prepare("SELECT price FROM event WHERE event_id = ?");
+            $price_stmt->bind_param("i", $event_id);
+            $price_stmt->execute();
+            $price_stmt->bind_result($price);
+            $price_stmt->fetch();
+            $price_stmt->close();
+            
+            if ($price > 0) {
+                // Redirect to payment page
+                header("Location: pay.php?reg_id=" . $registration_id);
+            } else {
+                // Free event - redirect to QR code page
+                header("Location: ../qr/view_qr.php?reg_id=" . $registration_id);
+            }
             exit();
         } else {
-            echo "<script>alert('Registration failed. Please try again.'); window.location.href='events.php';</script>";
+            echo "<script>alert('Registration failed. Please try again.'); window.location.href='../dashboard/events.php';</script>";
         }
     }
 } else {
-    header("Location: events.php");
+    header("Location: ../dashboard/events.php");
 }
 ?>
