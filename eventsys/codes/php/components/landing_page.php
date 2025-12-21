@@ -1,17 +1,22 @@
 <?php
 /**
  * CCF B1G Landing Page
- * Main landing page for Christ Commission Fellowship - Be One with God
+ * Main landing page - Shows ALL events without requiring login
  */
 
 include('../../includes/db.php');
 
-// Fetch upcoming events (limit to 3 for landing page)
-$query = "SELECT e.event_id, e.title, e.description, e.start_time, e.end_time 
+// Fetch ALL upcoming and past events (no limit)
+$query = "SELECT e.event_id, e.title, e.description, e.start_time, e.end_time, 
+          v.name AS venue_name, v.city,
+          (e.capacity - COUNT(r.registration_id)) AS available_seats,
+          e.capacity, e.price
           FROM event e 
-          WHERE e.start_time >= NOW() 
-          ORDER BY e.start_time ASC 
-          LIMIT 3";
+          LEFT JOIN venue v ON e.venue_id = v.venue_id
+          LEFT JOIN registration r ON e.event_id = r.event_id
+          WHERE e.start_time >= DATE_SUB(NOW(), INTERVAL 7 DAY)
+          GROUP BY e.event_id
+          ORDER BY e.start_time ASC";
 $events_result = $conn->query($query);
 ?>
 <!DOCTYPE html>
@@ -111,12 +116,13 @@ $events_result = $conn->query($query);
         </div>
     </section>
 
-    <!-- Events Section (from database) -->
+    <!-- ALL Events Section -->
     <section class="events" id="events">
-        <h2 class="section-title">Upcoming Events</h2>
-        <p class="section-subtitle">Join us and be part of something special</p>
+        <h2 class="section-title">All Events</h2>
+        <p class="section-subtitle">View all our events - Login to register</p>
+        
         <div class="events-grid">
-            <?php if ($events_result->num_rows > 0): ?>
+            <?php if ($events_result && $events_result->num_rows > 0): ?>
                 <?php while ($event = $events_result->fetch_assoc()): ?>
                     <div class="event-card">
                         <div class="event-image">
@@ -124,75 +130,48 @@ $events_result = $conn->query($query);
                         </div>
                         <div class="event-content">
                             <h3><?= htmlspecialchars($event['title']) ?></h3>
+                            
                             <div class="event-date">
                                 <i data-lucide="clock"></i>
                                 <?= date('F j, Y - g:i A', strtotime($event['start_time'])) ?>
                             </div>
+                            
+                            <?php if ($event['venue_name']): ?>
+                                <div class="event-date">
+                                    <i data-lucide="map-pin"></i>
+                                    <?= htmlspecialchars($event['venue_name']) ?>
+                                    <?= $event['city'] ? ', ' . htmlspecialchars($event['city']) : '' ?>
+                                </div>
+                            <?php endif; ?>
+                            
                             <p><?= htmlspecialchars(substr($event['description'], 0, 120)) ?>...</p>
+                            
+                            <div style="margin: 12px 0; display: flex; gap: 16px; flex-wrap: wrap; font-size: 0.9rem;">
+                                <span style="color: #800020; font-weight: 600;">
+                                    <i data-lucide="ticket" style="width: 16px; height: 16px; display: inline-block; vertical-align: middle;"></i>
+                                    <?= $event['available_seats'] ?> / <?= $event['capacity'] ?> available
+                                </span>
+                                <span style="color: #059669; font-weight: 600;">
+                                    <i data-lucide="dollar-sign" style="width: 16px; height: 16px; display: inline-block; vertical-align: middle;"></i>
+                                    <?= $event['price'] > 0 ? '$' . number_format($event['price'], 2) : 'FREE' ?>
+                                </span>
+                            </div>
+                            
                             <a href="../auth/index.php" class="event-link">
-                                Register Now
+                                Login to Register
                                 <i data-lucide="arrow-right"></i>
                             </a>
                         </div>
                     </div>
                 <?php endwhile; ?>
             <?php else: ?>
-                <!-- Default events if none in database -->
-                <div class="event-card">
-                    <div class="event-image">
-                        <i data-lucide="calendar"></i>
-                    </div>
-                    <div class="event-content">
-                        <h3>Weekly Fellowship</h3>
-                        <div class="event-date">
-                            <i data-lucide="clock"></i>
-                            Every Friday, 7:00 PM
-                        </div>
-                        <p>Join us for our regular fellowship meetings filled with worship, teaching, and fellowship.</p>
-                        <a href="../auth/index.php" class="event-link">
-                            Register Now
-                            <i data-lucide="arrow-right"></i>
-                        </a>
-                    </div>
-                </div>
-                <div class="event-card">
-                    <div class="event-image">
-                        <i data-lucide="book-open"></i>
-                    </div>
-                    <div class="event-content">
-                        <h3>Bible Study Group</h3>
-                        <div class="event-date">
-                            <i data-lucide="clock"></i>
-                            Every Wednesday, 6:30 PM
-                        </div>
-                        <p>Deep dive into Scripture and grow together in understanding God's Word.</p>
-                        <a href="../auth/index.php" class="event-link">
-                            Register Now
-                            <i data-lucide="arrow-right"></i>
-                        </a>
-                    </div>
-                </div>
-                <div class="event-card">
-                    <div class="event-image">
-                        <i data-lucide="music"></i>
-                    </div>
-                    <div class="event-content">
-                        <h3>Worship Night</h3>
-                        <div class="event-date">
-                            <i data-lucide="clock"></i>
-                            Monthly, First Saturday
-                        </div>
-                        <p>Experience powerful worship and encounter God's presence in a special way.</p>
-                        <a href="../auth/index.php" class="event-link">
-                            Register Now
-                            <i data-lucide="arrow-right"></i>
-                        </a>
-                    </div>
+                <!-- No events message -->
+                <div style="grid-column: 1 / -1; text-align: center; padding: 60px 20px;">
+                    <i data-lucide="calendar-x" style="width: 80px; height: 80px; color: #ccc; margin: 0 auto 20px;"></i>
+                    <h3 style="color: #666; margin-bottom: 10px;">No Events Available</h3>
+                    <p style="color: #999;">Check back soon for upcoming events!</p>
                 </div>
             <?php endif; ?>
-        </div>
-        <div style="text-align: center; margin-top: 3rem;">
-            <a href="../auth/index.php" class="primary-btn">View All Events</a>
         </div>
     </section>
 
