@@ -13,6 +13,9 @@
     <a href="../dashboard/attendance.php" class="<?= basename($_SERVER['PHP_SELF']) === 'attendance.php' ? 'active' : '' ?>">
       <i data-lucide="check-square"></i> Attendance
     </a>
+    <a href="../calendar/calendar.php" class="<?= basename($_SERVER['PHP_SELF']) === 'calendar.php' ? 'active' : '' ?>">
+      <i data-lucide="calendar-days"></i> Event Calendar
+    </a>
 
     <?php if ($role === 'event_head'): ?>
       <a href="../event/manage_events.php" class="<?= basename($_SERVER['PHP_SELF']) === 'manage_events.php' ? 'active' : '' ?>">
