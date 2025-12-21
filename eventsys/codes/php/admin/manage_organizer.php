@@ -101,7 +101,7 @@ $organizers = $stmt->get_result();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manage Organizers - Eventix</title>
+    <title>Manage Organizers - Eventix Admin</title>
     <link rel="stylesheet" href="../../css/style.css">
     <link rel="stylesheet" href="../../css/sidebar.css">
     <link rel="stylesheet" href="../../css/management.css">
@@ -110,7 +110,7 @@ $organizers = $stmt->get_result();
 </head>
 
 <body class="dashboard-layout">
-    <?php include('../components/sidebar.php'); ?>
+    <?php include('admin_sidebar.php'); ?>
 
     <main class="management-content">
         <!-- Page Header -->

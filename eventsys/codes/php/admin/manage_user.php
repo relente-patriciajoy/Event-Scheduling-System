@@ -119,7 +119,7 @@ if (isset($_GET['edit'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manage Users - Eventix</title>
+    <title>Manage Users - Eventix Admin</title>
     <link rel="stylesheet" href="../../css/style.css">
     <link rel="stylesheet" href="../../css/sidebar.css">
     <link rel="stylesheet" href="../../css/management.css">
@@ -128,7 +128,7 @@ if (isset($_GET['edit'])) {
 </head>
 
 <body class="dashboard-layout">
-  <?php include('../components/sidebar.php'); ?>
+  <?php include('admin_sidebar.php'); ?>
 
   <main class="management-content">
       <!-- Page Header -->
@@ -377,10 +377,8 @@ if (isset($_GET['edit'])) {
   </main>
 
   <script>
-      // Initialize Lucide icons
       lucide.createIcons();
 
-      // Auto-dismiss alerts after 5 seconds
       setTimeout(() => {
           const alerts = document.querySelectorAll('.management-alert');
           alerts.forEach(alert => {

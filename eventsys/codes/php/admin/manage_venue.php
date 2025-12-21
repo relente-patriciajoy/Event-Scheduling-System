@@ -141,7 +141,7 @@ if (!empty($search)) {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Manage Venues - Eventix</title>
+  <title>Manage Venues - Eventix Admin</title>
   <link rel="stylesheet" href="../../css/style.css">
   <link rel="stylesheet" href="../../css/sidebar.css">
   <link rel="stylesheet" href="../../css/management.css">
@@ -150,7 +150,7 @@ if (!empty($search)) {
 </head>
 
 <body class="dashboard-layout">
-  <?php include('../components/sidebar.php'); ?>
+  <?php include('admin_sidebar.php'); ?>
 
   <main class="management-content">
       <!-- Page Header -->

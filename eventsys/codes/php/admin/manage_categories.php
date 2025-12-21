@@ -102,12 +102,12 @@ $categories = $stmt->get_result();
 </head>
 
 <body class="dashboard-layout">
-    <?php include('../components/sidebar.php'); ?>
+    <?php include('admin_sidebar.php'); ?>
 
     <main class="management-content">
         <!-- Page Header -->
         <div class="management-header">
-            <h1>Manage Event Categories</h1>
+            <h1>Manage Event Categories - Eventix Admin</h1>
             <p>Organize events by categories</p>
         </div>
 
