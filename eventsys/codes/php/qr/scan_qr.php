@@ -1,7 +1,7 @@
 <?php
 /**
  * QR Code Scanner Page
- * For event heads to scan attendee QR codes for check-in/check-out
+ * For event heads and admins to scan attendee QR codes for check-in/check-out
  */
 session_start();
 if (!isset($_SESSION['user_id'])) {
@@ -23,7 +23,14 @@ $role_stmt->fetch();
 $role_stmt->close();
 
 if ($role !== 'event_head' && $role !== 'admin') {
-    die("Access denied. Only event heads can scan QR codes.");
+    die("Access denied. Only event heads and admins can scan QR codes.");
+}
+
+// Determine which sidebar to include based on role
+if ($role === 'admin') {
+    $sidebar_file = '../admin/admin_sidebar.php';
+} else {
+    $sidebar_file = '../components/sidebar.php';
 }
 
 // Get user's events
@@ -34,17 +41,27 @@ $email_stmt->bind_result($email);
 $email_stmt->fetch();
 $email_stmt->close();
 
-$events_query = "
-    SELECT e.event_id, e.title, e.start_time
-    FROM event e
-    JOIN organizer o ON e.organizer_id = o.organizer_id
-    WHERE o.contact_email = ?
-    ORDER BY e.start_time DESC
-";
-$stmt = $conn->prepare($events_query);
-$stmt->bind_param("s", $email);
-$stmt->execute();
-$events = $stmt->get_result();
+// Admin can see ALL events, event_head sees only their events
+if ($role === 'admin') {
+    $events_query = "
+        SELECT e.event_id, e.title, e.start_time
+        FROM event e
+        ORDER BY e.start_time DESC
+    ";
+    $events = $conn->query($events_query);
+} else {
+    $events_query = "
+        SELECT e.event_id, e.title, e.start_time
+        FROM event e
+        JOIN organizer o ON e.organizer_id = o.organizer_id
+        WHERE o.contact_email = ?
+        ORDER BY e.start_time DESC
+    ";
+    $stmt = $conn->prepare($events_query);
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+    $events = $stmt->get_result();
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -221,7 +238,7 @@ $events = $stmt->get_result();
     </style>
 </head>
 <body class="dashboard-layout">
-    <?php include('../components/sidebar.php'); ?>
+    <?php include($sidebar_file); ?>
     
     <main class="main-content">
         <header class="banner">
