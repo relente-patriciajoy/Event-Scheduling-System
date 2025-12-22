@@ -71,7 +71,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                             if ($delivery['email'] || $delivery['sms']) {
                                 $_SESSION['otp_id'] = $otp_result['otp_id'];
-                                header("Location: verify_admin_otp_debug.php");
+                                header("Location: verify_admin_otp.php");
                                 exit();
                             } else {
                                 $error = "Failed to send OTP. Please try again.";

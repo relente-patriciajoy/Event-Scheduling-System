@@ -1,9 +1,7 @@
 <?php
 /**
  * OTP Functions for Eventix System
- * Handles OTP generation, validation, and delivery via SMS and Email
- *
- * CURRENT STATUS: Email OTP ENABLED | SMS OTP DISABLED (for future use)
+ * FIXED: Prevents "already used" errors
  */
 
 // OTP Configuration
@@ -20,13 +18,6 @@ function generateOTP() {
 
 /**
  * Create and store OTP in database
- * 
- * @param mysqli $conn Database connection
- * @param string $email User email
- * @param string $phone User phone (optional)
- * @param int $user_id User ID (null for registration)
- * @param string $type OTP type (registration, login, reset_password)
- * @return array|false Returns array with otp_code and otp_id on success, false on failure
  */
 function createOTP($conn, $email, $phone = null, $user_id = null, $type = 'registration') {
     // Generate OTP code
@@ -35,9 +26,9 @@ function createOTP($conn, $email, $phone = null, $user_id = null, $type = 'regis
     // Calculate expiry time
     $expires_at = date('Y-m-d H:i:s', strtotime('+' . OTP_EXPIRY_MINUTES . ' minutes'));
     
-    // Invalidate any existing unused OTPs for this email
-    $stmt = $conn->prepare("UPDATE otp_code SET is_used = 1 WHERE email = ? AND is_used = 0");
-    $stmt->bind_param("s", $email);
+    // Invalidate any existing unused OTPs for this email AND type
+    $stmt = $conn->prepare("UPDATE otp_code SET is_used = 1 WHERE email = ? AND otp_type = ? AND is_used = 0");
+    $stmt->bind_param("ss", $email, $type);
     $stmt->execute();
     $stmt->close();
     
@@ -60,19 +51,13 @@ function createOTP($conn, $email, $phone = null, $user_id = null, $type = 'regis
 }
 
 /**
- * Verify OTP code
- * 
- * @param mysqli $conn Database connection
- * @param string $email User email
- * @param string $otp_code OTP code to verify
- * @param string $type OTP type
- * @return array Returns array with success status and message
+ * Verify OTP code - FIXED VERSION
  */
 function verifyOTP($conn, $email, $otp_code, $type = 'registration') {
     $stmt = $conn->prepare("
         SELECT otp_id, user_id, expires_at, is_used 
         FROM otp_code 
-        WHERE email = ? AND otp_code = ? AND otp_type = ? 
+        WHERE email = ? AND otp_code = ? AND otp_type = ? AND is_used = 0
         ORDER BY created_at DESC 
         LIMIT 1
     ");
@@ -83,22 +68,44 @@ function verifyOTP($conn, $email, $otp_code, $type = 'registration') {
     
     if ($result->num_rows === 0) {
         $stmt->close();
+
+        // Check if OTP exists but is already used
+        $check_stmt = $conn->prepare("
+            SELECT is_used, expires_at
+            FROM otp_code
+            WHERE email = ? AND otp_code = ? AND otp_type = ?
+            ORDER BY created_at DESC
+            LIMIT 1
+        ");
+        $check_stmt->bind_param("sss", $email, $otp_code, $type);
+        $check_stmt->execute();
+        $check_result = $check_stmt->get_result();
+
+        if ($check_result->num_rows > 0) {
+            $check_row = $check_result->fetch_assoc();
+            $check_stmt->close();
+
+            if ($check_row['is_used']) {
+                return [
+                    'success' => false,
+                    'message' => 'This OTP code has already been used. Please request a new one.'
+                ];
+            } elseif (strtotime($check_row['expires_at']) < time()) {
+                return [
+                    'success' => false,
+                    'message' => 'OTP code has expired. Please request a new one.'
+                ];
+            }
+        }
+
         return [
             'success' => false,
-            'message' => 'Invalid OTP code.'
+            'message' => 'Invalid OTP code. Please check and try again.'
         ];
     }
     
     $otp = $result->fetch_assoc();
     $stmt->close();
-    
-    // Check if already used
-    if ($otp['is_used']) {
-        return [
-            'success' => false,
-            'message' => 'OTP code has already been used.'
-        ];
-    }
     
     // Check if expired
     if (strtotime($otp['expires_at']) < time()) {
@@ -108,7 +115,7 @@ function verifyOTP($conn, $email, $otp_code, $type = 'registration') {
         ];
     }
     
-    // Mark OTP as used
+    // Mark OTP as used ONLY after successful verification
     $update_stmt = $conn->prepare("UPDATE otp_code SET is_used = 1 WHERE otp_id = ?");
     $update_stmt->bind_param("i", $otp['otp_id']);
     $update_stmt->execute();
@@ -124,17 +131,8 @@ function verifyOTP($conn, $email, $otp_code, $type = 'registration') {
 
 /**
  * Send OTP via Email using PHPMailer
- * ENABLED - Currently in use
- * 
- * @param string $email Recipient email
- * @param string $otp_code OTP code
- * @param string $name Recipient name
- * @return bool Returns true on success, false on failure
  */
 function sendOTPEmail($email, $otp_code, $name = 'User') {
-    // You'll need to install PHPMailer via Composer
-    // composer require phpmailer/phpmailer
-    
     require_once __DIR__ . '/../vendor/autoload.php';
     
     $mail = new PHPMailer\PHPMailer\PHPMailer(true);
@@ -142,10 +140,10 @@ function sendOTPEmail($email, $otp_code, $name = 'User') {
     try {
         // SMTP Configuration
         $mail->isSMTP();
-        $mail->Host = 'smtp.gmail.com'; // Change to your SMTP host
+        $mail->Host = 'smtp.gmail.com';
         $mail->SMTPAuth = true;
-        $mail->Username = 'eventix.system@gmail.com'; // CHANGE THIS - Gmail address
-        $mail->Password = 'gjzo qozj stqh iomm'; // CHANGE THIS - 16-character app password
+        $mail->Username = 'eventix.system@gmail.com';
+        $mail->Password = 'gjzo qozj stqh iomm';
         $mail->SMTPSecure = PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_STARTTLS;
         $mail->Port = 587;
         
@@ -186,77 +184,14 @@ function sendOTPEmail($email, $otp_code, $name = 'User') {
 }
 
 /**
- * Send OTP via SMS using Semaphore API
- * DISABLED - Commented out for future use
- * 
- * To enable SMS in the future:
- * 1. Get API key from semaphore.co
- * 2. Load credits (minimum ₱100)
- * 3. Uncomment the code below
- * 4. Replace 'YOUR_SEMAPHORE_API_KEY' with your actual API key
- * 5. Uncomment SMS code in sendOTPDual() function
- *
- * @param string $phone Phone number (format: +639XXXXXXXXX)
- * @param string $otp_code OTP code
- * @return bool Returns true on success, false on failure
+ * Send OTP via SMS - DISABLED
  */
 function sendOTPSMS($phone, $otp_code) {
-    // SMS DISABLED - Return success without sending
-    // This allows the system to work without SMS functionality
-    return true;
-
-    /* ============================================
-       SMS CODE DISABLED - UNCOMMENT TO ENABLE
-       ============================================
-
-    $apiKey = 'YOUR_SEMAPHORE_API_KEY'; // Get from semaphore.co
-    $senderName = 'Eventix'; // Your registered sender name
-    
-    // Format phone number (remove spaces, add +63 prefix if needed)
-    $phone = preg_replace('/\s+/', '', $phone);
-    if (substr($phone, 0, 1) === '0') {
-        $phone = '+63' . substr($phone, 1);
-    } elseif (substr($phone, 0, 3) !== '+63') {
-        $phone = '+63' . $phone;
-    }
-    
-    $message = "Your Eventix verification code is: {$otp_code}. Valid for " . OTP_EXPIRY_MINUTES . " minutes. Do not share this code.";
-    
-    $ch = curl_init();
-    
-    curl_setopt($ch, CURLOPT_URL, 'https://api.semaphore.co/api/v4/messages');
-    curl_setopt($ch, CURLOPT_POST, 1);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query([
-        'apikey' => $apiKey,
-        'number' => $phone,
-        'message' => $message,
-        'sendername' => $senderName
-    ]));
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    
-    $response = curl_exec($ch);
-    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    curl_close($ch);
-    
-    if ($httpCode === 200) {
-        return true;
-    } else {
-        error_log("SMS sending failed: " . $response);
-        return false;
-    }
-
-    ============================================ */
+    return true; // SMS disabled
 }
 
 /**
  * Send OTP via both SMS and Email
- * ⚠️ SMS PART DISABLED - Only Email is sent
- * 
- * @param string $email User email
- * @param string $phone User phone
- * @param string $otp_code OTP code
- * @param string $name User name
- * @return array Returns status for both delivery methods
  */
 function sendOTPDual($email, $phone, $otp_code, $name = 'User') {
     $result = [
@@ -264,24 +199,15 @@ function sendOTPDual($email, $phone, $otp_code, $name = 'User') {
         'sms' => false
     ];
     
-    // ✅ Send via email (ENABLED)
     if (!empty($email)) {
         $result['email'] = sendOTPEmail($email, $otp_code, $name);
     }
-    
-    // ⚠️ SMS DISABLED - Uncomment to enable SMS in the future
-    // if (!empty($phone)) {
-    //     $result['sms'] = sendOTPSMS($phone, $otp_code);
-    // }
     
     return $result;
 }
 
 /**
- * Clean up expired OTPs (should be run periodically via cron)
- * 
- * @param mysqli $conn Database connection
- * @return int Number of deleted records
+ * Clean up expired OTPs
  */
 function cleanupExpiredOTPs($conn) {
     $stmt = $conn->prepare("DELETE FROM otp_code WHERE expires_at < NOW() OR (is_used = 1 AND created_at < DATE_SUB(NOW(), INTERVAL 7 DAY))");
@@ -293,13 +219,8 @@ function cleanupExpiredOTPs($conn) {
 
 /**
  * Check if user can request new OTP (rate limiting)
- * 
- * @param mysqli $conn Database connection
- * @param string $email User email
- * @return bool Returns true if user can request OTP
  */
 function canRequestOTP($conn, $email) {
-    // Check if user has requested OTP in the last minute
     $stmt = $conn->prepare("
         SELECT COUNT(*) as count 
         FROM otp_code 
@@ -310,6 +231,6 @@ function canRequestOTP($conn, $email) {
     $result = $stmt->get_result()->fetch_assoc();
     $stmt->close();
     
-    return $result['count'] < 3; // Max 3 requests per minute
+    return $result['count'] < 3;
 }
 ?>

@@ -1,7 +1,6 @@
 <?php
 /**
- * Admin OTP Verification Page - DEBUG VERSION
- * Use this temporarily to see what's happening
+ * Admin OTP Verification Page
  */
 session_start();
 
@@ -16,30 +15,7 @@ if (!isset($_SESSION['pending_admin_login'])) {
 
 $error = "";
 $resend_message = "";
-$debug_info = "";
 $email = $_SESSION['pending_admin_login']['email'];
-
-// DEBUG: Show what OTP codes exist in database
-$debug_query = $conn->prepare("SELECT otp_id, otp_code, otp_type, expires_at, is_used, created_at FROM otp_code WHERE email = ? ORDER BY created_at DESC LIMIT 5");
-$debug_query->bind_param("s", $email);
-$debug_query->execute();
-$debug_result = $debug_query->get_result();
-
-$debug_info .= "<h3 style='color: #e63946;'>DEBUG INFO FOR: " . htmlspecialchars($email) . "</h3>";
-$debug_info .= "<table border='1' style='border-collapse: collapse; margin: 10px 0; font-size: 0.9rem;'>";
-$debug_info .= "<tr><th>OTP Code</th><th>Type</th><th>Expires At</th><th>Used?</th><th>Created</th></tr>";
-
-while ($row = $debug_result->fetch_assoc()) {
-    $is_expired = strtotime($row['expires_at']) < time() ? 'YES' : 'NO';
-    $debug_info .= "<tr>";
-    $debug_info .= "<td style='padding: 5px; font-weight: bold; color: blue;'>" . $row['otp_code'] . "</td>";
-    $debug_info .= "<td style='padding: 5px;'>" . $row['otp_type'] . "</td>";
-    $debug_info .= "<td style='padding: 5px; color: " . ($is_expired === 'YES' ? 'red' : 'green') . ";'>" . $row['expires_at'] . " (Expired: $is_expired)</td>";
-    $debug_info .= "<td style='padding: 5px;'>" . ($row['is_used'] ? 'YES' : 'NO') . "</td>";
-    $debug_info .= "<td style='padding: 5px;'>" . $row['created_at'] . "</td>";
-    $debug_info .= "</tr>";
-}
-$debug_info .= "</table>";
 
 // Handle OTP verification
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['verify_otp'])) {
@@ -50,14 +26,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['verify_otp'])) {
     } elseif (strlen($otp_input) !== 6 || !ctype_digit($otp_input)) {
         $error = "Please enter a valid 6-digit OTP code.";
     } else {
-        $debug_info .= "<p style='color: orange;'>Attempting to verify OTP: <strong>$otp_input</strong></p>";
-        
-        // Try login type first
+        // Verify OTP - Use 'login' type (works for all login types)
         $verification = verifyOTP($conn, $email, $otp_input, 'login');
         
         if ($verification['success']) {
-            $debug_info .= "<p style='color: green;'>✅ OTP verified successfully with type 'login'</p>";
-            
             $login_data = $_SESSION['pending_admin_login'];
             
             // Clear pending login
@@ -70,12 +42,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['verify_otp'])) {
             $_SESSION['role'] = 'admin';
             $_SESSION['email'] = $login_data['email'];
             $_SESSION['login_time'] = time();
-            $_SESSION['is_admin_portal'] = true;
+            $_SESSION['is_admin_portal'] = true; // Flag for admin portal
             
             header("Location: admin_dashboard.php");
             exit();
         } else {
-            $debug_info .= "<p style='color: red;'>❌ Verification failed: " . $verification['message'] . "</p>";
             $error = $verification['message'];
         }
     }
@@ -89,16 +60,15 @@ if (isset($_POST['resend_otp'])) {
         $user_data = $_SESSION['pending_admin_login'];
         $name = $user_data['full_name'];
         $phone = $user_data['phone'];
-        $user_id = $user_data['user_id'];
 
-        $otp_result = createOTP($conn, $email, $phone, $user_id, 'login');
+        $otp_result = createOTP($conn, $email, $phone, null, 'admin_login');
 
         if ($otp_result) {
             $delivery = sendOTPDual($email, $phone, $otp_result['otp_code'], $name);
             
             if ($delivery['email'] || $delivery['sms']) {
                 $_SESSION['otp_id'] = $otp_result['otp_id'];
-                $resend_message = "New OTP code has been sent: <strong>" . $otp_result['otp_code'] . "</strong>";
+                $resend_message = "New OTP code has been sent!";
             } else {
                 $resend_message = "Failed to send OTP. Please try again.";
             }
@@ -107,31 +77,49 @@ if (isset($_POST['resend_otp'])) {
         }
     }
 }
+
+$conn->close();
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Verification DEBUG - Eventix</title>
+    <title>Admin Verification - Eventix</title>
     <link rel="icon" type="image/png" href="../../assets/eventix-logo.png">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../../css/auth.css">
     <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        .admin-badge {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: #e63946;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 16px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+    </style>
 </head>
 <body class="auth-page">
 
-<div class="auth-container" style="max-width: 800px;">
+<div class="auth-container">
     <div class="auth-box">
         <img src="../../assets/eventix-logo.png" alt="Eventix Logo" class="logo" />
         
-        <h2>🔍 DEBUG MODE</h2>
-        <p>Admin OTP Verification - Troubleshooting</p>
-
-        <!-- Debug Information -->
-        <div style="background: #f0f0f0; padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: left;">
-            <?= $debug_info ?>
+        <div class="admin-badge">
+            <i data-lucide="shield" style="width: 16px; height: 16px;"></i>
+            Admin Security
         </div>
+
+        <h2>Verify Your Identity</h2>
+        <p>We've sent a 6-digit code to:<br><strong><?php echo htmlspecialchars($email); ?></strong></p>
 
         <?php if (!empty($error)): ?>
             <div class="alert alert-error">
@@ -143,7 +131,7 @@ if (isset($_POST['resend_otp'])) {
         <?php if (!empty($resend_message)): ?>
             <div class="alert alert-success">
                 <i data-lucide="check-circle" style="width: 18px; height: 18px;"></i>
-                <?php echo $resend_message; ?>
+                <?php echo htmlspecialchars($resend_message); ?>
             </div>
         <?php endif; ?>
 
@@ -170,6 +158,9 @@ if (isset($_POST['resend_otp'])) {
         </form>
 
         <div style="text-align: center; margin-top: 20px;">
+            <p style="color: #6b6b6b; font-size: 0.9rem;">
+                Didn't receive the code?
+            </p>
             <form method="POST" action="" style="display: inline;">
                 <button
                     type="submit"
@@ -177,7 +168,7 @@ if (isset($_POST['resend_otp'])) {
                     class="auth-button button-outline"
                     style="margin-top: 10px;"
                 >
-                    Resend OTP (will show code in message)
+                    Resend OTP
                 </button>
             </form>
         </div>
@@ -190,6 +181,23 @@ if (isset($_POST['resend_otp'])) {
 
 <script>
     lucide.createIcons();
+
+    const otpInput = document.getElementById('otp_code');
+    otpInput.addEventListener('input', function() {
+        if (this.value.length === 6) {
+            // auto-submit when 6 digits entered
+            // this.form.submit();
+        }
+    });
+
+    setTimeout(() => {
+        const alerts = document.querySelectorAll('.alert');
+        alerts.forEach(alert => {
+            alert.style.opacity = '0';
+            alert.style.transform = 'translateY(-10px)';
+            setTimeout(() => alert.remove(), 300);
+        });
+    }, 5000);
 </script>
 
 </body>
