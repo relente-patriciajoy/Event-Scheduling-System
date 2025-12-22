@@ -21,6 +21,9 @@
       <a href="../event/manage_events.php" class="<?= basename($_SERVER['PHP_SELF']) === 'manage_events.php' ? 'active' : '' ?>">
         <i data-lucide="settings"></i> Manage Events
       </a>
+      <a href="../qr/scan_qr.php" class="<?= basename($_SERVER['PHP_SELF']) === 'scan_qr.php' ? 'active' : '' ?>">
+        <i data-lucide="scan"></i> QR Scanner
+      </a>
       <a href="../event/view_attendance.php" class="<?= basename($_SERVER['PHP_SELF']) === 'view_attendance.php' ? 'active' : '' ?>">
         <i data-lucide="eye"></i> View Attendance
       </a>

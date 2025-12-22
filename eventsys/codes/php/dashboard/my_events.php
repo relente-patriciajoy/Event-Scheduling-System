@@ -17,7 +17,7 @@ $stmt->fetch();
 $stmt->close();
 
 $query = "
-SELECT e.title, e.start_time, e.end_time, v.name AS venue, r.registration_date, r.table_number, r.status
+SELECT r.registration_id, e.title, e.start_time, e.end_time, v.name AS venue, r.registration_date, r.table_number, r.status
 FROM registration r
 JOIN event e ON r.event_id = e.event_id
 JOIN venue v ON e.venue_id = v.venue_id
@@ -62,6 +62,13 @@ $result = $stmt->get_result();
                     <p><strong>Date:</strong> <?= $row['start_time'] ?> – <?= $row['end_time'] ?></p>
                     <p><strong>Table Number:</strong> <?= $row['table_number']?></p>
                     <p><strong>Status:</strong> <?= $row['status'] ?></p>
+
+                    <!-- QR Code Button -->
+                    <a href="../qr/view_qr.php?reg_id=<?= $row['registration_id'] ?>"
+                    style="display: inline-flex; align-items: center; gap: 8px; margin-top: 15px; padding: 10px 20px; background: linear-gradient(135deg, #e63946, #c72c3a); color: white; text-decoration: none; border-radius: 8px; font-weight: 600;">
+                        <i data-lucide="qr-code" style="width: 16px; height: 16px;"></i>
+                        View QR Code
+                    </a>
                 </div>
             <?php endwhile; ?>
         <?php else: ?>

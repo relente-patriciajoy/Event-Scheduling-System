@@ -21,11 +21,15 @@
       </div>
     </div>
     
-    <a href="../event/manage_events.php" class="<?= basename($_SERVER['PHP_SELF']) === 'manage_events.php' ? 'active' : '' ?>">
+    <a href="../admin/admin_all_events.php" class="<?= basename($_SERVER['PHP_SELF']) === 'admin_all_events.php' ? 'active' : '' ?>">
       <i data-lucide="calendar"></i> All Events
     </a>
+
+    <a href="../qr/scan_qr.php" class="<?= basename($_SERVER['PHP_SELF']) === 'scan_qr.php' ? 'active' : '' ?>">
+      <i data-lucide="scan"></i> QR Scanner
+    </a>
     
-    <a href="../event/view_attendance.php" class="<?= basename($_SERVER['PHP_SELF']) === 'view_attendance.php' ? 'active' : '' ?>">
+    <a href="../admin/admin_view_attendance.php" class="<?= basename($_SERVER['PHP_SELF']) === 'admin_view_attendance.php' ? 'active' : '' ?>">
       <i data-lucide="users"></i> Attendance
     </a>
     
