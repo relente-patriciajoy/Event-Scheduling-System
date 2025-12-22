@@ -1,4 +1,3 @@
-<!-- Admin Sidebar - Consistent Navigation -->
 <aside class="sidebar">
   <h2 class="logo">Eventix Admin</h2>
   <nav>

@@ -133,18 +133,18 @@ $upcoming_events = $conn->query("SELECT e.event_id, e.title, e.start_time, v.nam
                     <span style="margin-left:auto;">▾</span>
                 </div>
                 <div class="dropdown-menu">
-                    <a href="../admin/manage_user.php">Users</a>
-                    <a href="../admin/manage_venue.php">Venues</a>
-                    <a href="../admin/manage_organizer.php">Organizers</a>
-                    <a href="../admin/manage_categories.php">Categories</a>
+                    <a href="manage_user.php">Users</a>
+                    <a href="manage_venue.php">Venues</a>
+                    <a href="manage_organizer.php">Organizers</a>
+                    <a href="manage_categories.php">Categories</a>
                 </div>
             </div>
             
-            <a href="../event/manage_events.php">
+            <a href="admin_all_events.php">
                 <i data-lucide="calendar"></i> All Events
             </a>
             
-            <a href="../event/view_attendance.php">
+            <a href="admin_view_attendance.php">
                 <i data-lucide="users"></i> Attendance
             </a>
             
