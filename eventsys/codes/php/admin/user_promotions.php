@@ -127,9 +127,13 @@ $users = $stmt->get_result();
 
     <main class="management-content">
         <!-- Page Header -->
-        <div class="management-header">
-            <h1>User Role Management</h1>
-            <p>Promote or demote users to different roles</p>
+        <div class="admin-header">
+          <div class="admin-badge">
+              <i data-lucide="shield" style="width: 14px; height: 14px;"></i>
+              Administrator
+          </div>
+          <h1>User Role Management</h1>
+          <p>Promote or demote users to different roles</p>
         </div>
 
         <!-- Alert Messages -->

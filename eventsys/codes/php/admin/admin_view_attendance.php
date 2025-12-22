@@ -58,9 +58,13 @@ if ($selected_event) {
 
     <main class="management-content">
         <!-- Page Header -->
-        <div class="management-header">
-            <h1>View Attendance</h1>
-            <p>View attendance records for all events</p>
+        <div class="admin-header">
+          <div class="admin-badge">
+              <i data-lucide="shield" style="width: 14px; height: 14px;"></i>
+              Administrator
+          </div>
+          <h1>View Attendance</h1>
+          <p>View attendance records for all events</p>
         </div>
 
         <!-- Event Selection -->

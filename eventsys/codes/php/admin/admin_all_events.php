@@ -80,9 +80,13 @@ $events = $stmt->get_result();
 
     <main class="management-content">
         <!-- Page Header -->
-        <div class="management-header">
-            <h1>All Events</h1>
-            <p>View and manage all events in the system</p>
+        <div class="admin-header">
+          <div class="admin-badge">
+              <i data-lucide="shield" style="width: 14px; height: 14px;"></i>
+              Administrator
+          </div>
+          <h1>All Events</h1>
+          <p>View and manage all events in the system</p>
         </div>
 
         <!-- Alert Messages -->

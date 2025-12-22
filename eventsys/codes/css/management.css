@@ -900,3 +900,73 @@
   color: #6b6b6b;
   font-size: 0.9rem;
 }
+
+/* ============================================
+   ADMIN-SPECIFIC HEADER STYLES
+   ============================================ */
+
+/* Admin Header  */
+.admin-header,
+.management-header.admin-style {
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+  color: white;
+  padding: 40px;
+  border-radius: 16px;
+  margin-bottom: 32px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+}
+
+.admin-header h1,
+.management-header.admin-style h1 {
+  color: white;
+  margin: 0 0 8px 0;
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.admin-header p,
+.management-header.admin-style p {
+  color: rgba(255, 255, 255, 0.9);
+  margin: 0;
+  font-size: 1rem;
+}
+
+/* Admin Badge for header */
+.admin-badge {
+  background: #e63946;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* Override default management-header when admin-style is applied */
+.management-header.admin-style {
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%) !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+
+  .admin-header,
+  .management-header.admin-style {
+    padding: 30px 20px;
+  }
+
+  .admin-header h1,
+  .management-header.admin-style h1 {
+    font-size: 1.5rem;
+  }
+
+  .admin-badge {
+    font-size: 0.7rem;
+    padding: 5px 10px;
+  }
+}

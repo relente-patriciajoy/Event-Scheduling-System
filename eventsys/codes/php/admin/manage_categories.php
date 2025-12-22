@@ -106,9 +106,13 @@ $categories = $stmt->get_result();
 
     <main class="management-content">
         <!-- Page Header -->
-        <div class="management-header">
-            <h1>Manage Event Categories - Eventix Admin</h1>
-            <p>Organize events by categories</p>
+        <div class="admin-header">
+          <div class="admin-badge">
+              <i data-lucide="shield" style="width: 14px; height: 14px;"></i>
+              Administrator
+          </div>
+          <h1>Manage Event Categories</h1>
+          <p>Organize events by categories</p>
         </div>
 
         <!-- Stats Row -->

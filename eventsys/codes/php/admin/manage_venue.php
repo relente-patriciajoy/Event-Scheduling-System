@@ -154,9 +154,13 @@ if (!empty($search)) {
 
   <main class="management-content">
       <!-- Page Header -->
-      <div class="management-header">
-          <h1>Manage Venues</h1>
-          <p>Add, edit, and manage event venues</p>
+      <div class="admin-header">
+        <div class="admin-badge">
+            <i data-lucide="shield" style="width: 14px; height: 14px;"></i>
+            Administrator
+        </div>
+        <h1>Manage Venues</h1>
+        <p>Add, edit, and manage event venues</p>
       </div>
 
       <!-- Stats Row -->
