@@ -1,4 +1,5 @@
 :root {
+  /* Original colors */
   --color-bg: #f5f5f5;
   --color-headline: #1a1a1a;
   --color-paragraph: #2d2d2d;
@@ -11,33 +12,17 @@
   --color-tertiary: #ffffff;
   --color-dark: #1a1a1a;
   --color-accent: #ff4757;
+
+  /* New maroon palette for event heads */
+  --maroon: #800020;
+  --dark-maroon: #5a0016;
+  --light-maroon: #a6002a;
+  --maroon-bg: rgba(128, 0, 32, 0.1);
 }
 
-.bg-highlight {
-  background-color: var(--color-highlight);
-}
-
-.text-secondary {
-  color: var(--color-secondary);
-}
-
-.stroke {
-  border-color: var(--color-stroke);
-}
-
-.card {
-  background: var(--color-tertiary);
-  transition: all 0.3s ease;
-}
-
-.sidebar,
-.banner,
-input,
-select,
-textarea,
-button {
-  transition: all 0.3s ease;
-}
+/* ============================================
+   GLOBAL STYLES
+   ============================================ */
 
 * {
   margin: 0;
@@ -53,21 +38,9 @@ body {
   line-height: 1.6;
 }
 
-.highlight {
-  background-color: var(--color-highlight);
-}
-
-/* Layout */
-.dashboard {
-  display: flex;
-  flex-direction: row;
-  gap: 100px;
-  padding: 30px;
-  max-width: 900px;
-  margin: auto;
-  background: var(--color-bg);
-  color: var(--color-paragraph);
-}
+/* ============================================
+   LAYOUT STYLES
+   ============================================ */
 
 .dashboard-layout {
   display: flex;
@@ -77,63 +50,6 @@ body {
   min-height: 100vh;
 }
 
-/* Sidebar */
-.sidebar {
-  width: 240px;
-  background: var(--color-dark);
-  color: #ffffff;
-  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
-  padding: 30px 20px;
-  min-height: 100vh;
-  font-family: 'Segoe UI', 'Roboto', sans-serif;
-  font-size: 16px;
-}
-
-.sidebar .logo {
-  font-size: 1.8rem;
-  font-weight: 700;
-  color: white;
-  margin-bottom: 50px;
-  letter-spacing: -0.5px;
-}
-
-.sidebar nav a {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 14px 16px;
-  color: #e0e0e0;
-  text-decoration: none;
-  font-weight: 500;
-  border-radius: 8px;
-  margin-bottom: 6px;
-  border-left: 3px solid transparent;
-  transition: all 0.3s ease;
-  position: relative;
-}
-
-.sidebar nav a i {
-  width: 20px;
-  height: 20px;
-  stroke-width: 2;
-}
-
-.sidebar nav a:hover {
-  color: #ffffff;
-  background-color: rgba(230, 57, 70, 0.15);
-  border-left: 3px solid var(--color-highlight);
-  padding-left: 20px;
-  transform: translateX(2px);
-}
-
-.sidebar nav a.active {
-  color: #ffffff;
-  background-color: rgba(230, 57, 70, 0.2);
-  border-left: 3px solid var(--color-highlight);
-  font-weight: 600;
-}
-
-/* Main content */
 .main-content {
   flex-grow: 1;
   padding: 40px;
@@ -143,7 +59,10 @@ body {
   min-height: 100vh;
 }
 
-/* Banner */
+/* ============================================
+   BANNER STYLES (Used by all users)
+   ============================================ */
+
 .banner {
   display: flex;
   justify-content: space-between;
@@ -187,12 +106,55 @@ body {
   filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
 }
 
-/* Cards */
-.grid-section {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 24px;
+/* ============================================
+   EVENT HEAD BANNER (Maroon Style)
+   ============================================ */
+
+.banner.event-head-banner {
+  background: linear-gradient(135deg, var(--maroon) 0%, var(--dark-maroon) 100%);
+  box-shadow: 0 6px 20px rgba(128, 0, 32, 0.25);
 }
+
+.event-head-badge {
+  background: rgba(255, 255, 255, 0.2);
+  color: var(--color-main);
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* ============================================
+   NAVBAR (for manage_events.php)
+   ============================================ */
+
+.navbar-container {
+  padding: 16px 30px;
+  background: linear-gradient(135deg, var(--maroon) 0%, var(--dark-maroon) 100%);
+  color: var(--color-main);
+  box-shadow: 0 2px 8px rgba(128, 0, 32, 0.2);
+  min-height: 70px;
+  display: flex;
+  align-items: center;
+}
+
+.navbar-container h1 {
+  margin: 5px 0px;
+  color: var(--color-main);
+  font-size: 1.8rem;
+  font-weight: 700;
+}
+
+/* ============================================
+   CARD STYLES
+   ============================================ */
 
 .card {
   background: #fff;
@@ -221,6 +183,20 @@ body {
   opacity: 1;
 }
 
+.card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 8px 24px rgba(230, 57, 70, 0.15);
+}
+
+/* Event head cards use maroon accent */
+.event-head-page .card::before {
+  background: linear-gradient(90deg, var(--maroon), var(--light-maroon));
+}
+
+.event-head-page .card:hover {
+  box-shadow: 0 8px 24px rgba(128, 0, 32, 0.15);
+}
+
 .card h3 {
   font-size: 1.3rem;
   margin-bottom: 12px;
@@ -246,94 +222,67 @@ body {
   font-weight: 600;
 }
 
-.card td {
-  padding: 12px;
-  border-bottom: 1px solid #f0f0f0;
+/* ============================================
+   GRID LAYOUTS
+   ============================================ */
+
+.grid-section {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 24px;
 }
 
-.card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 8px 24px rgba(230, 57, 70, 0.15);
-}
+/* ============================================
+   EVENT CARDS (for manage_events.php)
+   ============================================ */
 
-.card,
-.event-card,
-.form-container,
-.card.welcome {
-  background: var(--color-tertiary);
-  color: var(--color-headline);
-  border: 1px solid var(--color-stroke);
-}
-
-h1,
-h2,
-.banner h1 {
-  color: var(--color-headline);
-}
-
-/* Form Elements */
-textarea,
-select {
-  width: 100%;
-  padding: 12px;
-  margin: 10px 0;
-  border-radius: 8px;
-  border: 1.5px solid #ddd;
-  font-family: inherit;
-  font-size: 0.95rem;
-  transition: all 0.3s ease;
-}
-
-textarea:focus,
-select:focus,
-input[type="text"]:focus {
-  outline: none;
-  border-color: var(--color-highlight);
-  box-shadow: 0 0 0 3px rgba(230, 57, 70, 0.1);
-}
-
-a {
-  text-decoration: none;
-  color: var(--color-highlight);
-  margin-right: 10px;
-  transition: color 0.3s ease;
-}
-
-a:hover {
-  color: var(--color-secondary);
-}
-
-input[type="text"] {
-  padding: 12px;
-  border-radius: 8px;
-  border: 1.5px solid #ddd;
-  margin-bottom: 10px;
-  width: 100%;
-  font-size: 0.95rem;
-  transition: all 0.3s ease;
-}
-
-.form-container {
+.event-card {
   background: white;
-  padding: 40px;
+  padding: 24px;
   border-radius: 12px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
-  max-width: 420px;
-  margin: 40px auto;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  transition: all 0.3s ease;
+  border: 1px solid #f0f0f0;
+  border-left: 4px solid var(--maroon);
 }
 
-input,
-button {
-  width: 100%;
-  padding: 12px;
-  margin: 10px 0;
-  border-radius: 8px;
-  border: 1.5px solid #ddd;
-  font-size: 14px;
-  font-family: inherit;
+.event-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 8px 24px rgba(128, 0, 32, 0.15);
 }
 
-/* Buttons */
+.event-card h3 {
+  font-size: 1.3rem;
+  margin-bottom: 12px;
+  color: var(--color-headline);
+  font-weight: 600;
+}
+
+.event-card p {
+  font-size: 0.95rem;
+  color: var(--color-paragraph);
+  line-height: 1.6;
+  margin-bottom: 8px;
+}
+
+.event-card .event-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+
+.event-list {
+  margin-top: 24px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 24px;
+}
+
+/* ============================================
+   BUTTONS
+   ============================================ */
+
 button {
   background: var(--color-button);
   color: var(--color-button-text);
@@ -356,6 +305,18 @@ button:active {
   transform: translateY(0);
 }
 
+/* Event head buttons use maroon */
+.event-head-page button {
+  background: linear-gradient(135deg, var(--maroon) 0%, var(--dark-maroon) 100%);
+  box-shadow: 0 2px 8px rgba(128, 0, 32, 0.2);
+}
+
+.event-head-page button:hover {
+  background: linear-gradient(135deg, var(--dark-maroon) 0%, #400010 100%);
+  box-shadow: 0 4px 12px rgba(128, 0, 32, 0.3);
+}
+
+/* Link buttons */
 .back-link,
 .attendance-link,
 .edit-link,
@@ -366,33 +327,49 @@ button:active {
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
+  text-decoration: none;
+  display: inline-block;
 }
 
-button,
-.login-button,
-.register-button,
-.card a,
-.back-link,
-.attendance-link,
-.edit-link,
-.delete-link {
+.back-link {
+  background: var(--maroon-bg);
+  color: var(--maroon);
+}
+
+.back-link:hover {
+  background: rgba(128, 0, 32, 0.2);
+  color: var(--dark-maroon);
+  transform: translateX(-4px);
+}
+
+.attendance-link {
   background: var(--color-button);
   color: var(--color-button-text);
-  border: none;
-  font-weight: 600;
 }
 
-button:hover,
-.login-button:hover,
-.register-button:hover,
-.card a:hover,
-.back-link:hover,
-.attendance-link:hover,
-.edit-link:hover,
-.delete-link:hover {
+.attendance-link:hover {
   background: var(--color-secondary);
-  color: var(--color-main);
   transform: translateY(-2px);
+}
+
+.edit-link {
+  background: #fef3c7;
+  color: #f59e0b;
+}
+
+.edit-link:hover {
+  background: #f59e0b;
+  color: white;
+}
+
+.delete-link {
+  background: #fee2e2;
+  color: #ef4444;
+}
+
+.delete-link:hover {
+  background: #ef4444;
+  color: white;
 }
 
 .button-secondary {
@@ -416,6 +393,91 @@ button:hover,
   color: white;
 }
 
+/* ============================================
+   FORM ELEMENTS
+   ============================================ */
+
+input,
+button {
+  width: 100%;
+  padding: 12px;
+  margin: 10px 0;
+  border-radius: 8px;
+  border: 1.5px solid #ddd;
+  font-size: 14px;
+  font-family: inherit;
+}
+
+input[type="text"],
+textarea,
+select {
+  width: 100%;
+  padding: 12px;
+  margin: 10px 0;
+  border-radius: 8px;
+  border: 1.5px solid #ddd;
+  font-family: inherit;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+}
+
+input[type="text"]:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+  border-color: var(--color-highlight);
+  box-shadow: 0 0 0 3px rgba(230, 57, 70, 0.1);
+}
+
+.event-head-page input[type="text"]:focus,
+.event-head-page textarea:focus,
+.event-head-page select:focus {
+  border-color: var(--maroon);
+  box-shadow: 0 0 0 3px var(--maroon-bg);
+}
+
+/* ============================================
+   CONTAINERS & SECTIONS
+   ============================================ */
+
+.dashboard {
+  display: flex;
+  flex-direction: row;
+  gap: 100px;
+  padding: 30px;
+  max-width: 900px;
+  margin: auto;
+  background: var(--color-bg);
+  color: var(--color-paragraph);
+}
+
+.manage-events-container,
+.my-events-container {
+  background: white;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  margin-bottom: 24px;
+}
+
+.my-events-container {
+  margin-top: 40px;
+}
+
+.manage-events-container h2,
+.my-events-container h2 {
+  color: var(--maroon);
+  font-size: 1.8rem;
+  margin-bottom: 24px;
+  font-weight: 700;
+  border-bottom: 3px solid var(--maroon);
+  padding-bottom: 12px;
+}
+
+/* ============================================
+   ALERTS & MESSAGES
+   ============================================ */
+
 .error {
   color: var(--color-highlight);
   text-align: center;
@@ -434,37 +496,19 @@ button:hover,
   font-weight: 500;
 }
 
-/* Event Lists */
-.event-list {
-  margin-top: 24px;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 24px;
+.alert.alert-warning {
+  color: #92400e;
+  background: #fef3c7;
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  border-left: 4px solid #f59e0b;
 }
 
-.event-card {
-  background: white;
-  padding: 24px;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-  transition: all 0.3s ease;
-  border: 1px solid #f0f0f0;
-  border-left: 4px solid var(--color-highlight);
-}
+/* ============================================
+   NAVIGATION
+   ============================================ */
 
-.event-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 8px 24px rgba(230, 57, 70, 0.15);
-}
-
-.event-card .event-actions {
-  display: flex;
-  gap: 12px;
-  margin-top: 20px;
-  flex-wrap: wrap;
-}
-
-/* Navigation */
 .navigation {
   margin-top: 30px;
   display: flex;
@@ -489,254 +533,19 @@ button:hover,
   box-shadow: 0 4px 12px rgba(230, 57, 70, 0.3);
 }
 
-.card.welcome {
-  background: #fff;
-  padding: 35px;
-  border-radius: 12px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+/* ============================================
+   TABLES
+   ============================================ */
+
+.card td {
+  padding: 12px;
+  border-bottom: 1px solid #f0f0f0;
 }
 
-/* Login/Register Page */
-.login-page {
-  background: linear-gradient(135deg, #f5f5f5 0%, #e0e0e0 100%);
-  background-size: cover;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh;
-  font-family: 'Poppins', sans-serif;
-  padding: 20px;
-}
+/* ============================================
+   DROPDOWN NAVIGATION
+   ============================================ */
 
-.login-container {
-  background: rgb(255, 255, 255);
-  backdrop-filter: blur(16px);
-  padding: 40px 35px;
-  border-radius: 16px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
-  max-width: 440px;
-  width: 100%;
-  color: var(--color-dark);
-  text-align: center;
-}
-
-.login-box h2 {
-  font-size: 2.2rem;
-  font-weight: 700;
-  margin-bottom: 12px;
-  color: var(--color-dark);
-}
-
-.login-box p {
-  font-size: 1rem;
-  color: var(--color-paragraph);
-  margin-bottom: 30px;
-}
-
-.input-group {
-  margin-bottom: 20px;
-  text-align: left;
-}
-
-.input-group label {
-  display: block;
-  margin-bottom: 8px;
-  color: var(--color-dark);
-  font-size: 0.95rem;
-  font-weight: 500;
-}
-
-.input-group input {
-  width: 100%;
-  padding: 13px 16px;
-  border-radius: 8px;
-  border: 1.5px solid #d1d1d1;
-  background: #f9f9f9;
-  color: var(--color-dark);
-  font-size: 0.95rem;
-  transition: all 0.3s ease;
-}
-
-.input-group input:focus {
-  outline: none;
-  border-color: var(--color-highlight);
-  background: white;
-  box-shadow: 0 0 0 3px rgba(230, 57, 70, 0.1);
-}
-
-.options {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 0.9rem;
-  color: var(--color-paragraph);
-  margin-bottom: 20px;
-}
-
-.options a {
-  color: var(--color-highlight);
-  text-decoration: none;
-  font-weight: 500;
-}
-
-.options a:hover {
-  color: var(--color-secondary);
-}
-
-.remember-label {
-  display: flex;
-  align-items: center;
-  margin-right: 16px;
-  gap: 8px;
-}
-
-.remember-label span {
-  white-space: nowrap;
-  font-size: 0.9rem;
-  color: var(--color-paragraph);
-}
-
-.remember-checkbox {
-  margin: 0;
-  vertical-align: middle;
-  cursor: pointer;
-}
-
-.login-button {
-  width: 100%;
-  background: var(--color-button);
-  color: var(--color-button-text);
-  padding: 14px;
-  border: none;
-  border-radius: 8px;
-  font-weight: 600;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(230, 57, 70, 0.25);
-}
-
-.login-button:hover {
-  background: var(--color-secondary);
-  color: var(--color-main);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(230, 57, 70, 0.35);
-}
-
-.register-button {
-  width: 100%;
-  background: var(--color-dark);
-  color: white;
-  padding: 14px;
-  border: none;
-  border-radius: 8px;
-  font-weight: 600;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.register-button:hover {
-  background: #2d2d2d;
-  transform: translateY(-2px);
-}
-
-.register-link {
-  margin-top: 24px;
-  font-size: 0.95rem;
-  color: var(--color-paragraph);
-}
-
-.register-link a {
-  color: var(--color-highlight);
-  text-decoration: none;
-  font-weight: 600;
-}
-
-.register-link a:hover {
-  color: var(--color-secondary);
-}
-
-.login-box img.logo {
-  margin-bottom: 24px;
-  max-width: 120px;
-}
-
-.register-box img.logo {
-  margin-bottom: 16px;
-  max-width: 120px;
-}
-
-.register-box h2 {
-  font-size: 2.2rem;
-  font-weight: 700;
-  margin-bottom: 12px;
-  color: var(--color-dark);
-}
-
-.register-box p {
-  font-size: 1rem;
-  color: var(--color-paragraph);
-  margin-bottom: 30px;
-}
-
-.register-container {
-  background: rgb(255, 255, 255);
-  backdrop-filter: blur(16px);
-  padding: 40px 35px;
-  border-radius: 16px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
-  max-width: 620px;
-  width: 100%;
-  color: var(--color-dark);
-  text-align: center;
-}
-
-.first-input-group,
-.second-input-group,
-.third-input-group,
-.fourth-input-group {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  gap: 16px;
-  flex-wrap: wrap;
-}
-
-.max-width {
-  max-width: 100%;
-}
-
-.wide-input {
-  flex: 1;
-  min-width: 280px;
-}
-
-/* Navbar */
-.navbar-container {
-  padding: 16px 30px;
-  background: linear-gradient(135deg, var(--color-highlight) 0%, var(--color-secondary) 100%);
-  color: var(--color-main);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  min-height: 70px;
-  display: flex;
-  align-items: center;
-}
-
-.my-events-container {
-  margin-top: 60px;
-}
-
-.alert.alert-warning {
-  color: #92400e;
-  background: #fef3c7;
-  padding: 12px 16px;
-  border-radius: 8px;
-  margin-bottom: 16px;
-  border-left: 4px solid #f59e0b;
-}
-
-/* Dropdown Navigation */
 .dropdown-nav {
   display: flex;
   flex-direction: column;
@@ -786,16 +595,13 @@ button:hover,
   display: flex;
 }
 
-/* Media Query */
+/* ============================================
+   RESPONSIVE DESIGN
+   ============================================ */
+
 @media (max-width: 768px) {
   .dashboard-layout {
     flex-direction: column;
-  }
-
-  .sidebar {
-    width: 100%;
-    min-height: auto;
-    padding: 20px;
   }
 
   .main-content {
@@ -815,4 +621,149 @@ button:hover,
   .grid-section {
     grid-template-columns: 1fr;
   }
+
+  .dashboard {
+    flex-direction: column;
+    gap: 30px;
+    padding: 20px;
+  }
+
+  .event-list {
+    grid-template-columns: 1fr;
+  }
+
+  .navbar-container {
+    padding: 12px 20px;
+  }
+
+  .navbar-container h1 {
+    font-size: 1.4rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .banner h1 {
+    font-size: 1.5rem;
+  }
+
+  .banner p {
+    font-size: 0.9rem;
+  }
+
+  .card {
+    padding: 20px;
+  }
+
+  .manage-events-container,
+  .my-events-container {
+    padding: 20px;
+  }
+}
+
+/* ============================================
+   UTILITY CLASSES
+   ============================================ */
+
+.text-center {
+  text-align: center;
+}
+
+.text-maroon {
+  color: var(--maroon);
+}
+
+.bg-maroon {
+  background-color: var(--maroon);
+}
+
+.border-maroon {
+  border-color: var(--maroon);
+}
+
+.mt-20 {
+  margin-top: 20px;
+}
+
+.mb-20 {
+  margin-bottom: 20px;
+}
+
+.flex-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.hidden {
+  display: none;
+}
+
+/* ============================================
+   WELCOME CARD
+   ============================================ */
+
+.card.welcome {
+  background: #fff;
+  padding: 35px;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+}
+
+/* ============================================
+   FORM CONTAINER (Login/Register)
+   ============================================ */
+
+.form-container {
+  background: white;
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  max-width: 420px;
+  margin: 40px auto;
+}
+
+/* ============================================
+   COLOR THEME HELPERS
+   ============================================ */
+
+.highlight {
+  background-color: var(--color-highlight);
+}
+
+.bg-highlight {
+  background-color: var(--color-highlight);
+}
+
+.text-secondary {
+  color: var(--color-secondary);
+}
+
+.stroke {
+  border-color: var(--color-stroke);
+}
+
+h1,
+h2,
+.banner h1 {
+  color: var(--color-headline);
+}
+
+a {
+  text-decoration: none;
+  color: var(--color-highlight);
+  margin-right: 10px;
+  transition: color 0.3s ease;
+}
+
+a:hover {
+  color: var(--color-secondary);
+}
+
+/* Event head links use maroon */
+.event-head-page a {
+  color: var(--maroon);
+}
+
+.event-head-page a:hover {
+  color: var(--dark-maroon);
 }

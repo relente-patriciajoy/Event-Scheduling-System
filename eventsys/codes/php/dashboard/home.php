@@ -9,12 +9,22 @@ include('../../includes/db.php');
 $user_id = $_SESSION['user_id'];
 $full_name = $_SESSION['full_name'];
 
+// Get user role
 $stmt = $conn->prepare("SELECT role FROM user WHERE user_id = ?");
 $stmt->bind_param("i", $user_id);
 $stmt->execute();
 $stmt->bind_result($role);
 $stmt->fetch();
 $stmt->close();
+
+// Smart sidebar detection
+if ($role === 'admin') {
+    $sidebar_path = '../admin/admin_sidebar.php';
+} elseif ($role === 'event_head') {
+    $sidebar_path = '../components/event_head_sidebar.php';
+} else {
+    $sidebar_path = '../components/sidebar.php';
+}
 ?>
 
 <!DOCTYPE html>
@@ -29,7 +39,7 @@ $stmt->close();
 </head>
 
 <body class="dashboard-layout">
-  <?php include('../components/sidebar.php'); ?>
+  <?php include($sidebar_path); ?>
 
   <main class="main-content">
       <header class="banner">
