@@ -65,6 +65,11 @@ $current_page = basename($_SERVER['PHP_SELF']);
             Reports
         </a>
 
+        <a href="../event/participant_engagement.php" class="<?= $current_page === 'participant_engagement.php' ? 'active' : '' ?>">
+            <i data-lucide="activity"></i>
+            Engagement Analytics
+        </a>
+
         <a href="../event/inactive_tracking.php" class="<?= $current_page === 'inactive_tracking.php' ? 'active' : '' ?>">
             <i data-lucide="user-x"></i>
             Inactive Members
