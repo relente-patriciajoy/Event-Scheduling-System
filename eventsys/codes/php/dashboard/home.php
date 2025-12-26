@@ -35,58 +35,7 @@ $stmt->close();
 
 <body class="dashboard-layout <?= $role === 'event_head' ? 'event-head-page' : '' ?>">
   <!-- Sidebar -->
-  <aside class="sidebar">
-      <div class="logo">Eventix</div>
-
-      <nav>
-          <a href="../dashboard/home.php" class="active">
-              <i data-lucide="home"></i>
-              Home
-          </a>
-
-          <a href="../dashboard/events.php">
-              <i data-lucide="calendar"></i>
-              Browse Events
-          </a>
-
-          <a href="../dashboard/my_events.php">
-              <i data-lucide="user-check"></i>
-              My Events
-          </a>
-
-          <a href="../dashboard/attendance.php">
-              <i data-lucide="clipboard-check"></i>
-              Attendance
-          </a>
-
-          <a href="../calendar/calendar.php">
-              <i data-lucide="calendar-days"></i>
-              Event Calendar
-          </a>
-
-          <?php if ($role === 'event_head'): ?>
-          <a href="../event/manage_events.php">
-              <i data-lucide="settings"></i>
-              Manage Events
-          </a>
-
-          <a href="../qr/scan_qr.php">
-              <i data-lucide="scan"></i>
-              QR Scanner
-          </a>
-
-          <a href="../event/view_attendance.php">
-              <i data-lucide="eye"></i>
-              View Attendance
-          </a>
-          <?php endif; ?>
-
-          <a href="../auth/logout.php">
-              <i data-lucide="log-out"></i>
-              Logout
-          </a>
-      </nav>
-  </aside>
+  <?php include('../components/sidebar.php'); ?>
 
   <main class="main-content">
       <header class="banner <?= $role === 'event_head' ? 'event-head-banner' : '' ?>">
