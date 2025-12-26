@@ -57,6 +57,12 @@ It replaces manual tracking with a **clean, user-friendly, and scalable digital 
 
 ---
 
+### 🏛️ 2. Admin Account
+The administrative interface for this application can be accessed at the following URL:
+[localhost/Registration-System/eventsys/codes/php/admin/admin-login.php]
+
+---
+
 ## ⚡ Installation / Usage
 
 1. Clone this repository:
