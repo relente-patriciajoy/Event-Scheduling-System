@@ -60,17 +60,80 @@ $result = $stmt->get_result();
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Event Attendance</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Attendance - Eventix</title>
     <link rel="stylesheet" href="../../css/style.css">
     <link rel="stylesheet" href="../../css/sidebar.css">
+    <?php if ($role === 'event_head'): ?>
+    <link rel="stylesheet" href="../../css/event_head.css">
+    <?php endif; ?>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
 </head>
-<body class="dashboard-layout">
-<?php include('../components/sidebar.php'); ?>
+<body class="dashboard-layout <?= $role === 'event_head' ? 'event-head-page' : '' ?>">
+<!-- Sidebar -->
+<aside class="sidebar">
+    <div class="logo">Eventix</div>
+
+    <nav>
+        <a href="../dashboard/home.php">
+            <i data-lucide="home"></i>
+            Home
+        </a>
+
+        <a href="../dashboard/events.php">
+            <i data-lucide="calendar"></i>
+            Browse Events
+        </a>
+
+        <a href="../dashboard/my_events.php">
+            <i data-lucide="user-check"></i>
+            My Events
+        </a>
+
+        <a href="../dashboard/attendance.php" class="active">
+            <i data-lucide="clipboard-check"></i>
+            Attendance
+        </a>
+
+        <a href="../calendar/calendar.php">
+            <i data-lucide="calendar-days"></i>
+            Event Calendar
+        </a>
+
+        <?php if ($role === 'event_head'): ?>
+        <a href="../event/manage_events.php">
+            <i data-lucide="settings"></i>
+            Manage Events
+        </a>
+
+        <a href="../qr/scan_qr.php">
+            <i data-lucide="scan"></i>
+            QR Scanner
+        </a>
+
+        <a href="../event/view_attendance.php">
+            <i data-lucide="eye"></i>
+            View Attendance
+        </a>
+        <?php endif; ?>
+
+        <a href="../auth/logout.php">
+            <i data-lucide="log-out"></i>
+            Logout
+        </a>
+    </nav>
+</aside>
 
 <main class="main-content">
-    <header class="banner">
+    <header class="banner <?= $role === 'event_head' ? 'event-head-banner' : '' ?>">
         <div>
+            <?php if ($role === 'event_head'): ?>
+            <div class="event-head-badge">
+                <i data-lucide="briefcase" style="width: 14px; height: 14px;"></i>
+                Event Organizer
+            </div>
+            <?php endif; ?>
             <h1>Attendance Tracker</h1>
             <p>Check in and out of your events.</p>
         </div>
@@ -78,29 +141,48 @@ $result = $stmt->get_result();
     </header>
 
     <section class="grid-section">
-        <?php while ($row = $result->fetch_assoc()): ?>
-            <div class="card">
-                <h3><?= htmlspecialchars($row['title']) ?></h3>
-                <p><strong>Event Time:</strong><br><?= $row['start_time'] ?> → <?= $row['end_time'] ?></p>
-                <p><strong>Checked In:</strong> <?= $row['check_in_time'] ?? 'Not yet' ?></p>
-                <p><strong>Checked Out:</strong> <?= $row['check_out_time'] ?? 'Not yet' ?></p>
-                <p><strong>Status:</strong> <?= $row['status'] ?? 'absent' ?></p>
+        <?php if ($result->num_rows > 0): ?>
+            <?php while ($row = $result->fetch_assoc()): ?>
+                <div class="card">
+                    <h3><?= htmlspecialchars($row['title']) ?></h3>
+                    <p><strong>Event Time:</strong><br><?= $row['start_time'] ?> → <?= $row['end_time'] ?></p>
+                    <p><strong>Checked In:</strong> <?= $row['check_in_time'] ?? 'Not yet' ?></p>
+                    <p><strong>Checked Out:</strong> <?= $row['check_out_time'] ?? 'Not yet' ?></p>
+                    <p><strong>Status:</strong> <?= $row['status'] ?? 'absent' ?></p>
 
-                <?php if (!$row['check_in_time']): ?>
-                    <form method="post">
-                        <input type="hidden" name="registration_id" value="<?= $row['registration_id'] ?>">
-                        <button type="submit" name="check_in">Check In</button>
-                    </form>
-                <?php elseif ($row['check_in_time'] && !$row['check_out_time']): ?>
-                    <form method="post">
-                        <input type="hidden" name="registration_id" value="<?= $row['registration_id'] ?>">
-                        <button type="submit" name="check_out">Check Out</button>
-                    </form>
-                <?php else: ?>
-                    <p><em>Attendance complete</em></p>
-                <?php endif; ?>
+                    <?php if (!$row['check_in_time']): ?>
+                        <form method="post">
+                            <input type="hidden" name="registration_id" value="<?= $row['registration_id'] ?>">
+                            <button type="submit" name="check_in">
+                                <i data-lucide="log-in" style="width: 16px; height: 16px;"></i>
+                                Check In
+                            </button>
+                        </form>
+                    <?php elseif ($row['check_in_time'] && !$row['check_out_time']): ?>
+                        <form method="post">
+                            <input type="hidden" name="registration_id" value="<?= $row['registration_id'] ?>">
+                            <button type="submit" name="check_out">
+                                <i data-lucide="log-out" style="width: 16px; height: 16px;"></i>
+                                Check Out
+                            </button>
+                        </form>
+                    <?php else: ?>
+                        <p style="color: #059669; font-weight: 600;">
+                            <i data-lucide="check-circle" style="width: 16px; height: 16px; vertical-align: middle;"></i>
+                            <em>Attendance complete</em>
+                        </p>
+                    <?php endif; ?>
+                </div>
+            <?php endwhile; ?>
+        <?php else: ?>
+            <div class="card">
+                <p>You haven't registered for any events yet.</p>
+                <a href="events.php" style="display: inline-flex; align-items: center; gap: 8px; margin-top: 15px;">
+                    <i data-lucide="search" style="width: 16px; height: 16px;"></i>
+                    Browse Events
+                </a>
             </div>
-        <?php endwhile; ?>
+        <?php endif; ?>
     </section>
 </main>
 <script src="https://unpkg.com/lucide@latest"></script>

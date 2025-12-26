@@ -81,215 +81,63 @@ if ($selected_event) {
     <title>View Attendance - Eventix</title>
     <link rel="stylesheet" href="../../css/style.css">
     <link rel="stylesheet" href="../../css/sidebar.css">
+    <link rel="stylesheet" href="../../css/event_head.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
-    <style>
-        .attendance-container {
-            background: white;
-            padding: 35px;
-            border-radius: 16px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-            margin-bottom: 30px;
-        }
-
-        .attendance-container h2 {
-            color: var(--maroon);
-            font-size: 1.8rem;
-            margin-bottom: 24px;
-            font-weight: 700;
-            border-bottom: 3px solid var(--maroon);
-            padding-bottom: 12px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .search-export-bar {
-            display: flex;
-            gap: 12px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-
-        .search-export-bar input[type="text"] {
-            flex: 1;
-            min-width: 250px;
-            padding: 12px 16px;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            font-size: 0.95rem;
-            transition: all 0.3s ease;
-        }
-
-        .search-export-bar input[type="text"]:focus {
-            outline: none;
-            border-color: var(--maroon);
-            box-shadow: 0 0 0 3px rgba(128, 0, 32, 0.1);
-        }
-
-        .search-export-bar button {
-            padding: 12px 24px;
-            background: linear-gradient(135deg, var(--maroon) 0%, var(--dark-maroon) 100%);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .search-export-bar button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(128, 0, 32, 0.3);
-        }
-
-        .attendance-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-
-        .attendance-table thead {
-            background: linear-gradient(135deg, var(--maroon) 0%, var(--dark-maroon) 100%);
-            color: white;
-        }
-
-        .attendance-table th {
-            padding: 16px;
-            text-align: left;
-            font-weight: 600;
-            font-size: 0.95rem;
-            letter-spacing: 0.3px;
-        }
-
-        .attendance-table tbody tr {
-            border-bottom: 1px solid #f0f0f0;
-            transition: background 0.2s ease;
-        }
-
-        .attendance-table tbody tr:hover {
-            background: #f9f9f9;
-        }
-
-        .attendance-table td {
-            padding: 14px 16px;
-            color: #2d2d2d;
-            font-size: 0.95rem;
-        }
-
-        .status-badge {
-            display: inline-block;
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            text-transform: capitalize;
-        }
-
-        .status-present {
-            background: #d1fae5;
-            color: #065f46;
-        }
-
-        .status-absent {
-            background: #fee2e2;
-            color: #991b1b;
-        }
-
-        .event-select-container {
-            margin-bottom: 25px;
-        }
-
-        .event-select-container label {
-            display: block;
-            font-weight: 600;
-            color: #1a1a1a;
-            margin-bottom: 8px;
-            font-size: 1rem;
-        }
-
-        .event-select-container select {
-            width: 100%;
-            padding: 12px 16px;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            font-size: 0.95rem;
-            font-family: 'Poppins', sans-serif;
-            transition: all 0.3s ease;
-        }
-
-        .event-select-container select:focus {
-            outline: none;
-            border-color: var(--maroon);
-            box-shadow: 0 0 0 3px rgba(128, 0, 32, 0.1);
-        }
-
-        .event-select-container button {
-            margin-top: 12px;
-            width: 100%;
-            padding: 12px 20px;
-            background: linear-gradient(135deg, var(--maroon) 0%, var(--dark-maroon) 100%);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .event-select-container button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(128, 0, 32, 0.3);
-        }
-
-        .no-data {
-            text-align: center;
-            padding: 40px;
-            color: #6b6b6b;
-        }
-
-        .no-data i {
-            width: 64px;
-            height: 64px;
-            color: #d1d1d1;
-            margin-bottom: 15px;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-
-        .stat-card {
-            background: linear-gradient(135deg, var(--maroon) 0%, var(--dark-maroon) 100%);
-            color: white;
-            padding: 20px;
-            border-radius: 12px;
-            text-align: center;
-        }
-
-        .stat-number {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 8px;
-        }
-
-        .stat-label {
-            font-size: 0.9rem;
-            opacity: 0.9;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-    </style>
 </head>
 <body class="dashboard-layout event-head-page">
 
-<?php include('../components/sidebar.php'); ?>
+<!-- Sidebar -->
+<aside class="sidebar">
+    <div class="logo">Eventix</div>
+
+    <nav>
+        <a href="../dashboard/home.php">
+            <i data-lucide="home"></i>
+            Home
+        </a>
+
+        <a href="../dashboard/events.php">
+            <i data-lucide="calendar"></i>
+            Browse Events
+        </a>
+
+        <a href="../dashboard/my_events.php">
+            <i data-lucide="user-check"></i>
+            My Events
+        </a>
+
+        <a href="../dashboard/attendance.php">
+            <i data-lucide="clipboard-check"></i>
+            Attendance
+        </a>
+
+        <a href="../calendar/calendar.php">
+            <i data-lucide="calendar-days"></i>
+            Event Calendar
+        </a>
+
+        <a href="../event/manage_events.php">
+            <i data-lucide="settings"></i>
+            Manage Events
+        </a>
+
+        <a href="../qr/scan_qr.php">
+            <i data-lucide="scan"></i>
+            QR Scanner
+        </a>
+
+        <a href="view_attendance.php" class="active">
+            <i data-lucide="eye"></i>
+            View Attendance
+        </a>
+
+        <a href="../auth/logout.php">
+            <i data-lucide="log-out"></i>
+            Logout
+        </a>
+    </nav>
+</aside>
 
 <main class="main-content">
     <!-- Event Head Banner -->

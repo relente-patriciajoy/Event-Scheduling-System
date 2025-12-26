@@ -26,13 +26,6 @@ if ($role !== 'event_head' && $role !== 'admin') {
     die("Access denied. Only event heads and admins can scan QR codes.");
 }
 
-// Determine which sidebar to include based on role
-if ($role === 'admin') {
-    $sidebar_file = '../admin/admin_sidebar.php';
-} else {
-    $sidebar_file = '../components/sidebar.php';
-}
-
 // Get user's events
 $email_stmt = $conn->prepare("SELECT email FROM user WHERE user_id = ?");
 $email_stmt->bind_param("i", $user_id);
@@ -71,178 +64,73 @@ if ($role === 'admin') {
     <title>QR Code Scanner - Eventix</title>
     <link rel="stylesheet" href="../../css/style.css">
     <link rel="stylesheet" href="../../css/sidebar.css">
+    <link rel="stylesheet" href="../../css/event_head.css">
     <link rel="stylesheet" href="../../css/qr_scanner.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
-    <style>
-        .scanner-container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        
-        .scanner-box {
-            background: white;
-            border-radius: 16px;
-            padding: 30px;
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-            margin-bottom: 20px;
-        }
-        
-        #qr-reader {
-            border: 3px solid #e63946;
-            border-radius: 12px;
-            overflow: hidden;
-            margin: 20px 0;
-        }
-        
-        .scanner-controls {
-            display: flex;
-            gap: 12px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-        
-        .scanner-controls select,
-        .scanner-controls button {
-            flex: 1;
-            min-width: 200px;
-            padding: 12px 20px;
-            border-radius: 8px;
-            font-size: 0.95rem;
-            font-family: 'Poppins', sans-serif;
-        }
-        
-        .result-card {
-            background: white;
-            border-radius: 12px;
-            padding: 25px;
-            margin-top: 20px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-            animation: slideIn 0.3s ease;
-        }
-        
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        .result-success {
-            border-left: 5px solid #10b981;
-            background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
-        }
-        
-        .result-error {
-            border-left: 5px solid #ef4444;
-            background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
-        }
-        
-        .result-warning {
-            border-left: 5px solid #f59e0b;
-            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-        }
-        
-        .user-info {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            margin-top: 15px;
-        }
-        
-        .info-item {
-            display: flex;
-            flex-direction: column;
-        }
-        
-        .info-label {
-            font-size: 0.85rem;
-            color: #6b6b6b;
-            font-weight: 500;
-            margin-bottom: 4px;
-        }
-        
-        .info-value {
-            font-size: 1rem;
-            color: #1a1a1a;
-            font-weight: 600;
-        }
-        
-        .scan-stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 15px;
-            margin-top: 20px;
-        }
-        
-        .stat-box {
-            background: #f9f9f9;
-            padding: 15px;
-            border-radius: 8px;
-            text-align: center;
-        }
-        
-        .stat-number {
-            font-size: 2rem;
-            font-weight: 700;
-            color: #e63946;
-            margin-bottom: 5px;
-        }
-        
-        .stat-label {
-            font-size: 0.85rem;
-            color: #6b6b6b;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        
-        .scanner-status {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 12px;
-            background: #f0f0f0;
-            border-radius: 8px;
-            margin-bottom: 15px;
-        }
-        
-        .status-indicator {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            animation: pulse 2s infinite;
-        }
-        
-        .status-active {
-            background: #10b981;
-        }
-        
-        .status-inactive {
-            background: #ef4444;
-        }
-        
-        @keyframes pulse {
-            0%, 100% {
-                opacity: 1;
-            }
-            50% {
-                opacity: 0.5;
-            }
-        }
-    </style>
 </head>
-<body class="dashboard-layout">
-    <?php include($sidebar_file); ?>
+<body class="dashboard-layout event-head-page">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="logo">Eventix</div>
+
+        <nav>
+            <a href="../dashboard/home.php">
+                <i data-lucide="home"></i>
+                Home
+            </a>
+
+            <a href="../dashboard/events.php">
+                <i data-lucide="calendar"></i>
+                Browse Events
+            </a>
+
+            <a href="../dashboard/my_events.php">
+                <i data-lucide="user-check"></i>
+                My Events
+            </a>
+
+            <a href="../dashboard/attendance.php">
+                <i data-lucide="clipboard-check"></i>
+                Attendance
+            </a>
+
+            <a href="../calendar/calendar.php">
+                <i data-lucide="calendar-days"></i>
+                Event Calendar
+            </a>
+
+            <a href="../event/manage_events.php">
+                <i data-lucide="settings"></i>
+                Manage Events
+            </a>
+
+            <a href="../qr/scan_qr.php" class="active">
+                <i data-lucide="scan"></i>
+                QR Scanner
+            </a>
+
+            <a href="../event/view_attendance.php">
+                <i data-lucide="eye"></i>
+                View Attendance
+            </a>
+
+            <a href="../auth/logout.php">
+                <i data-lucide="log-out"></i>
+                Logout
+            </a>
+        </nav>
+    </aside>
     
     <main class="main-content">
-        <header class="banner">
+        <!-- Event Head Banner -->
+        <header class="banner event-head-banner">
             <div>
+                <div class="event-head-badge">
+                    <i data-lucide="briefcase" style="width: 14px; height: 14px;"></i>
+                    Event Organizer
+                </div>
                 <h1>QR Code Scanner</h1>
                 <p>Scan attendee QR codes for quick check-in/check-out</p>
             </div>
@@ -272,12 +160,12 @@ if ($role === 'admin') {
                         <option value="checkout">Check Out</option>
                     </select>
                     
-                    <button onclick="startScanner()" id="startBtn" class="btn btn-primary">
+                    <button onclick="startScanner()" id="startBtn" class="btn-primary">
                         <i data-lucide="camera"></i>
                         Start Scanner
                     </button>
                     
-                    <button onclick="stopScanner()" id="stopBtn" class="btn btn-secondary" style="display: none;">
+                    <button onclick="stopScanner()" id="stopBtn" class="btn-secondary" style="display: none;">
                         <i data-lucide="square"></i>
                         Stop Scanner
                     </button>
@@ -508,20 +396,15 @@ if ($role === 'admin') {
             }
             
             resultCard.innerHTML = content;
-            
-            // Add to top of results
             container.insertBefore(resultCard, container.firstChild);
-            
-            // Reinitialize icons
             lucide.createIcons();
             
-            // Remove old results (keep last 5)
+            // Keep last 5 results
             while (container.children.length > 5) {
                 container.removeChild(container.lastChild);
             }
         }
         
-        // Cleanup on page unload
         window.addEventListener('beforeunload', () => {
             if (isScanning) {
                 stopScanner();

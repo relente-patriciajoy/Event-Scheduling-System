@@ -77,7 +77,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['add_event'])) {
     exit();
 }
 
-// Handle update (moved to top before any HTML)
+// Handle update
 if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['update_event'])) {
     $title = $_POST['title'];
     $description = $_POST['description'];
@@ -107,7 +107,7 @@ if (isset($_GET['delete'])) {
     exit();
 }
 
-// Fetch event to edit (moved to top)
+// Fetch event to edit
 $edit_event = null;
 if (isset($_GET['edit'])) {
     $edit_id = $_GET['edit'];
@@ -134,57 +134,64 @@ $events = $stmt->get_result();
     <title>Manage My Events</title>
     <link rel="stylesheet" href="../../css/style.css">
     <link rel="stylesheet" href="../../css/sidebar.css">
+    <link rel="stylesheet" href="../../css/event_head.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
-    <style>
-        /* Additional styling for better layout */
-        .event-head-page .manage-events-container,
-        .event-head-page .my-events-container {
-            background: white;
-            padding: 35px;
-            border-radius: 16px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-            margin-bottom: 30px;
-        }
-
-        .event-head-page .manage-events-container h2,
-        .event-head-page .my-events-container h2 {
-            color: var(--maroon);
-            font-size: 1.8rem;
-            margin-bottom: 24px;
-            font-weight: 700;
-            border-bottom: 3px solid var(--maroon);
-            padding-bottom: 12px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .event-head-page input,
-        .event-head-page textarea,
-        .event-head-page select {
-            width: 100%;
-            padding: 12px;
-            margin: 10px 0;
-            border-radius: 8px;
-            border: 2px solid #ddd;
-            font-family: inherit;
-            font-size: 0.95rem;
-            transition: all 0.3s ease;
-        }
-
-        .event-head-page input:focus,
-        .event-head-page textarea:focus,
-        .event-head-page select:focus {
-            outline: none;
-            border-color: var(--maroon);
-            box-shadow: 0 0 0 3px rgba(128, 0, 32, 0.1);
-        }
-    </style>
 </head>
 <body class="dashboard-layout event-head-page">
 
-<?php include('../components/sidebar.php'); ?>
+<!-- Sidebar -->
+<aside class="sidebar">
+    <div class="logo">Eventix</div>
+
+    <nav>
+        <a href="../dashboard/home.php">
+            <i data-lucide="home"></i>
+            Home
+        </a>
+
+        <a href="../dashboard/events.php">
+            <i data-lucide="calendar"></i>
+            Browse Events
+        </a>
+
+        <a href="../dashboard/my_events.php">
+            <i data-lucide="user-check"></i>
+            My Events
+        </a>
+
+        <a href="../dashboard/attendance.php">
+            <i data-lucide="clipboard-check"></i>
+            Attendance
+        </a>
+
+        <a href="../calendar/calendar.php">
+            <i data-lucide="calendar-days"></i>
+            Event Calendar
+        </a>
+
+        <!-- Event Head Specific Section -->
+        <a href="manage_events.php" class="active">
+            <i data-lucide="settings"></i>
+            Manage Events
+        </a>
+
+        <a href="../qr/scan_qr.php">
+            <i data-lucide="scan"></i>
+            QR Scanner
+        </a>
+
+        <a href="view_attendance.php">
+            <i data-lucide="eye"></i>
+            View Attendance
+        </a>
+
+        <a href="../auth/logout.php">
+            <i data-lucide="log-out"></i>
+            Logout
+        </a>
+    </nav>
+</aside>
 
 <main class="main-content">
     <!-- Event Head Banner -->
@@ -202,19 +209,16 @@ $events = $stmt->get_result();
 
     <div class="dashboard">
         <div class="manage-events-container">
-            <!-- Flex container for title and buttons -->
             <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
                 <div style="display: flex; gap: 12px;">
                     <a href="../dashboard/home.php" class="back-link">
                         <i data-lucide="arrow-left" style="width: 16px; height: 16px;"></i>
                         Back to Dashboard
                     </a>
-                    <?php if ($role === 'event_head'): ?>
-                        <a href="view_attendance.php" class="attendance-link">
-                            <i data-lucide="eye" style="width: 16px; height: 16px;"></i>
-                            View Attendance
-                        </a>
-                    <?php endif; ?>
+                    <a href="view_attendance.php" class="attendance-link">
+                        <i data-lucide="eye" style="width: 16px; height: 16px;"></i>
+                        View Attendance
+                    </a>
                 </div>
             </div>
 
@@ -247,7 +251,7 @@ $events = $stmt->get_result();
                 <select name="category_id" required>
                     <option value="">-- Select Category --</option>
                     <?php
-                    $category_result->data_seek(0); // Reset pointer
+                    $category_result->data_seek(0);
                     while ($cat = $category_result->fetch_assoc()):
                     ?>
                         <option value="<?= $cat['category_id'] ?>"

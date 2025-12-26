@@ -40,17 +40,80 @@ $result = $conn->query($query);
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Browse Events</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Browse Events - Eventix</title>
   <link rel="stylesheet" href="../../css/style.css">
   <link rel="stylesheet" href="../../css/sidebar.css">
+  <?php if ($role === 'event_head'): ?>
+  <link rel="stylesheet" href="../../css/event_head.css">
+  <?php endif; ?>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://unpkg.com/lucide@latest"></script>
 </head>
-<body class="dashboard-layout">
-<?php include('../components/sidebar.php'); ?>
+<body class="dashboard-layout <?= $role === 'event_head' ? 'event-head-page' : '' ?>">
+<!-- Sidebar -->
+<aside class="sidebar">
+    <div class="logo">Eventix</div>
+
+    <nav>
+        <a href="../dashboard/home.php">
+            <i data-lucide="home"></i>
+            Home
+        </a>
+
+        <a href="../dashboard/events.php" class="active">
+            <i data-lucide="calendar"></i>
+            Browse Events
+        </a>
+
+        <a href="../dashboard/my_events.php">
+            <i data-lucide="user-check"></i>
+            My Events
+        </a>
+
+        <a href="../dashboard/attendance.php">
+            <i data-lucide="clipboard-check"></i>
+            Attendance
+        </a>
+
+        <a href="../calendar/calendar.php">
+            <i data-lucide="calendar-days"></i>
+            Event Calendar
+        </a>
+
+        <?php if ($role === 'event_head'): ?>
+        <a href="../event/manage_events.php">
+            <i data-lucide="settings"></i>
+            Manage Events
+        </a>
+
+        <a href="../qr/scan_qr.php">
+            <i data-lucide="scan"></i>
+            QR Scanner
+        </a>
+
+        <a href="../event/view_attendance.php">
+            <i data-lucide="eye"></i>
+            View Attendance
+        </a>
+        <?php endif; ?>
+
+        <a href="../auth/logout.php">
+            <i data-lucide="log-out"></i>
+            Logout
+        </a>
+    </nav>
+</aside>
 
 <main class="main-content">
-    <header class="banner">
+    <header class="banner <?= $role === 'event_head' ? 'event-head-banner' : '' ?>">
         <div>
+            <?php if ($role === 'event_head'): ?>
+            <div class="event-head-badge">
+                <i data-lucide="briefcase" style="width: 14px; height: 14px;"></i>
+                Event Organizer
+            </div>
+            <?php endif; ?>
             <h1>Upcoming Events</h1>
             <p>Explore and register for exciting events.</p>
         </div>
@@ -88,7 +151,6 @@ $result = $conn->query($query);
 </main>
 <script src="https://unpkg.com/lucide@latest"></script>
 <script>
-  // Initialize icons after sidebar loads
   lucide.createIcons();
 
   // Alert auto-hide
