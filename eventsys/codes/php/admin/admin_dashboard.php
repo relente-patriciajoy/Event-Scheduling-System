@@ -11,6 +11,9 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
     exit();
 }
 
+require_once('../../includes/role_protection.php');
+requireRole('admin'); // Only admin can access
+
 include('../../includes/db.php');
 
 $user_id = $_SESSION['user_id'];

@@ -3,30 +3,17 @@
  * QR Code Scanner Page
  * For event heads and admins to scan attendee QR codes for check-in/check-out
  */
-session_start();
-if (!isset($_SESSION['user_id'])) {
-    header("Location: ../auth/index.php");
-    exit();
-}
+
+// Include role protection FIRST
+require_once('../../includes/role_protection.php');
+
+// Only event_head and admin can access
+requireRole(['event_head', 'admin']);
 
 include('../../includes/db.php');
 require_once('../../includes/qr_function.php');
 
-$user_id = $_SESSION['user_id'];
-
-// Check role
-$role_stmt = $conn->prepare("SELECT role FROM user WHERE user_id = ?");
-$role_stmt->bind_param("i", $user_id);
-$role_stmt->execute();
-$role_stmt->bind_result($role);
-$role_stmt->fetch();
-$role_stmt->close();
-
-if ($role !== 'event_head' && $role !== 'admin') {
-    die("Access denied. Only event heads and admins can scan QR codes.");
-}
-
-// Get user's events
+// Get user's events based on role
 $email_stmt = $conn->prepare("SELECT email FROM user WHERE user_id = ?");
 $email_stmt->bind_param("i", $user_id);
 $email_stmt->execute();
@@ -35,7 +22,7 @@ $email_stmt->fetch();
 $email_stmt->close();
 
 // Admin can see ALL events, event_head sees only their events
-if ($role === 'admin') {
+if ($user_role === 'admin') {
     $events_query = "
         SELECT e.event_id, e.title, e.start_time
         FROM event e
@@ -55,6 +42,9 @@ if ($role === 'admin') {
     $stmt->execute();
     $events = $stmt->get_result();
 }
+
+// Determine which CSS to load
+$is_event_head = ($user_role === 'event_head');
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -64,24 +54,41 @@ if ($role === 'admin') {
     <title>QR Code Scanner - Eventix</title>
     <link rel="stylesheet" href="../../css/style.css">
     <link rel="stylesheet" href="../../css/sidebar.css">
+    <?php if ($is_event_head): ?>
     <link rel="stylesheet" href="../../css/event_head.css">
+    <?php endif; ?>
     <link rel="stylesheet" href="../../css/qr_scanner.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 </head>
-<body class="dashboard-layout event-head-page">
-    <!-- Sidebar -->
-    <?php include('../components/sidebar.php'); ?>
+<body class="dashboard-layout <?= $is_event_head ? 'event-head-page' : '' ?>">
+    <!-- Sidebar - Use correct sidebar based on role -->
+    <?php
+    if ($user_role === 'admin') {
+        include('../admin/admin_sidebar.php');
+    } else {
+        // For event_head, pass role variable
+        $role = $user_role;
+        include('../components/sidebar.php');
+    }
+    ?>
     
     <main class="main-content">
-        <!-- Event Head Banner -->
-        <header class="banner event-head-banner">
+        <!-- Banner - Different style for event_head vs admin -->
+        <header class="banner <?= $is_event_head ? 'event-head-banner' : '' ?>">
             <div>
+                <?php if ($is_event_head): ?>
                 <div class="event-head-badge">
                     <i data-lucide="briefcase" style="width: 14px; height: 14px;"></i>
                     Event Organizer
                 </div>
+                <?php elseif ($user_role === 'admin'): ?>
+                <div class="event-head-badge" style="background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); color: #e63946;">
+                    <i data-lucide="shield" style="width: 14px; height: 14px;"></i>
+                    Administrator
+                </div>
+                <?php endif; ?>
                 <h1>QR Code Scanner</h1>
                 <p>Scan attendee QR codes for quick check-in/check-out</p>
             </div>

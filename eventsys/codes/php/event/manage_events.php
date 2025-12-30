@@ -4,6 +4,10 @@ if (!isset($_SESSION['user_id'])) {
     header("Location: ../auth/index.php");
     exit();
 }
+
+require_once('../../includes/role_protection.php');
+requireRole(['event_head']); // Event head OR admin
+
 include('../../includes/db.php');
 
 $user_id = $_SESSION['user_id'];

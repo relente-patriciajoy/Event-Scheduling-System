@@ -4,6 +4,9 @@ if (!isset($_SESSION['user_id'])) {
     header("Location: ../auth/index.php");
     exit();
 }
+require_once('../../includes/role_protection.php');
+// No requireRole() = all logged-in users
+
 include('../../includes/db.php');
 
 $user_id = $_SESSION['user_id'];
