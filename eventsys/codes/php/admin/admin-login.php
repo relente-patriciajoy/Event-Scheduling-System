@@ -1,8 +1,7 @@
 <?php
 /**
- * ADMIN LOGIN PAGE - Secret Portal
- * Access: /admin-login
- * Only for administrators
+ * ADMIN LOGIN PAGE with Smart OTP
+ * OTP only required for: new devices OR suspicious activity
  */
 session_start();
 
@@ -14,6 +13,7 @@ if (isset($_SESSION['user_id']) && isset($_SESSION['role']) && $_SESSION['role']
 
 require_once('../../includes/db.php');
 require_once('../../includes/otp_function.php');
+require_once('../../includes/device_recognition.php');
 
 $error = "";
 $email_value = "";
@@ -46,41 +46,81 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 if (password_verify($password_input, $hashed_password)) {
                     $stmt->close();
 
-                    // Check OTP rate limiting
-                    if (!canRequestOTP($conn, $email)) {
-                        $error = "Too many OTP requests. Please wait before trying again.";
-                    } else {
-                        // Store admin login data in session temporarily
-                        $full_name = trim($first_name . ' ' . $middle_name . ' ' . $last_name);
-
-                        $_SESSION['pending_admin_login'] = [
-                            'user_id' => $user_id,
-                            'full_name' => $full_name,
-                            'email' => $email,
-                            'phone' => $phone,
-                            'role' => 'admin',
-                            'remember' => $remember,
-                            'timestamp' => time()
-                        ];
-
-                        // Generate and send OTP - Use 'login' type for compatibility
-                        $otp_result = createOTP($conn, $email, $phone, $user_id, 'login');
-
-                        if ($otp_result) {
-                            $delivery = sendOTPDual($email, $phone, $otp_result['otp_code'], $full_name);
-
-                            if ($delivery['email'] || $delivery['sms']) {
-                                $_SESSION['otp_id'] = $otp_result['otp_id'];
-                                header("Location: verify_admin_otp.php");
-                                exit();
-                            } else {
-                                $error = "Failed to send OTP. Please try again.";
-                            }
+                    // ===== SMART OTP LOGIC =====
+                    // Check if device is trusted
+                    $is_trusted = isTrustedDevice($conn, $user_id);
+                    $is_suspicious = isSuspiciousLogin($conn, $user_id);
+                    
+                    // Decide if OTP is needed
+                    $require_otp = !$is_trusted || $is_suspicious;
+                    
+                    if ($require_otp) {
+                        // NEW DEVICE or SUSPICIOUS - Require OTP
+                        
+                        // Check OTP rate limiting
+                        if (!canRequestOTP($conn, $email)) {
+                            $error = "Too many OTP requests. Please wait before trying again.";
                         } else {
-                            $error = "Failed to generate OTP. Please try again.";
+                            // Store admin login data in session temporarily
+                            $full_name = trim($first_name . ' ' . $middle_name . ' ' . $last_name);
+
+                            $_SESSION['pending_admin_login'] = [
+                                'user_id' => $user_id,
+                                'full_name' => $full_name,
+                                'email' => $email,
+                                'phone' => $phone,
+                                'role' => 'admin',
+                                'remember' => $remember,
+                                'timestamp' => time()
+                            ];
+
+                            // Generate and send OTP - Use 'login' type for compatibility
+                            $otp_result = createOTP($conn, $email, $phone, $user_id, 'login');
+
+                            if ($otp_result) {
+                                $delivery = sendOTPDual($email, $phone, $otp_result['otp_code'], $full_name);
+
+                                if ($delivery['email'] || $delivery['sms']) {
+                                    $_SESSION['otp_id'] = $otp_result['otp_id'];
+                                    
+                                    // Log successful attempt
+                                    logLoginAttempt($conn, $user_id, $email, 1);
+                                    
+                                    header("Location: verify_admin_otp.php");
+                                    exit();
+                                } else {
+                                    $error = "Failed to send OTP. Please try again.";
+                                }
+                            } else {
+                                $error = "Failed to generate OTP. Please try again.";
+                            }
                         }
+                    } else {
+                        // TRUSTED DEVICE - Direct login (NO OTP)
+                        
+                        $_SESSION['user_id'] = $user_id;
+                        $_SESSION['full_name'] = trim($first_name . ' ' . $middle_name . ' ' . $last_name);
+                        $_SESSION['role'] = 'admin';
+                        $_SESSION['email'] = $email;
+                        $_SESSION['login_time'] = time();
+                        $_SESSION['is_admin_portal'] = true;
+                        
+                        // Trust device again if "remember me" is checked
+                        if ($remember) {
+                            trustDevice($conn, $user_id, 30);
+                        }
+                        
+                        // Log successful login
+                        logLoginAttempt($conn, $user_id, $email, 1);
+                        
+                        header("Location: admin_dashboard.php");
+                        exit();
                     }
+                    // ===== END SMART OTP LOGIC =====
+                    
                 } else {
+                    // Log failed attempt
+                    logLoginAttempt($conn, $user_id, $email, 0);
                     $error = "Incorrect password.";
                 }
             } else {
@@ -133,13 +173,13 @@ $conn->close();
         }
         
         .security-notice {
-            background: #fff3cd;
-            border-left: 4px solid #ffc107;
+            background: #f0f9ff;
+            border-left: 4px solid #3b82f6;
             padding: 12px 16px;
             border-radius: 8px;
             margin-top: 20px;
             font-size: 0.85rem;
-            color: #856404;
+            color: #1e40af;
             display: flex;
             align-items: flex-start;
             gap: 10px;
@@ -202,7 +242,7 @@ $conn->close();
             <div class="options">
                 <label class="remember-label">
                     <input type="checkbox" name="remember" class="remember-checkbox">
-                    <span>Keep me logged in</span>
+                    <span>Remember this device for 30 days</span>
                 </label>
             </div>
 
@@ -212,8 +252,8 @@ $conn->close();
             </button>
 
             <div class="security-notice">
-                <i data-lucide="lock" style="width: 18px; height: 18px; flex-shrink: 0; margin-top: 2px;"></i>
-                <span>This is a secure area. You'll receive a verification code via email and SMS after login.</span>
+                <i data-lucide="info" style="width: 18px; height: 18px; flex-shrink: 0; margin-top: 2px;"></i>
+                <span><strong>New:</strong> OTP verification is only required for new devices or suspicious activity. Use "Remember this device" for faster access.</span>
             </div>
         </form>
 

@@ -1,7 +1,7 @@
 <?php
 /**
- * Login Page with OTP Authentication
- * Step 1: Verify password, then send OTP
+ * Login Page with Smart OTP Authentication
+ * OTP only required for: new devices OR suspicious activity
  */
 session_start();
 
@@ -18,7 +18,8 @@ if (isset($_SESSION['user_id']) && !$just_logged_out) {
 }
 
 require_once('../../includes/db.php');
-require_once __DIR__ . '/../../includes/otp_function.php';
+require_once('../../includes/otp_function.php');
+require_once('../../includes/device_recognition.php');
 
 $error = "";
 $email_value = "";
@@ -51,41 +52,85 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 if (password_verify($password_input, $hashed_password)) {
                     $stmt->close();
 
-                    // Check OTP rate limiting
-                    if (!canRequestOTP($conn, $email)) {
-                        $error = "Too many OTP requests. Please wait before trying again.";
-                    } else {
-                        // Store login data in session temporarily
-                        $full_name = trim($first_name . ' ' . $middle_name . ' ' . $last_name);
+                    // ===== SMART OTP LOGIC =====
+                    // Check if device is trusted
+                    $is_trusted = isTrustedDevice($conn, $user_id);
+                    $is_suspicious = isSuspiciousLogin($conn, $user_id);
 
-                        $_SESSION['pending_login'] = [
-                            'user_id' => $user_id,
-                            'full_name' => $full_name,
-                            'email' => $email,
-                            'phone' => $phone,
-                            'role' => $role,
-                            'remember' => $remember,
-                            'timestamp' => time()
-                        ];
+                    // Decide if OTP is needed
+                    $require_otp = !$is_trusted || $is_suspicious;
 
-                        // Generate and send OTP
-                        $otp_result = createOTP($conn, $email, $phone, $user_id, 'login');
+                    if ($require_otp) {
+                        // NEW DEVICE or SUSPICIOUS - Require OTP
 
-                        if ($otp_result) {
-                            $delivery = sendOTPDual($email, $phone, $otp_result['otp_code'], $full_name);
-
-                            if ($delivery['email'] || $delivery['sms']) {
-                                $_SESSION['otp_id'] = $otp_result['otp_id'];
-                                header("Location: verify_otp.php?type=login");
-                                exit();
-                            } else {
-                                $error = "Failed to send OTP. Please try again.";
-                            }
+                        // Check OTP rate limiting
+                        if (!canRequestOTP($conn, $email)) {
+                            $error = "Too many OTP requests. Please wait before trying again.";
                         } else {
-                            $error = "Failed to generate OTP. Please try again.";
+                            // Store login data in session temporarily
+                            $full_name = trim($first_name . ' ' . $middle_name . ' ' . $last_name);
+
+                            $_SESSION['pending_login'] = [
+                                'user_id' => $user_id,
+                                'full_name' => $full_name,
+                                'email' => $email,
+                                'phone' => $phone,
+                                'role' => $role,
+                                'remember' => $remember,
+                                'timestamp' => time()
+                            ];
+
+                            // Generate and send OTP
+                            $otp_result = createOTP($conn, $email, $phone, $user_id, 'login');
+
+                            if ($otp_result) {
+                                $delivery = sendOTPDual($email, $phone, $otp_result['otp_code'], $full_name);
+
+                                if ($delivery['email'] || $delivery['sms']) {
+                                    $_SESSION['otp_id'] = $otp_result['otp_id'];
+
+                                    // Log successful attempt (password correct)
+                                    logLoginAttempt($conn, $user_id, $email, 1);
+
+                                    header("Location: verify_otp.php?type=login");
+                                    exit();
+                                } else {
+                                    $error = "Failed to send OTP. Please try again.";
+                                }
+                            } else {
+                                $error = "Failed to generate OTP. Please try again.";
+                            }
                         }
+                    } else {
+                        // TRUSTED DEVICE - Direct login (NO OTP)
+
+                        $_SESSION['user_id'] = $user_id;
+                        $_SESSION['full_name'] = trim($first_name . ' ' . $middle_name . ' ' . $last_name);
+                        $_SESSION['role'] = $role;
+                        $_SESSION['email'] = $email;
+                        $_SESSION['login_time'] = time();
+
+                        // Trust device again if "remember me" is checked
+                        if ($remember) {
+                            trustDevice($conn, $user_id, 30);
+                        }
+
+                        // Log successful login
+                        logLoginAttempt($conn, $user_id, $email, 1);
+
+                        // Redirect based on role
+                        if ($role === 'admin') {
+                            header("Location: ../admin/admin_dashboard.php");
+                        } else {
+                            header("Location: ../dashboard/home.php");
+                        }
+                        exit();
                     }
+                    // ===== END SMART OTP LOGIC =====
+
                 } else {
+                    // Log failed attempt
+                    logLoginAttempt($conn, $user_id, $email, 0);
                     $error = "Incorrect password. Please try again.";
                 }
             } else {
@@ -121,7 +166,7 @@ $conn->close();
         <img src="../../assets/eventix-logo.png" alt="Eventix Logo" class="logo" />
         
         <h2>Welcome Back!</h2>
-        <p>Login to <strong>Eventix</strong> with OTP verification</p>
+        <p>Login to <strong>Eventix</strong></p>
 
         <?php if ($just_logged_out): ?>
             <div class="alert alert-success">
@@ -172,19 +217,19 @@ $conn->close();
             <div class="options">
                 <label class="remember-label">
                     <input type="checkbox" name="remember" class="remember-checkbox">
-                    <span>Stay logged in</span>
+                    <span>Remember this device for 30 days</span>
                 </label>
                 <a href="forgot_password.php">Forgot password?</a>
             </div>
 
             <button type="submit" class="auth-button">
-                Continue to Verification
+                Sign In
             </button>
 
-            <div style="margin-top: 15px; padding: 12px; background: #f0f0f0; border-radius: 8px; font-size: 0.85rem; color: #666; text-align: left;">
+            <div style="margin-top: 15px; padding: 12px; background: #f0f9ff; border-left: 4px solid #3b82f6; border-radius: 8px; font-size: 0.85rem; color: #1e40af; text-align: left;">
                 <p style="margin: 0; display: flex; align-items: flex-start; gap: 8px;">
-                    <i data-lucide="shield-check" style="width: 16px; height: 16px; flex-shrink: 0; margin-top: 2px;"></i>
-                    <span>After entering your password, you'll receive a verification code via SMS and email.</span>
+                    <i data-lucide="info" style="width: 16px; height: 16px; flex-shrink: 0; margin-top: 2px;"></i>
+                    <span><strong>New:</strong> OTP only required for new devices or suspicious activity. Check "Remember this device" for faster future logins.</span>
                 </p>
             </div>
         </form>

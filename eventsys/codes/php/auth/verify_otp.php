@@ -7,6 +7,7 @@ session_start();
 
 require_once('../../includes/db.php');
 require_once __DIR__ . '/../../includes/otp_function.php';
+require_once __DIR__ . '/../../includes/device_recognition.php';
 
 // Check if verification type is set
 $verification_type = $_GET['type'] ?? 'registration';
@@ -71,6 +72,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['verify_otp'])) {
                     $_SESSION['email'] = $reg_data['email'];
                     $_SESSION['login_time'] = time();
 
+                    // Trust device for new registrations (30 days)
+                    trustDevice($conn, $user_id, 30);
+
                     $stmt->close();
                     header("Location: ../dashboard/home.php?welcome=1");
                     exit();
@@ -80,18 +84,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['verify_otp'])) {
             } else {
                 // Complete login
                 $login_data = $_SESSION['pending_login'];
-                
+
                 // Clear pending login
                 unset($_SESSION['pending_login']);
                 unset($_SESSION['otp_id']);
-                
+
                 // Set session variables
                 $_SESSION['user_id'] = $login_data['user_id'];
                 $_SESSION['full_name'] = $login_data['full_name'];
                 $_SESSION['role'] = $login_data['role'];
                 $_SESSION['email'] = $login_data['email'];
                 $_SESSION['login_time'] = time();
-                
+
+                // ===== TRUST DEVICE AFTER SUCCESSFUL OTP =====
+                if ($login_data['remember']) {
+                    trustDevice($conn, $login_data['user_id'], 30); // Remember for 30 days
+                }
+                // ===== END TRUST DEVICE =====
+
                 header("Location: ../dashboard/home.php");
                 exit();
             }

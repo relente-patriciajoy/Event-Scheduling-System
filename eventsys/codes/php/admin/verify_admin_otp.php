@@ -1,11 +1,13 @@
 <?php
 /**
  * Admin OTP Verification Page
+ * MODIFIED: Adds device trust after successful OTP
  */
 session_start();
 
 require_once('../../includes/db.php');
 require_once('../../includes/otp_function.php');
+require_once('../../includes/device_recognition.php');
 
 // Check if there's pending admin login
 if (!isset($_SESSION['pending_admin_login'])) {
@@ -44,6 +46,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['verify_otp'])) {
             $_SESSION['login_time'] = time();
             $_SESSION['is_admin_portal'] = true; // Flag for admin portal
             
+            // ===== TRUST DEVICE AFTER SUCCESSFUL OTP =====
+            if ($login_data['remember']) {
+                trustDevice($conn, $login_data['user_id'], 30); // Remember for 30 days
+            }
+            // ===== END TRUST DEVICE =====
+
             header("Location: admin_dashboard.php");
             exit();
         } else {
