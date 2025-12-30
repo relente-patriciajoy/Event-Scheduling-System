@@ -119,44 +119,7 @@ $upcoming_events = $conn->query("SELECT e.event_id, e.title, e.start_time, v.nam
 </head>
 <body class="dashboard-layout">
     <!-- Admin Sidebar -->
-    <aside class="sidebar">
-        <h2 class="logo">Eventix Admin</h2>
-        <nav>
-            <a href="admin_dashboard.php" class="active">
-                <i data-lucide="layout-dashboard"></i> Dashboard
-            </a>
-            
-            <div class="dropdown-nav">
-                <div class="dropdown-toggle" onclick="toggleDropdown(this)">
-                    <i data-lucide="database"></i>
-                    <span>Maintenance</span>
-                    <span style="margin-left:auto;">▾</span>
-                </div>
-                <div class="dropdown-menu">
-                    <a href="manage_user.php">Users</a>
-                    <a href="manage_venue.php">Venues</a>
-                    <a href="manage_organizer.php">Organizers</a>
-                    <a href="manage_categories.php">Categories</a>
-                </div>
-            </div>
-            
-            <a href="admin_all_events.php">
-                <i data-lucide="calendar"></i> All Events
-            </a>
-            
-            <a href="admin_view_attendance.php">
-                <i data-lucide="users"></i> Attendance
-            </a>
-            
-            <a href="user_promotions.php">
-                <i data-lucide="user-plus"></i> Promote Users
-            </a>
-            
-            <a href="../auth/logout.php">
-                <i data-lucide="log-out"></i> Logout
-            </a>
-        </nav>
-    </aside>
+    <?php include('admin_sidebar.php'); ?>
 
     <main class="management-content">
         <!-- Admin Header -->
