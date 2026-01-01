@@ -24,9 +24,9 @@
       <i data-lucide="calendar"></i> All Events
     </a>
 
-    <a href="../qr/scan_qr.php" class="<?= basename($_SERVER['PHP_SELF']) === 'scan_qr.php' ? 'active' : '' ?>">
+    <!-- <a href="../qr/scan_qr.php" class="<?= basename($_SERVER['PHP_SELF']) === 'scan_qr.php' ? 'active' : '' ?>">
       <i data-lucide="scan"></i> QR Scanner
-    </a>
+    </a> -->
     
     <a href="../admin/admin_view_attendance.php" class="<?= basename($_SERVER['PHP_SELF']) === 'admin_view_attendance.php' ? 'active' : '' ?>">
       <i data-lucide="users"></i> Attendance
