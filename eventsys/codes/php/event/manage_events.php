@@ -6,7 +6,7 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 require_once('../../includes/role_protection.php');
-requireRole(['event_head']); // Event head OR admin
+requireRole(['event_head']);
 
 include('../../includes/db.php');
 
@@ -135,7 +135,7 @@ $events = $stmt->get_result();
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Manage My Events</title>
+    <title>Event Management Hub</title>
     <link rel="stylesheet" href="../../css/style.css">
     <link rel="stylesheet" href="../../css/sidebar.css">
     <link rel="stylesheet" href="../../css/event_head.css">
@@ -155,120 +155,196 @@ $events = $stmt->get_result();
                 <i data-lucide="briefcase" style="width: 14px; height: 14px;"></i>
                 Event Organizer
             </div>
-            <h1>Manage My Events</h1>
-            <p>Create, edit, and manage your organized events</p>
+            <h1>Event Management Hub</h1>
+            <p>Your central dashboard for managing events and analytics</p>
         </div>
         <img src="../../assets/eventix-logo.png" alt="Eventix logo" />
     </header>
 
     <div class="dashboard">
-        <div class="manage-events-container">
-            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
-                <div style="display: flex; gap: 12px;">
-                    <a href="../dashboard/home.php" class="back-link">
-                        <i data-lucide="arrow-left" style="width: 16px; height: 16px;"></i>
-                        Back to Dashboard
+        <!-- Single Unified Container -->
+        <div class="event-management-hub-container">
+
+            <!-- Quick Actions Section -->
+            <div class="hub-section">
+                <h2 class="section-title">Quick Actions</h2>
+
+                <div class="quick-actions-grid">
+                    <a href="../qr/scan_qr.php" class="quick-action-card">
+                        <div class="action-icon-simple primary">
+                            <i data-lucide="scan"></i>
+                        </div>
+                        <h3>QR Scanner</h3>
+                        <p>Scan participant QR codes for attendance tracking</p>
                     </a>
-                    <a href="view_attendance.php" class="attendance-link">
-                        <i data-lucide="eye" style="width: 16px; height: 16px;"></i>
-                        View Attendance
+
+                    <a href="view_attendance.php" class="quick-action-card">
+                        <div class="action-icon-simple secondary">
+                            <i data-lucide="eye"></i>
+                        </div>
+                        <h3>View Attendance</h3>
+                        <p>Check attendance records and participant lists</p>
+                    </a>
+
+                    <a href="reports.php" class="quick-action-card">
+                        <div class="action-icon-simple success">
+                            <i data-lucide="file-text"></i>
+                        </div>
+                        <h3>Reports</h3>
+                        <p>Generate and download event reports</p>
+                    </a>
+
+                    <a href="participant_engagement.php" class="quick-action-card">
+                        <div class="action-icon-simple warning">
+                            <i data-lucide="activity"></i>
+                        </div>
+                        <h3>Engagement Analytics</h3>
+                        <p>Track participant behavior and engagement metrics</p>
+                    </a>
+
+                    <a href="inactive_tracking.php" class="quick-action-card">
+                        <div class="action-icon-simple info">
+                            <i data-lucide="user-x"></i>
+                        </div>
+                        <h3>Inactive Members</h3>
+                        <p>Monitor and identify inactive participants</p>
                     </a>
                 </div>
             </div>
 
-            <h2>
-                <i data-lucide="<?= $edit_event ? 'edit' : 'plus-circle' ?>"></i>
-                <?= $edit_event ? "Edit Event" : "Create New Event" ?>
-            </h2>
+            <!-- Divider -->
+            <hr class="section-divider">
 
-            <form method="POST">
-                <input type="hidden" name="event_id" value="<?= $edit_event['event_id'] ?? '' ?>">
-                <input type="text" name="title" placeholder="Event Title" value="<?= $edit_event['title'] ?? '' ?>" required>
-                <textarea name="description" placeholder="Event Description" required><?= $edit_event['description'] ?? '' ?></textarea>
-                <input type="datetime-local" name="start_time" value="<?= $edit_event['start_time'] ?? '' ?>" required>
-                <input type="datetime-local" name="end_time" value="<?= $edit_event['end_time'] ?? '' ?>" required>
+            <!-- Event Management Section -->
+            <div class="hub-section">
+                <h2 class="section-title-with-icon">
+                    <i data-lucide="settings"></i>
+                    <?= $edit_event ? "Edit Event" : "Create New Event" ?>
+                </h2>
 
-                <?php if (!$edit_event): ?>
-                    <input type="text" name="venue_name" placeholder="Venue Name" required>
-                    <input type="text" name="venue_address" placeholder="Venue Address">
-                    <input type="text" name="venue_city" placeholder="Venue City">
-                <?php else: ?>
-                    <p style="background: #f9f9f9; padding: 12px; border-radius: 8px; border-left: 4px solid var(--maroon); color: #6b6b6b;">
-                        <i data-lucide="info" style="width: 16px; height: 16px; vertical-align: middle;"></i>
-                        <em>Venue cannot be edited for existing events.</em>
-                    </p>
-                <?php endif; ?>
+                <form method="POST" class="event-form">
+                    <input type="hidden" name="event_id" value="<?= $edit_event['event_id'] ?? '' ?>">
 
-                <input type="number" name="capacity" placeholder="Capacity" value="<?= $edit_event['capacity'] ?? '' ?>" required>
-                <input type="number" step="0.01" name="price" placeholder="Price" value="<?= $edit_event['price'] ?? '' ?>" required>
+                    <div class="form-group">
+                        <input type="text" name="title" placeholder="Event Title" value="<?= $edit_event['title'] ?? '' ?>" required>
+                    </div>
 
-                <select name="category_id" required>
-                    <option value="">-- Select Category --</option>
-                    <?php
-                    $category_result->data_seek(0);
-                    while ($cat = $category_result->fetch_assoc()):
-                    ?>
-                        <option value="<?= $cat['category_id'] ?>"
-                            <?= (isset($edit_event['category_id']) && $edit_event['category_id'] == $cat['category_id']) ? 'selected' : '' ?>>
-                            <?= htmlspecialchars($cat['category_name']) ?>
-                        </option>
-                    <?php endwhile; ?>
-                </select>
+                    <div class="form-group">
+                        <textarea name="description" placeholder="Event Description" required><?= $edit_event['description'] ?? '' ?></textarea>
+                    </div>
 
-                <div style="display: flex; gap: 12px; margin-top: 10px;">
-                    <?php if ($edit_event): ?>
-                        <button type="submit" name="update_event" style="flex: 1;">
-                            <i data-lucide="save" style="width: 16px; height: 16px;"></i>
-                            Update Event
-                        </button>
-                        <a href="manage_events.php" style="flex: 1; padding: 12px 20px; background: #f0f0f0; color: #6b6b6b; border-radius: 8px; text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; justify-content: center; gap: 8px;">
-                            <i data-lucide="x" style="width: 16px; height: 16px;"></i>
-                            Cancel
-                        </a>
-                    <?php else: ?>
-                        <button type="submit" name="add_event" style="width: 100%;">
-                            <i data-lucide="plus" style="width: 16px; height: 16px;"></i>
-                            Add Event
-                        </button>
-                    <?php endif; ?>
-                </div>
-            </form>
-        </div>
-
-        <div class="my-events-container">
-            <h2>
-                <i data-lucide="calendar"></i>
-                My Events
-            </h2>
-            <div class="event-list">
-                <?php while ($row = $events->fetch_assoc()): ?>
-                    <div class="event-card">
-                        <h3><?= htmlspecialchars($row['title']) ?></h3>
-                        <p>
-                            <i data-lucide="map-pin" style="width: 16px; height: 16px; vertical-align: middle; color: var(--maroon);"></i>
-                            <strong>Venue:</strong> <?= htmlspecialchars($row['venue']) ?>
-                        </p>
-                        <p>
-                            <i data-lucide="calendar" style="width: 16px; height: 16px; vertical-align: middle; color: var(--maroon);"></i>
-                            <strong>From:</strong> <?= $row['start_time'] ?>
-                        </p>
-                        <p>
-                            <i data-lucide="clock" style="width: 16px; height: 16px; vertical-align: middle; color: var(--maroon);"></i>
-                            <strong>To:</strong> <?= $row['end_time'] ?>
-                        </p>
-                        <div class="event-actions" style="margin-top: 18px;">
-                            <a href="manage_events.php?edit=<?= $row['event_id'] ?>" class="edit-link">
-                                <i data-lucide="edit" style="width: 16px; height: 16px;"></i>
-                                Edit
-                            </a>
-                            <a href="manage_events.php?delete=<?= $row['event_id'] ?>" class="delete-link" onclick="return confirm('Are you sure?')">
-                                <i data-lucide="trash-2" style="width: 16px; height: 16px;"></i>
-                                Delete
-                            </a>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <input type="datetime-local" name="start_time" value="<?= $edit_event['start_time'] ?? '' ?>" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="datetime-local" name="end_time" value="<?= $edit_event['end_time'] ?? '' ?>" required>
                         </div>
                     </div>
-                <?php endwhile; ?>
+
+                    <?php if (!$edit_event): ?>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <input type="text" name="venue_name" placeholder="Venue Name" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="text" name="venue_address" placeholder="Venue Address">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" name="venue_city" placeholder="Venue City">
+                    </div>
+                    <?php else: ?>
+                    <div class="info-message">
+                        <i data-lucide="info"></i>
+                        <em>Venue cannot be edited for existing events.</em>
+                    </div>
+                    <?php endif; ?>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <input type="number" name="capacity" placeholder="Capacity" value="<?= $edit_event['capacity'] ?? '' ?>" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="number" step="0.01" name="price" placeholder="Price" value="<?= $edit_event['price'] ?? '' ?>" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <select name="category_id" required>
+                            <option value="">-- Select Category --</option>
+                            <?php
+                            $category_result->data_seek(0);
+                            while ($cat = $category_result->fetch_assoc()):
+                            ?>
+                                <option value="<?= $cat['category_id'] ?>"
+                                    <?= (isset($edit_event['category_id']) && $edit_event['category_id'] == $cat['category_id']) ? 'selected' : '' ?>>
+                                    <?= htmlspecialchars($cat['category_name']) ?>
+                                </option>
+                            <?php endwhile; ?>
+                        </select>
+                    </div>
+
+                    <div class="form-actions">
+                        <?php if ($edit_event): ?>
+                            <button type="submit" name="update_event" class="btn-primary">
+                                <i data-lucide="save"></i>
+                                Update Event
+                            </button>
+                            <a href="manage_events.php" class="btn-secondary">
+                                <i data-lucide="x"></i>
+                                Cancel
+                            </a>
+                        <?php else: ?>
+                            <button type="submit" name="add_event" class="btn-primary">
+                                <i data-lucide="plus"></i>
+                                Add Event
+                            </button>
+                        <?php endif; ?>
+                    </div>
+                </form>
             </div>
+
+            <!-- Divider -->
+            <hr class="section-divider">
+
+            <!-- My Events Section -->
+            <div class="hub-section">
+                <h2 class="section-title-with-icon">
+                    <i data-lucide="calendar"></i>
+                    My Events
+                </h2>
+                <div class="event-list">
+                    <?php while ($row = $events->fetch_assoc()): ?>
+                        <div class="event-card">
+                            <h3><?= htmlspecialchars($row['title']) ?></h3>
+                            <p>
+                                <i data-lucide="map-pin"></i>
+                                <strong>Venue:</strong> <?= htmlspecialchars($row['venue']) ?>
+                            </p>
+                            <p>
+                                <i data-lucide="calendar"></i>
+                                <strong>From:</strong> <?= $row['start_time'] ?>
+                            </p>
+                            <p>
+                                <i data-lucide="clock"></i>
+                                <strong>To:</strong> <?= $row['end_time'] ?>
+                            </p>
+                            <div class="event-actions">
+                                <a href="manage_events.php?edit=<?= $row['event_id'] ?>" class="edit-link">
+                                    <i data-lucide="edit"></i>
+                                    Edit
+                                </a>
+                                <a href="manage_events.php?delete=<?= $row['event_id'] ?>" class="delete-link" onclick="return confirm('Are you sure?')">
+                                    <i data-lucide="trash-2"></i>
+                                    Delete
+                                </a>
+                            </div>
+                        </div>
+                    <?php endwhile; ?>
+                </div>
+            </div>
+
         </div>
     </div>
 </main>

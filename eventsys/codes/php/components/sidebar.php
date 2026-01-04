@@ -44,36 +44,28 @@ $current_page = basename($_SERVER['PHP_SELF']);
         </a>
 
         <?php if (isset($role) && $role === 'event_head'): ?>
-        <!-- Event Head Exclusive Links -->
-        <a href="../event/manage_events.php" class="<?= $current_page === 'manage_events.php' ? 'active' : '' ?>">
-            <i data-lucide="settings"></i>
-            Manage Events
+        <!-- Event Head Management Hub -->
+        <a href="../event/manage_events.php" class="<?= in_array($current_page, [
+            'manage_events.php',
+            'scan_qr.php',
+            'view_attendance.php',
+            'reports.php',
+            'participant_engagement.php',
+            'inactive_tracking.php'
+        ]) ? 'active' : '' ?>">
+            <i data-lucide="layout-dashboard"></i>
+            Event Management
         </a>
+        <?php endif; ?>
 
-        <a href="../qr/scan_qr.php" class="<?= $current_page === 'scan_qr.php' ? 'active' : '' ?>">
-            <i data-lucide="scan"></i>
-            QR Scanner
-        </a>
-
-        <a href="../event/view_attendance.php" class="<?= $current_page === 'view_attendance.php' ? 'active' : '' ?>">
-            <i data-lucide="eye"></i>
-            View Attendance
-        </a>
-
-        <a href="../event/reports.php" class="<?= $current_page === 'reports.php' ? 'active' : '' ?>">
-            <i data-lucide="file-text"></i>
-            Reports
-        </a>
-
-        <a href="../event/participant_engagement.php" class="<?= $current_page === 'participant_engagement.php' ? 'active' : '' ?>">
-            <i data-lucide="activity"></i>
-            Engagement Analytics
-        </a>
-
-        <a href="../event/inactive_tracking.php" class="<?= $current_page === 'inactive_tracking.php' ? 'active' : '' ?>">
-            <i data-lucide="user-x"></i>
-            Inactive Members
-        </a>
+        <!-- Add back to hub link on sub-pages -->
+        <?php if (isset($role) && $role === 'event_head' && in_array($current_page, ['scan_qr.php', 'view_attendance.php', 'reports.php', 'participant_engagement.php', 'inactive_tracking.php'])): ?>
+        <div style="padding: 0 16px; margin-top: 8px;">
+            <a href="../event/manage_events.php" style="display: flex; align-items: center; gap: 8px; padding: 8px 12px; background: rgba(128, 0, 32, 0.1); border-radius: 8px; color: var(--maroon); font-size: 13px; text-decoration: none; font-weight: 500;">
+                <i data-lucide="arrow-left" style="width: 14px; height: 14px;"></i>
+                Back to Hub
+            </a>
+        </div>
         <?php endif; ?>
 
         <a href="../auth/logout.php">

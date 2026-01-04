@@ -97,56 +97,8 @@ $inactive_members->data_seek(0);
     <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body class="dashboard-layout event-head-page">
-    <!-- Sidebar -->
-    <aside class="sidebar">
-        <div class="logo">Eventix</div>
-        <nav>
-            <a href="../dashboard/home.php">
-                <i data-lucide="home"></i>
-                Home
-            </a>
-            <a href="../dashboard/events.php">
-                <i data-lucide="calendar"></i>
-                Browse Events
-            </a>
-            <a href="../dashboard/my_events.php">
-                <i data-lucide="user-check"></i>
-                My Events
-            </a>
-            <a href="../dashboard/attendance.php">
-                <i data-lucide="clipboard-check"></i>
-                Attendance
-            </a>
-            <a href="../calendar/calendar.php">
-                <i data-lucide="calendar-days"></i>
-                Event Calendar
-            </a>
-            <a href="manage_events.php">
-                <i data-lucide="settings"></i>
-                Manage Events
-            </a>
-            <a href="../qr/scan_qr.php">
-                <i data-lucide="scan"></i>
-                QR Scanner
-            </a>
-            <a href="view_attendance.php">
-                <i data-lucide="eye"></i>
-                View Attendance
-            </a>
-            <a href="reports.php">
-                <i data-lucide="file-text"></i>
-                Reports
-            </a>
-            <a href="inactive_tracking.php" class="active">
-                <i data-lucide="user-x"></i>
-                Inactive Members
-            </a>
-            <a href="../auth/logout.php">
-                <i data-lucide="log-out"></i>
-                Logout
-            </a>
-        </nav>
-    </aside>
+    <!-- Sidebar Component -->
+    <?php include('../components/sidebar.php'); ?>
 
     <main class="main-content">
         <header class="banner event-head-banner">
