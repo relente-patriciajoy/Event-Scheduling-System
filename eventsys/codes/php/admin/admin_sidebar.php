@@ -35,6 +35,10 @@
     <a href="../admin/user_promotions.php" class="<?= basename($_SERVER['PHP_SELF']) === 'user_promotions.php' ? 'active' : '' ?>">
       <i data-lucide="user-plus"></i> Promote Users
     </a>
+
+    <a href="../admin/backup_restore.php">
+      <i data-lucide="database"></i> Backup & Restore
+    </a>
     
     <a href="../auth/logout.php">
       <i data-lucide="log-out"></i> Logout
