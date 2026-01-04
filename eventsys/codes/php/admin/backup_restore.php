@@ -293,8 +293,8 @@ $logs_query = $conn->query("
                 <i data-lucide="shield" style="width: 14px; height: 14px;"></i>
                 Administrator
             </div>
-            <h1>Database Backup & Restore</h1>
-            <p>Create backups and restore your database</p>
+            <h1>Backup & Restore</h1>
+            <p>Create backups and restore database</p>
         </div>
 
         <!-- Alert Messages -->
