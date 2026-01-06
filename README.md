@@ -30,6 +30,17 @@ It replaces manual tracking with a **clean, user-friendly, and scalable digital 
 - 📊 **Admin Dashboard** – Real-time insights on events & participants.
 
 ---
+### 🔑 Demo Credentials
+* **Admin Account**
+  * Username: `test1`
+  * Password: `test123`
+* **Student Account**
+  * Username: `student_patricia`
+  * Password: `password`
+* **Faculty Account**
+  * Username: `faculty1`
+  * Password: `faculty123`
+---
 
 ## 🧰 Tech Stack
 
