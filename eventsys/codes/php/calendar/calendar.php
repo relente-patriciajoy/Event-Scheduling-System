@@ -107,9 +107,9 @@ $stmt->close();
                         <span>Date</span>
                     </div>
                 </div>
-                <button class="event-modal-close" id="modal-close-btn">
+                <!-- <button class="event-modal-close" id="modal-close-btn">
                     <i data-lucide="x" size="20"></i>
-                </button>
+                </button> -->
             </div>
 
             <div class="event-modal-body">
