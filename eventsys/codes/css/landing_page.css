@@ -175,7 +175,7 @@ nav.scrolled {
 /* HERO SECTION */
 .hero {
   min-height: 100vh;
-  background: linear-gradient(135deg, var(--dark-maroon) 0%, #2d0011 50%, var(--black) 100%);
+  background: linear-gradient(135deg, var(--white) 0%, var(--off-white) 100%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -191,7 +191,7 @@ nav.scrolled {
   right: -15%;
   width: 1000px;
   height: 1000px;
-  background: radial-gradient(circle, rgba(128, 0, 32, 0.25) 0%, transparent 60%);
+  background: radial-gradient(circle, rgba(128, 0, 32, 0.08) 0%, transparent 60%);
   border-radius: 50%;
   animation: heroFloat 25s ease-in-out infinite;
   filter: blur(60px);
@@ -204,7 +204,7 @@ nav.scrolled {
   left: -20%;
   width: 800px;
   height: 800px;
-  background: radial-gradient(circle, rgba(166, 0, 42, 0.15) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(166, 0, 42, 0.05) 0%, transparent 70%);
   border-radius: 50%;
   animation: heroFloat 20s ease-in-out infinite reverse;
   filter: blur(80px);
@@ -239,7 +239,7 @@ nav.scrolled {
 .hero-text h1 {
   font-size: 5rem;
   font-weight: 900;
-  color: var(--white);
+  color: var(--black);
   margin-bottom: 1.5rem;
   line-height: 1.05;
   letter-spacing: -2px;
@@ -282,7 +282,7 @@ nav.scrolled {
 
 .hero-text p {
   font-size: 1.35rem;
-  color: rgba(255, 255, 255, 0.88);
+  color: var(--gray);
   margin-bottom: 2.5rem;
   line-height: 1.7;
   font-weight: 400;
@@ -345,11 +345,10 @@ nav.scrolled {
 }
 
 .secondary-btn {
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  color: var(--white);
+  background: transparent;
+  color: var(--black);
   padding: 1.2rem 3rem;
-  border: 2px solid rgba(255, 255, 255, 0.3);
+  border: 2px solid var(--black);
   border-radius: 50px;
   text-decoration: none;
   font-weight: 600;
@@ -359,11 +358,11 @@ nav.scrolled {
 }
 
 .secondary-btn:hover {
-  background: var(--white);
-  color: var(--maroon);
-  border-color: var(--white);
+  background: var(--black);
+  color: var(--white);
+  border-color: var(--black);
   transform: translateY(-4px);
-  box-shadow: 0 8px 25px rgba(255, 255, 255, 0.3);
+  box-shadow: 0 8px 25px rgba(26, 26, 26, 0.3);
 }
 
 .hero-image {
@@ -384,12 +383,12 @@ nav.scrolled {
 }
 
 .hero-card {
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--white);
   backdrop-filter: blur(30px);
   border-radius: 25px;
   padding: 2.5rem;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+  border: 2px solid var(--off-white);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.1);
   transition: all 0.4s ease;
   position: relative;
   overflow: hidden;
@@ -402,7 +401,7 @@ nav.scrolled {
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  background: linear-gradient(90deg, transparent, rgba(128, 0, 32, 0.05), transparent);
   transition: left 0.6s ease;
 }
 
@@ -412,12 +411,12 @@ nav.scrolled {
 
 .hero-card:hover {
   transform: translateY(-8px) scale(1.02);
-  box-shadow: 0 20px 60px rgba(128, 0, 32, 0.4);
-  border-color: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 20px 60px rgba(128, 0, 32, 0.15);
+  border-color: var(--maroon);
 }
 
 .hero-card h3 {
-  color: var(--white);
+  color: var(--black);
   font-size: 1.8rem;
   margin-bottom: 1rem;
   font-weight: 700;
@@ -425,7 +424,7 @@ nav.scrolled {
 }
 
 .hero-card p {
-  color: rgba(255, 255, 255, 0.85);
+  color: var(--gray);
   line-height: 1.7;
   font-size: 1.05rem;
 }
