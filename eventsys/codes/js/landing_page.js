@@ -126,5 +126,35 @@ function initFadeInAnimations() {
   cards.forEach(card => observer.observe(card));
 }
 
+// Add floating sports emojis to hero section
+document.addEventListener('DOMContentLoaded', function () {
+  const hero = document.querySelector('.hero');
+
+  // Create floating sports container
+  const floatingContainer = document.createElement('div');
+  floatingContainer.className = 'floating-sports';
+
+  // Sports emojis array
+  const sportsEmojis = [
+    '🏀', // Basketball
+    '🏐', // Volleyball
+    '🏸', // Badminton
+    '⚽', // Soccer ball
+    '🎾', // Tennis
+    '🏓'  // Ping pong/Pickleball
+  ];
+
+  // Create 6 floating emoji icons
+  for (let i = 0; i < 6; i++) {
+    const iconDiv = document.createElement('div');
+    iconDiv.className = 'floating-icon';
+    iconDiv.textContent = sportsEmojis[i];
+    floatingContainer.appendChild(iconDiv);
+  }
+
+  // Insert floating container at the beginning of hero
+  hero.insertBefore(floatingContainer, hero.firstChild);
+});
+
 // Uncomment for enable fade-in animations
 // initFadeInAnimations();

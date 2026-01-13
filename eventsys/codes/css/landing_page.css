@@ -210,6 +210,102 @@ nav.scrolled {
   filter: blur(80px);
 }
 
+/* Floating Sports Icons */
+.floating-sports {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.floating-icon {
+  position: absolute;
+  opacity: 0.25;
+  animation: floatIcon 20s ease-in-out infinite;
+  filter: drop-shadow(0 4px 8px rgba(128, 0, 32, 0.2));
+  font-size: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.floating-icon:nth-child(1) {
+  top: 15%;
+  left: 10%;
+  width: 120px;
+  height: 120px;
+  animation-delay: 0s;
+  animation-duration: 25s;
+}
+
+.floating-icon:nth-child(2) {
+  top: 60%;
+  right: 15%;
+  width: 140px;
+  height: 140px;
+  animation-delay: -5s;
+  animation-duration: 30s;
+}
+
+.floating-icon:nth-child(3) {
+  bottom: 20%;
+  left: 15%;
+  width: 110px;
+  height: 110px;
+  animation-delay: -10s;
+  animation-duration: 22s;
+}
+
+.floating-icon:nth-child(4) {
+  top: 30%;
+  right: 20%;
+  width: 130px;
+  height: 130px;
+  animation-delay: -15s;
+  animation-duration: 28s;
+}
+
+.floating-icon:nth-child(5) {
+  top: 70%;
+  left: 25%;
+  width: 125px;
+  height: 125px;
+  animation-delay: -8s;
+  animation-duration: 26s;
+}
+
+.floating-icon:nth-child(6) {
+  bottom: 30%;
+  right: 10%;
+  width: 115px;
+  height: 115px;
+  animation-delay: -12s;
+  animation-duration: 24s;
+}
+
+@keyframes floatIcon {
+
+  0%,
+  100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+
+  25% {
+    transform: translate(30px, -40px) rotate(90deg);
+  }
+
+  50% {
+    transform: translate(-20px, -80px) rotate(180deg);
+  }
+
+  75% {
+    transform: translate(-40px, -40px) rotate(270deg);
+  }
+}
+
 @keyframes heroFloat {
 
   0%,
@@ -814,6 +910,12 @@ footer::before {
   transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
   text-decoration: none;
   box-shadow: 0 4px 15px rgba(128, 0, 32, 0.4);
+}
+
+.social-link svg,
+.social-link i {
+  width: 20px;
+  height: 20px;
 }
 
 .social-link:hover {
