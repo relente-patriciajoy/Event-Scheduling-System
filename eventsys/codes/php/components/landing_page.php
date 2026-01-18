@@ -290,7 +290,7 @@ $events_result = $conn->query($query);
         </div>
 
         <div class="footer-bottom">
-            <p>&copy; <?= date('Y') ?> CCF B1G Sports. All rights reserved. Made with ❤️ and ⚡ for God's glory</p>
+            <p>&copy; <?= date('Y') ?> CCF B1G Sports. All rights reserved.</p>
         </div>
     </footer>
 
