@@ -14,6 +14,7 @@ if (isset($_SESSION['user_id']) && isset($_SESSION['role']) && $_SESSION['role']
 require_once('../../includes/db.php');
 require_once('../../includes/otp_function.php');
 require_once('../../includes/device_recognition.php');
+require_once('../../includes/login_attempt_logger.php');
 
 $error = "";
 $email_value = "";

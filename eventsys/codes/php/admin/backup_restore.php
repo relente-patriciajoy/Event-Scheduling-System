@@ -530,11 +530,13 @@ $logs_query = $conn->query("
     <script>
         lucide.createIcons();
 
+        // Toggle custom filename input
         function toggleCustomFilename() {
             const customOption = document.querySelector('input[name="filename_option"][value="custom"]');
             const customGroup = document.getElementById('customFilenameGroup');
             const customInput = document.getElementById('custom_filename');
             
+            // Toggle custom filename input visibility
             if (customOption.checked) {
                 customGroup.style.display = 'block';
                 customInput.required = true;
