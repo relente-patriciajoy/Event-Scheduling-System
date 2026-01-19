@@ -1122,3 +1122,451 @@
     font-size: 1.2rem;
   }
 }
+
+/* ============================================
+   ADMIN SIDEBAR STYLES (for management.css)
+   Modern Dark Theme with Red Accents
+   ============================================ */
+
+/* Sidebar Container */
+.sidebar {
+  width: 260px;
+  background: linear-gradient(180deg, #1a1a1a 0%, #0d0d0d 100%);
+  color: #ffffff;
+  box-shadow: 4px 0 20px rgba(0, 0, 0, 0.3);
+  padding: 0;
+  min-height: 100vh;
+  max-height: 100vh;
+  font-family: 'Poppins', 'Segoe UI', sans-serif;
+  position: fixed;
+  left: 0;
+  top: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  z-index: 1000;
+}
+
+/* Custom Scrollbar */
+.sidebar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.sidebar::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+  background: rgba(230, 57, 70, 0.5);
+  border-radius: 3px;
+}
+
+.sidebar::-webkit-scrollbar-thumb:hover {
+  background: rgba(230, 57, 70, 0.8);
+}
+
+/* Logo Section */
+.sidebar .logo {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #ffffff;
+  padding: 32px 24px 24px 24px;
+  letter-spacing: -0.5px;
+  text-align: left;
+  position: relative;
+  background: linear-gradient(135deg, rgba(230, 57, 70, 0.15) 0%, transparent 100%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  margin-bottom: 8px;
+  flex-shrink: 0;
+}
+
+.sidebar .logo::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 24px;
+  width: 60px;
+  height: 3px;
+  background: linear-gradient(90deg, #e63946, #ff6b82);
+  border-radius: 2px;
+}
+
+/* Navigation Container */
+.sidebar nav {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 16px 12px;
+  flex: 1;
+  overflow-y: auto;
+}
+
+/* Navigation Links */
+.sidebar nav a {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  color: rgba(255, 255, 255, 0.7);
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.95rem;
+  border-radius: 10px;
+  margin-bottom: 2px;
+  border-left: 3px solid transparent;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Icon Styling */
+.sidebar nav a i {
+  width: 20px;
+  height: 20px;
+  stroke-width: 2;
+  flex-shrink: 0;
+  transition: all 0.3s ease;
+  opacity: 0.8;
+}
+
+/* Link Hover State */
+.sidebar nav a:hover {
+  color: #ffffff;
+  background: linear-gradient(135deg, rgba(230, 57, 70, 0.25) 0%, rgba(255, 107, 130, 0.15) 100%);
+  border-left-color: #e63946;
+  transform: translateX(2px);
+  box-shadow: 0 4px 12px rgba(230, 57, 70, 0.2);
+}
+
+.sidebar nav a:hover i {
+  transform: scale(1.1);
+  opacity: 1;
+  color: #ff6b82;
+}
+
+/* Active Link State */
+.sidebar nav a.active {
+  color: #ffffff;
+  background: linear-gradient(135deg, rgba(230, 57, 70, 0.35) 0%, rgba(255, 107, 130, 0.2) 100%);
+  border-left-color: #e63946;
+  font-weight: 600;
+  box-shadow: 0 4px 16px rgba(230, 57, 70, 0.3);
+}
+
+.sidebar nav a.active i {
+  color: #ff6b82;
+  opacity: 1;
+  transform: scale(1.05);
+}
+
+/* Active indicator glow */
+.sidebar nav a.active::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 3px;
+  height: 100%;
+  background: linear-gradient(180deg, #ff6b82 0%, #e63946 100%);
+  box-shadow: 0 0 12px rgba(230, 57, 70, 0.6);
+}
+
+/* Dropdown Toggle */
+.dropdown-toggle {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  padding: 14px 16px;
+  color: rgba(255, 255, 255, 0.7);
+  border-radius: 10px;
+  transition: all 0.3s ease;
+  gap: 14px;
+  font-weight: 500;
+  font-size: 0.95rem;
+  margin-bottom: 2px;
+  border-left: 3px solid transparent;
+  user-select: none;
+}
+
+.dropdown-toggle i {
+  width: 20px;
+  height: 20px;
+  stroke-width: 2;
+  flex-shrink: 0;
+  opacity: 0.8;
+}
+
+.dropdown-toggle span:last-child {
+  margin-left: auto;
+  font-size: 1.2rem;
+  transition: transform 0.3s ease;
+  opacity: 0.6;
+}
+
+.dropdown-toggle:hover {
+  background: linear-gradient(135deg, rgba(230, 57, 70, 0.25) 0%, rgba(255, 107, 130, 0.15) 100%);
+  color: #ffffff;
+  border-left-color: #e63946;
+  transform: translateX(2px);
+}
+
+.dropdown-toggle:hover i {
+  opacity: 1;
+  color: #ff6b82;
+}
+
+/* Dropdown Open State */
+.dropdown-toggle.open,
+.dropdown-nav.open .dropdown-toggle {
+  background: linear-gradient(135deg, rgba(230, 57, 70, 0.2) 0%, rgba(255, 107, 130, 0.1) 100%);
+  color: #ffffff;
+  border-left-color: rgba(230, 57, 70, 0.5);
+}
+
+.dropdown-toggle.open span:last-child,
+.dropdown-nav.open .dropdown-toggle span:last-child {
+  transform: rotate(180deg);
+}
+
+/* Dropdown Links Container */
+.dropdown-links,
+.dropdown-menu {
+  display: none;
+  flex-direction: column;
+  margin-left: 34px;
+  padding-left: 16px;
+  margin-top: 4px;
+  margin-bottom: 8px;
+  border-left: 2px solid rgba(230, 57, 70, 0.3);
+  gap: 2px;
+  animation: slideDown 0.3s ease;
+}
+
+.dropdown-links.open,
+.dropdown-nav.open .dropdown-menu {
+  display: flex;
+}
+
+/* Dropdown Link Items */
+.dropdown-links a,
+.dropdown-menu a {
+  color: rgba(255, 255, 255, 0.6);
+  text-decoration: none;
+  padding: 10px 14px;
+  font-size: 0.9rem;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  position: relative;
+  font-weight: 400;
+}
+
+.dropdown-links a::before,
+.dropdown-menu a::before {
+  content: '•';
+  position: absolute;
+  left: 0;
+  color: #e63946;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.dropdown-links a:hover,
+.dropdown-menu a:hover {
+  background: rgba(230, 57, 70, 0.15);
+  color: #ffffff;
+  padding-left: 24px;
+  transform: translateX(2px);
+}
+
+.dropdown-links a:hover::before,
+.dropdown-menu a:hover::before {
+  opacity: 1;
+}
+
+.dropdown-links a.active,
+.dropdown-menu a.active {
+  background: rgba(230, 57, 70, 0.2);
+  color: #ffffff;
+  font-weight: 600;
+  border-left: 2px solid #e63946;
+  padding-left: 24px;
+}
+
+/* Logout Link - Always at bottom */
+.sidebar nav a[href*="logout.php"] {
+  margin-top: auto;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  padding-top: 16px;
+  margin-bottom: 0;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.sidebar nav a[href*="logout.php"]:hover {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.2) 0%, rgba(220, 38, 38, 0.15) 100%);
+  border-left-color: #ef4444;
+  color: #ffffff;
+}
+
+.sidebar nav a[href*="logout.php"] i {
+  color: #ef4444;
+}
+
+/* Animation for Dropdown */
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    max-height: 0;
+    transform: translateY(-10px);
+  }
+
+  to {
+    opacity: 1;
+    max-height: 500px;
+    transform: translateY(0);
+  }
+}
+
+/* Layout adjustment for fixed sidebar */
+.management-layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+.management-content {
+  margin-left: 260px;
+  flex: 1;
+  width: calc(100% - 260px);
+}
+
+/* Focus States for Accessibility */
+.sidebar nav a:focus,
+.dropdown-toggle:focus {
+  outline: 2px solid #e63946;
+  outline-offset: 2px;
+}
+
+/* ============================================
+   RESPONSIVE DESIGN
+   ============================================ */
+
+@media (max-width: 1024px) {
+  .sidebar {
+    width: 240px;
+  }
+
+  .management-content {
+    margin-left: 240px;
+    width: calc(100% - 240px);
+  }
+
+  .sidebar .logo {
+    font-size: 1.6rem;
+    padding: 28px 20px 20px 20px;
+  }
+
+  .sidebar nav a {
+    padding: 12px 14px;
+    font-size: 0.9rem;
+  }
+
+  .dropdown-links,
+  .dropdown-menu {
+    margin-left: 28px;
+    padding-left: 14px;
+  }
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    width: 100%;
+    min-height: auto;
+    max-height: none;
+    position: relative;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  }
+
+  .management-content {
+    margin-left: 0;
+    width: 100%;
+  }
+
+  .management-layout {
+    flex-direction: column;
+  }
+
+  .sidebar .logo {
+    font-size: 1.5rem;
+    padding: 24px 20px 20px 20px;
+  }
+
+  .sidebar nav {
+    padding: 12px 8px;
+  }
+
+  .sidebar nav a {
+    padding: 12px 14px;
+  }
+
+  .dropdown-toggle {
+    padding: 12px 14px;
+  }
+
+  .dropdown-links,
+  .dropdown-menu {
+    margin-left: 20px;
+    padding-left: 12px;
+  }
+
+  .dropdown-links a,
+  .dropdown-menu a {
+    padding: 8px 10px;
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .sidebar {
+    padding: 0;
+  }
+
+  .sidebar .logo {
+    font-size: 1.4rem;
+    padding: 20px 16px 16px 16px;
+  }
+
+  .sidebar nav {
+    padding: 8px;
+  }
+
+  .sidebar nav a,
+  .dropdown-toggle {
+    padding: 10px 12px;
+    font-size: 0.85rem;
+    gap: 10px;
+  }
+
+  .sidebar nav a i,
+  .dropdown-toggle i {
+    width: 18px;
+    height: 18px;
+  }
+
+  .dropdown-links,
+  .dropdown-menu {
+    margin-left: 16px;
+    padding-left: 10px;
+  }
+}
+
+/* Print Styles */
+@media print {
+  .sidebar {
+    display: none;
+  }
+
+  .management-content {
+    margin-left: 0;
+    width: 100%;
+  }
+}

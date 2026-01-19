@@ -10,7 +10,7 @@
       <div class="dropdown-toggle" onclick="toggleDropdown(this)">
         <i data-lucide="database"></i>
         <span>Maintenance</span>
-        <span style="margin-left:auto;">▾</span>
+        <span>▾</span>
       </div>
       <div class="dropdown-menu">
         <a href="../admin/manage_user.php" class="<?= basename($_SERVER['PHP_SELF']) === 'manage_user.php' ? 'active' : '' ?>">Users</a>
