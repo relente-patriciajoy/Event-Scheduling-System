@@ -7,6 +7,12 @@
 // Start session first
 session_start();
 
+// Get return URL (page to return to if cancelled)
+$return_url = isset($_GET['return']) ? $_GET['return'] : '../dashboard/home.php';
+
+// Sanitize the return URL to prevent XSS
+$return_url = htmlspecialchars($return_url, ENT_QUOTES, 'UTF-8');
+
 // If logout is confirmed via POST
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['confirm_logout'])) {
 
@@ -232,7 +238,7 @@ if (!isset($_SESSION['user_id'])) {
                 <form method="POST" action="" id="logoutForm">
                     <input type="hidden" name="confirm_logout" value="1">
                     <div class="modal-buttons">
-                        <button type="button" class="btn btn-cancel" onclick="window.location.href='../dashboard/home.php'">
+                        <button type="button" class="btn btn-cancel" onclick="window.location.href='<?= $return_url ?>'">
                             <i data-lucide="x" style="width: 18px; height: 18px;"></i>
                             Cancel
                         </button>
@@ -274,9 +280,10 @@ if (!isset($_SESSION['user_id'])) {
             });
         });
 
+        // ESC key returns to previous page
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') {
-                window.location.href = '../dashboard/home.php';
+                window.location.href = '<?= $return_url ?>';
             }
         });
     </script>

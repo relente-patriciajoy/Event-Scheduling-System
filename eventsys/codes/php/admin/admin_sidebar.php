@@ -40,8 +40,9 @@
       <i data-lucide="database"></i> Backup & Restore
     </a>
     
-    <a href="../auth/logout.php">
-      <i data-lucide="log-out"></i> Logout
+    <a href="../auth/logout.php?return=<?= urlencode($_SERVER['REQUEST_URI']) ?>">
+      <i data-lucide="log-out"></i>
+      Logout
     </a>
   </nav>
 </aside>
