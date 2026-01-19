@@ -210,3 +210,59 @@
     font-size: 0.8rem;
   }
 }
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .inactive-container {
+    padding: 15px;
+  }
+
+  .inactive-header,
+  .inactive-table-section {
+    padding: 20px;
+  }
+
+  .inactive-stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .inactive-stat-value {
+    font-size: 1.8rem;
+  }
+
+  .inactive-table {
+    font-size: 0.85rem;
+    display: block;
+    overflow-x: auto;
+  }
+
+  .inactive-table th,
+  .inactive-table td {
+    padding: 10px 8px;
+    white-space: nowrap;
+  }
+
+  .filter-actions {
+    flex-wrap: wrap;
+  }
+
+  .action-btn {
+    padding: 6px 12px;
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .inactive-header h2 {
+    font-size: 1.3rem;
+  }
+
+  .inactive-stat-value {
+    font-size: 1.5rem;
+  }
+
+  .missed-badge {
+    font-size: 0.75rem;
+    padding: 4px 8px;
+  }
+}

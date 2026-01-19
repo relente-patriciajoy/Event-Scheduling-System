@@ -977,3 +977,111 @@
     flex-direction: column;
   }
 }
+
+/* Mobile Responsive Design */
+@media (max-width: 1024px) {
+  .quick-actions-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+
+  .manage-events-container,
+  .my-events-container,
+  .attendance-container,
+  .event-management-hub-container {
+    padding: 20px;
+  }
+
+  .quick-actions-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+  }
+
+  .quick-action-card {
+    padding: 20px 15px;
+  }
+
+  .action-icon-simple {
+    width: 50px;
+    height: 50px;
+  }
+
+  .quick-action-card h3 {
+    font-size: 0.9rem;
+  }
+
+  .quick-action-card p {
+    font-size: 0.75rem;
+  }
+
+  .search-export-bar {
+    flex-direction: column;
+  }
+
+  .search-export-bar input[type="text"],
+  .search-export-bar button {
+    width: 100%;
+  }
+
+  .scanner-controls {
+    flex-direction: column;
+  }
+
+  .scanner-controls select,
+  .scanner-controls button {
+    width: 100%;
+    min-width: unset;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .attendance-table {
+    font-size: 0.85rem;
+    display: block;
+    overflow-x: auto;
+  }
+
+  .attendance-table th,
+  .attendance-table td {
+    padding: 10px 8px;
+  }
+
+  .event-list {
+    grid-template-columns: 1fr;
+  }
+
+  .form-actions {
+    flex-direction: column;
+  }
+
+  .btn-primary,
+  .btn-secondary {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .quick-actions-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .section-title-with-icon {
+    font-size: 1.4rem;
+  }
+
+  .stat-card {
+    padding: 15px;
+  }
+
+  .stat-number {
+    font-size: 2rem;
+  }
+}

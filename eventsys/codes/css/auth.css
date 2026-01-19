@@ -665,3 +665,54 @@
     display: none;
   }
 }
+
+/* Mobile Responsive Design */
+@media (max-width: 768px) {
+  .auth-page {
+    padding: 15px;
+    align-items: flex-start;
+    padding-top: 30px;
+  }
+
+  .auth-container {
+    padding: 30px 20px;
+    max-width: 100%;
+  }
+
+  .register-container {
+    padding: 25px 18px;
+  }
+
+  .auth-box h2 {
+    font-size: 1.8rem;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .options {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 480px) {
+  .auth-container {
+    padding: 25px 15px;
+    border-radius: 12px;
+  }
+
+  .auth-box img.logo {
+    max-width: 70px;
+  }
+
+  .auth-box h2 {
+    font-size: 1.5rem;
+  }
+
+  .auth-button {
+    padding: 13px;
+    font-size: 0.95rem;
+  }
+}

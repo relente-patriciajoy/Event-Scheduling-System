@@ -527,3 +527,87 @@
     gap: 12px;
   }
 }
+
+/* Mobile Responsive Design */
+@media (max-width: 768px) {
+  .calendar-container {
+    padding: 15px;
+  }
+
+  .calendar-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+
+  .calendar-navigation {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .calendar-nav-btn {
+    flex: 1;
+    min-width: 120px;
+  }
+
+  .calendar-view-toggle {
+    width: 100%;
+  }
+
+  .view-toggle-btn {
+    flex: 1;
+    padding: 10px;
+  }
+
+  .calendar-day {
+    min-height: 70px;
+    padding: 6px;
+  }
+
+  .calendar-day-number {
+    font-size: 0.85rem;
+  }
+
+  .calendar-event {
+    font-size: 0.7rem;
+    padding: 3px 6px;
+  }
+
+  .event-modal {
+    width: 95%;
+    max-height: 90vh;
+  }
+
+  .event-modal-header {
+    padding: 20px;
+  }
+
+  .event-modal-title {
+    font-size: 1.4rem;
+  }
+
+  .event-modal-actions {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 480px) {
+  .calendar-title {
+    font-size: 1.3rem;
+  }
+
+  .calendar-day-header {
+    font-size: 0.7rem;
+    padding: 6px 2px;
+  }
+
+  .calendar-day {
+    min-height: 60px;
+    padding: 4px;
+  }
+
+  .calendar-nav-btn {
+    padding: 8px 12px;
+    font-size: 0.85rem;
+  }
+}

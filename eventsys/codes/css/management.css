@@ -970,3 +970,155 @@
     padding: 5px 10px;
   }
 }
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+  .management-content {
+    padding: 30px;
+  }
+
+  .stats-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .management-content {
+    padding: 20px;
+  }
+
+  .management-header,
+  .admin-header {
+    padding: 25px 20px;
+  }
+
+  .management-header h1,
+  .admin-header h1 {
+    font-size: 1.8rem;
+  }
+
+  .stats-row {
+    grid-template-columns: 1fr;
+  }
+
+  .stat-card-value {
+    font-size: 2rem;
+  }
+
+  .management-card {
+    padding: 20px;
+  }
+
+  .management-search {
+    flex-direction: column;
+  }
+
+  .management-search input {
+    width: 100%;
+    min-width: unset;
+  }
+
+  .management-search button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .search-filters {
+    gap: 8px;
+  }
+
+  .filter-chip {
+    font-size: 0.8rem;
+    padding: 6px 12px;
+  }
+
+  .management-table {
+    font-size: 0.85rem;
+    display: block;
+    overflow-x: auto;
+  }
+
+  .management-table th,
+  .management-table td {
+    padding: 10px 8px;
+    white-space: nowrap;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .form-actions {
+    flex-direction: column;
+  }
+
+  .btn {
+    width: 100%;
+  }
+
+  .table-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+
+  .table-controls {
+    width: 100%;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .view-toggle {
+    width: 100%;
+  }
+
+  .card-grid {
+    grid-template-columns: 1fr;
+    padding: 15px;
+  }
+
+  .pagination {
+    flex-wrap: wrap;
+    padding: 15px;
+  }
+
+  .pagination button {
+    padding: 6px 12px;
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .management-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .management-header p {
+    font-size: 0.9rem;
+  }
+
+  .stat-card {
+    padding: 15px;
+  }
+
+  .stat-card-value {
+    font-size: 1.8rem;
+  }
+
+  .management-table {
+    font-size: 0.8rem;
+  }
+
+  .badge {
+    font-size: 0.7rem;
+    padding: 4px 8px;
+  }
+
+  .empty-state {
+    padding: 40px 15px;
+  }
+
+  .empty-state h3 {
+    font-size: 1.2rem;
+  }
+}

@@ -767,3 +767,183 @@ a:hover {
 .event-head-page a:hover {
   color: var(--dark-maroon);
 }
+
+/* Responsive Styles */
+@media (max-width: 1024px) {
+  .grid-section {
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 20px;
+  }
+
+  .event-list {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboard-layout {
+    flex-direction: column;
+  }
+
+  .main-content {
+    padding: 20px;
+  }
+
+  .banner {
+    flex-direction: column;
+    text-align: center;
+    padding: 25px 20px;
+  }
+
+  .banner h1 {
+    font-size: 1.8rem;
+    margin-bottom: 10px;
+  }
+
+  .banner p {
+    font-size: 0.95rem;
+  }
+
+  .banner img {
+    height: 80px;
+    margin-top: 15px;
+  }
+
+  .grid-section {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard {
+    flex-direction: column;
+    gap: 25px;
+    padding: 20px;
+  }
+
+  .event-list {
+    grid-template-columns: 1fr;
+  }
+
+  .event-card {
+    padding: 20px;
+  }
+
+  .navbar-container {
+    padding: 15px 20px;
+  }
+
+  .navbar-container h1 {
+    font-size: 1.5rem;
+  }
+
+  .manage-events-container,
+  .my-events-container {
+    padding: 20px;
+  }
+
+  .manage-events-container h2,
+  .my-events-container h2 {
+    font-size: 1.5rem;
+  }
+
+  .card {
+    padding: 20px;
+  }
+
+  .card h3 {
+    font-size: 1.2rem;
+  }
+
+  .navigation {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .navigation a {
+    text-align: center;
+    padding: 12px 20px;
+  }
+
+  input[type="text"],
+  textarea,
+  select,
+  button {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .main-content {
+    padding: 15px;
+  }
+
+  .banner {
+    padding: 20px 15px;
+  }
+
+  .banner h1 {
+    font-size: 1.5rem;
+  }
+
+  .banner p {
+    font-size: 0.85rem;
+  }
+
+  .banner img {
+    height: 60px;
+  }
+
+  .card {
+    padding: 15px;
+  }
+
+  .card h3 {
+    font-size: 1.1rem;
+  }
+
+  .card p {
+    font-size: 0.85rem;
+  }
+
+  .manage-events-container,
+  .my-events-container {
+    padding: 15px;
+  }
+
+  .manage-events-container h2,
+  .my-events-container h2 {
+    font-size: 1.3rem;
+  }
+
+  .event-card h3 {
+    font-size: 1.1rem;
+  }
+
+  .event-card p {
+    font-size: 0.85rem;
+  }
+
+  .event-card .event-actions {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .form-container {
+    padding: 25px 20px;
+  }
+
+  button,
+  .back-link,
+  .attendance-link,
+  .edit-link,
+  .delete-link {
+    padding: 10px 16px;
+    font-size: 0.85rem;
+  }
+
+  input[type="text"],
+  textarea,
+  select {
+    padding: 10px;
+    font-size: 0.85rem;
+  }
+}
