@@ -174,6 +174,79 @@ $events_result = $conn->query($query);
         </div>
     </section>
 
+    <section class="sports-highlights" id="highlights">
+      <div class="section-header">
+          <span class="section-tag">EVENT GALLERY</span>
+          <h2 class="section-title">Event <span class="highlight">Highlights</span></h2>
+          <p class="section-subtitle">Showcasing successful events powered by our platform</p>
+      </div>
+
+      <div class="highlights-container">
+          <!-- Main Featured Highlight -->
+          <div class="highlight-featured" id="featuredHighlight">
+              <div class="highlight-image-wrapper">
+                  <img src="../../assets/highlights/soccer-sport.jpg" alt="Sports Fest" class="highlight-image">
+                  <div class="highlight-overlay">
+                      <div class="highlight-play-btn">
+                          <i data-lucide="play" style="width: 40px; height: 40px;"></i>
+                      </div>
+                  </div>
+              </div>
+              <div class="highlight-info">
+                  <h3 class="highlight-title">Sports Fest</h3>
+                  <div class="highlight-meta">
+                      <span class="highlight-date">
+                          <i data-lucide="calendar" style="width: 16px; height: 16px;"></i>
+                          July 27, 2025
+                      </span>
+                      <span class="highlight-attendees">
+                          <i data-lucide="users" style="width: 16px; height: 16px;"></i>
+                          45 Attendees
+                      </span>
+                  </div>
+              </div>
+          </div>
+
+          <!-- Highlight Thumbnails -->
+          <div class="highlights-grid">
+              <div class="highlight-thumb active" data-index="0">
+                  <img src="../../assets/highlights/soccer-sport.jpg" alt="Library Leadership">
+                  <div class="thumb-overlay">
+                      <span class="thumb-number">1</span>
+                  </div>
+              </div>
+              <div class="highlight-thumb" data-index="1">
+                  <img src="../../assets/highlights/volleyball-sport.jpg" alt="Tech Innovation Summit">
+                  <div class="thumb-overlay">
+                      <span class="thumb-number">2</span>
+                  </div>
+              </div>
+              <div class="highlight-thumb" data-index="2">
+                  <img src="../../assets/highlights/badminton-sport.jpg" alt="Community Outreach">
+                  <div class="thumb-overlay">
+                      <span class="thumb-number">3</span>
+                  </div>
+              </div>
+              <div class="highlight-thumb" data-index="3">
+                  <img src="../../assets/highlights/pickleball-sport.jpg" alt="Annual Sports Tournament">
+                  <div class="thumb-overlay">
+                      <span class="thumb-number">4</span>
+                  </div>
+              </div>
+          </div>
+
+          <!-- Navigation Arrows -->
+          <div class="highlights-navigation">
+              <button class="nav-arrow prev" id="prevHighlight" aria-label="Previous highlight">
+                  <i data-lucide="chevron-left"></i>
+              </button>
+              <button class="nav-arrow next" id="nextHighlight" aria-label="Next highlight">
+                  <i data-lucide="chevron-right"></i>
+              </button>
+          </div>
+      </div>
+    </section>
+
     <!-- Events Section -->
     <section class="events" id="events">
         <div class="section-header">
@@ -398,6 +471,113 @@ $events_result = $conn->query($query);
         document.querySelectorAll('.value-card, .event-card').forEach(el => {
             observer.observe(el);
         });
+
+        // Sports Highlights Carousel
+        const highlights = [
+            {
+                image: '../../assets/highlights/soccer-sport.jpg',
+                title: 'Sports Tournament',
+                date: 'July 27, 2025',
+                attendees: 85
+            },
+            {
+                image: '../../assets/highlights/volleyball-sport.jpg',
+                title: 'Volleyball Championship',
+                date: 'June 15, 2025',
+                attendees: 60
+            },
+            {
+                image: '../../assets/highlights/badminton-sport.jpg',
+                title: 'Sports Tournament',
+                date: 'July 27, 2025',
+                attendees: 85
+            },
+            {
+                image: '../../assets/highlights/pickleball-sport.jpg',
+                title: 'Sports Tournament',
+                date: 'July 27, 2025',
+                attendees: 85
+            }
+        ];
+
+        let currentHighlightIndex = 0;
+
+        function updateFeaturedHighlight(index) {
+            const featured = document.getElementById('featuredHighlight');
+            const highlight = highlights[index];
+
+            // Add fade out effect
+            featured.style.opacity = '0';
+
+            setTimeout(() => {
+                // Update content
+                featured.querySelector('.highlight-image').src = highlight.image;
+                featured.querySelector('.highlight-image').alt = highlight.title;
+                featured.querySelector('.highlight-title').textContent = highlight.title;
+                featured.querySelector('.highlight-date').innerHTML = `
+                    <i data-lucide="calendar" style="width: 16px; height: 16px;"></i>
+                    ${highlight.date}
+                `;
+                featured.querySelector('.highlight-attendees').innerHTML = `
+                    <i data-lucide="users" style="width: 16px; height: 16px;"></i>
+                    ${highlight.attendees} Attendees
+                `;
+
+                // Reinitialize icons
+                lucide.createIcons();
+
+                // Fade in
+                featured.style.opacity = '1';
+            }, 300);
+
+            // Update active thumbnail
+            document.querySelectorAll('.highlight-thumb').forEach((thumb, idx) => {
+                thumb.classList.toggle('active', idx === index);
+            });
+
+            currentHighlightIndex = index;
+        }
+
+        // Thumbnail click handlers
+        document.querySelectorAll('.highlight-thumb').forEach(thumb => {
+            thumb.addEventListener('click', () => {
+                const index = parseInt(thumb.dataset.index);
+                updateFeaturedHighlight(index);
+            });
+        });
+
+        // Navigation arrows
+        document.getElementById('prevHighlight').addEventListener('click', () => {
+            const newIndex = (currentHighlightIndex - 1 + highlights.length) % highlights.length;
+            updateFeaturedHighlight(newIndex);
+        });
+
+        document.getElementById('nextHighlight').addEventListener('click', () => {
+            const newIndex = (currentHighlightIndex + 1) % highlights.length;
+            updateFeaturedHighlight(newIndex);
+        });
+
+        // Auto-play carousel (optional)
+        let autoplayInterval;
+
+        function startAutoplay() {
+            autoplayInterval = setInterval(() => {
+                const newIndex = (currentHighlightIndex + 1) % highlights.length;
+                updateFeaturedHighlight(newIndex);
+            }, 5000); // Change every 5 seconds
+        }
+
+        function stopAutoplay() {
+            clearInterval(autoplayInterval);
+        }
+
+        // Start autoplay on load
+        startAutoplay();
+
+        // Pause autoplay when user interacts
+        const highlightsContainer = document.querySelector('.sports-highlights');
+        highlightsContainer.addEventListener('mouseenter', stopAutoplay);
+        highlightsContainer.addEventListener('mouseleave', startAutoplay);
     </script>
 </body>
 </html>

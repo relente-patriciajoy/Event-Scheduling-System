@@ -1292,3 +1292,315 @@ button {
   background: var(--maroon);
   color: white;
 }
+
+/* ============================================
+   SPORTS HIGHLIGHTS SECTION
+   ============================================ */
+
+.sports-highlights {
+  padding: 4rem 5%;
+  background: linear-gradient(135deg, #0f0f0f 0%, #1a0000 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.sports-highlights::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image:
+    repeating-linear-gradient(90deg,
+      transparent,
+      transparent 100px,
+      rgba(139, 0, 0, 0.03) 100px,
+      rgba(139, 0, 0, 0.03) 101px);
+  pointer-events: none;
+}
+
+.sports-highlights .section-header {
+  position: relative;
+  z-index: 2;
+}
+
+.sports-highlights .section-tag {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--white);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.sports-highlights .section-title {
+  color: var(--white);
+}
+
+.sports-highlights .section-subtitle {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.highlights-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 2;
+}
+
+.highlight-featured {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 25px;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  margin-bottom: 2rem;
+  transition: opacity 0.3s ease;
+}
+
+.highlight-image-wrapper {
+  position: relative;
+  height: 400px;
+  overflow: hidden;
+  background: linear-gradient(135deg, var(--maroon), var(--energy-red));
+}
+
+.highlight-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.highlight-featured:hover .highlight-image {
+  transform: scale(1.05);
+}
+
+.highlight-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.7) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.highlight-featured:hover .highlight-overlay {
+  opacity: 1;
+}
+
+.highlight-play-btn {
+  width: 80px;
+  height: 80px;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--maroon);
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  box-shadow: 0 10px 40px rgba(255, 255, 255, 0.3);
+}
+
+.highlight-play-btn:hover {
+  transform: scale(1.2);
+  background: var(--white);
+  box-shadow: 0 15px 50px rgba(255, 255, 255, 0.5);
+}
+
+.highlight-info {
+  padding: 2rem;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(10px);
+}
+
+.highlight-title {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--white);
+  margin-bottom: 1rem;
+  letter-spacing: -0.5px;
+}
+
+.highlight-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  font-size: 0.95rem;
+}
+
+.highlight-date,
+.highlight-attendees {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: 600;
+}
+
+.highlight-date i,
+.highlight-attendees i {
+  color: var(--energy-red);
+}
+
+.highlights-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.highlight-thumb {
+  position: relative;
+  height: 120px;
+  border-radius: 15px;
+  overflow: hidden;
+  cursor: pointer;
+  border: 3px solid transparent;
+  transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+}
+
+.highlight-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.thumb-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(139, 0, 0, 0.8) 0%, rgba(255, 68, 68, 0.8) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.thumb-number {
+  font-size: 2rem;
+  font-weight: 900;
+  color: white;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+}
+
+.highlight-thumb:hover .thumb-overlay {
+  opacity: 0.9;
+}
+
+.highlight-thumb:hover img {
+  transform: scale(1.1);
+}
+
+.highlight-thumb.active {
+  border-color: var(--energy-red);
+  box-shadow: 0 8px 30px rgba(255, 68, 68, 0.5);
+  transform: scale(1.05);
+}
+
+.highlight-thumb.active .thumb-overlay {
+  opacity: 0;
+}
+
+.highlights-navigation {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.nav-arrow {
+  width: 50px;
+  height: 50px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  backdrop-filter: blur(10px);
+}
+
+.nav-arrow:hover {
+  background: var(--maroon);
+  border-color: var(--maroon);
+  transform: scale(1.15);
+  box-shadow: 0 8px 25px rgba(139, 0, 0, 0.5);
+}
+
+.nav-arrow:active {
+  transform: scale(0.95);
+}
+
+/* ============================================
+   RESPONSIVE - TABLET
+   ============================================ */
+
+@media (min-width: 768px) {
+  .sports-highlights {
+    padding: 5rem 5%;
+  }
+
+  .highlight-image-wrapper {
+    height: 500px;
+  }
+
+  .highlight-title {
+    font-size: 2.2rem;
+  }
+
+  .highlights-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+  }
+
+  .highlight-thumb {
+    height: 150px;
+  }
+
+  .nav-arrow {
+    width: 60px;
+    height: 60px;
+  }
+}
+
+/* ============================================
+   RESPONSIVE - DESKTOP
+   ============================================ */
+
+@media (min-width: 1024px) {
+  .sports-highlights {
+    padding: 6rem 5%;
+  }
+
+  .highlight-image-wrapper {
+    height: 600px;
+  }
+
+  .highlight-title {
+    font-size: 2.5rem;
+  }
+
+  .highlight-info {
+    padding: 2.5rem;
+  }
+
+  .highlights-grid {
+    gap: 2rem;
+  }
+
+  .highlight-thumb {
+    height: 180px;
+  }
+}
