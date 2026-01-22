@@ -69,24 +69,24 @@ if ($selected_event) {
 
         <!-- Event Selection -->
         <div class="management-card">
-            <h2>Select Event</h2>
-            <form method="GET" style="display: flex; gap: 12px; align-items: flex-end;">
-                <div class="form-group" style="flex: 1; margin: 0;">
-                    <label for="event_id"><strong>Choose Event:</strong></label>
-                    <select name="event_id" id="event_id" required style="padding: 12px; border-radius: 8px; border: 2px solid #e0e0e0;">
-                        <option value="">-- Select an Event --</option>
-                        <?php while ($event = $events_query->fetch_assoc()): ?>
-                            <option value="<?= $event['event_id'] ?>" <?= $selected_event == $event['event_id'] ? 'selected' : '' ?>>
-                                <?= htmlspecialchars($event['title']) ?>
-                            </option>
-                        <?php endwhile; ?>
-                    </select>
-                </div>
-                <button type="submit" class="btn btn-primary">
-                    <i data-lucide="eye"></i>
-                    View Attendance
-                </button>
-            </form>
+          <h2>Select Event</h2>
+          <form method="GET" style="display: flex; flex-direction: column; gap: 12px;">
+            <div class="form-group" style="margin: 0;">
+              <label for="event_id"><strong>Choose Event:</strong></label>
+              <select name="event_id" id="event_id" required style="padding: 12px; border-radius: 8px; border: 2px solid #e0e0e0; width: 100%;">
+                <option value="">-- Select an Event --</option>
+                <?php while ($event = $events_query->fetch_assoc()): ?>
+                  <option value="<?= $event['event_id'] ?>" <?= $selected_event == $event['event_id'] ? 'selected' : '' ?>>
+                    <?= htmlspecialchars($event['title']) ?>
+                  </option>
+                <?php endwhile; ?>
+              </select>
+            </div>
+            <button type="submit" class="btn btn-primary" style="width: 100%;">
+              <i data-lucide="eye"></i>
+              View Attendance
+            </button>
+          </form>
         </div>
 
         <?php if ($selected_event && $attendances): ?>
