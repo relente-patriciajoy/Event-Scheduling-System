@@ -166,7 +166,7 @@ $users = $stmt->get_result();
             <h2>Role Hierarchy</h2>
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; margin-top: 16px;">
                 <div style="padding: 16px; background: #dbeafe; border-radius: 10px; border-left: 4px solid #1e40af;">
-                    <h3 style="color: #1e40af; margin-bottom: 8px;">👤 Regular User</h3>
+                    <h3 style="color: #1e40af; margin-bottom: 8px;">👤 Participant/Player</h3>
                     <p style="font-size: 0.9rem; color: #1e40af; margin: 0;">Can browse and register for events</p>
                 </div>
                 
