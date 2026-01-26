@@ -4,14 +4,37 @@
  * For event heads and admins to scan attendee QR codes for check-in/check-out
  */
 
-// Include role protection FIRST
+require_once('../../includes/session.php');
 require_once('../../includes/role_protection.php');
-
-// Only event_head and admin can access
 requireRole(['event_head', 'admin']);
 
 include('../../includes/db.php');
+require_once('../../includes/permission_functions.php');
 require_once('../../includes/qr_function.php');
+
+$user_id = $_SESSION['user_id'];
+$user_role = $_SESSION['role_name'];
+
+// CHECK PERMISSION - Must have QR scan permission
+if (!hasPermission($conn, $user_id, 'attendance.qr.scan')) {
+    die('
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <title>Access Denied</title>
+            <link rel="stylesheet" href="../../css/style.css">
+        </head>
+        <body style="display: flex; align-items: center; justify-content: center; height: 100vh; background: #f3f4f6;">
+            <div style="text-align: center; padding: 40px; background: white; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                <h1 style="color: #ef4444; margin-bottom: 16px;">🚫 Access Denied</h1>
+                <p style="color: #6b6b6b; margin-bottom: 24px;">You don\'t have permission to access the QR scanner.</p>
+                <a href="../event/manage_events.php" style="display: inline-block; padding: 12px 24px; background: #e63946; color: white; text-decoration: none; border-radius: 8px;">← Back to Dashboard</a>
+            </div>
+        </body>
+        </html>
+    ');
+}
 
 // Get user's events based on role
 $email_stmt = $conn->prepare("SELECT email FROM user WHERE user_id = ?");
@@ -22,7 +45,7 @@ $email_stmt->fetch();
 $email_stmt->close();
 
 // Admin can see ALL events, event_head sees only their events
-if ($user_role === 'admin') {
+if ($user_role === 'admin' || hasPermission($conn, $user_id, 'event.view.all')) {
     $events_query = "
         SELECT e.event_id, e.title, e.start_time
         FROM event e
@@ -30,15 +53,17 @@ if ($user_role === 'admin') {
     ";
     $events = $conn->query($events_query);
 } else {
+    // Event heads see only events they can manage attendance for
     $events_query = "
-        SELECT e.event_id, e.title, e.start_time
+        SELECT DISTINCT e.event_id, e.title, e.start_time
         FROM event e
-        JOIN organizer o ON e.organizer_id = o.organizer_id
-        WHERE o.contact_email = ?
+        LEFT JOIN organizer o ON e.organizer_id = o.organizer_id
+        LEFT JOIN event_access ea ON e.event_id = ea.event_id AND ea.user_id = ?
+        WHERE o.contact_email = ? OR ea.can_manage_attendance = 1
         ORDER BY e.start_time DESC
     ";
     $stmt = $conn->prepare($events_query);
-    $stmt->bind_param("s", $email);
+    $stmt->bind_param("is", $user_id, $email);
     $stmt->execute();
     $events = $stmt->get_result();
 }
