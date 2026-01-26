@@ -1,9 +1,4 @@
-<!--
-  HAMBURGER MENU SYSTEM FOR ADMIN PANEL
-  Add this code to your admin_sidebar.php file
--->
-
-<!-- Mobile Header with Hamburger (Add BEFORE the sidebar) -->
+<!-- Mobile Header with Hamburger -->
 <div class="mobile-header">
     <button class="hamburger-menu" id="hamburgerBtn" aria-label="Toggle menu">
         <span></span>
@@ -82,7 +77,7 @@
     function openSidebar() {
         sidebar.classList.add('mobile-open');
         overlay.classList.add('active');
-        body.style.overflow = 'hidden'; // Prevent background scrolling
+        body.style.overflow = 'hidden';
         hamburgerBtn.classList.add('active');
     }
 
@@ -158,10 +153,6 @@ if (typeof lucide !== 'undefined') {
 </script>
 
 <style>
-/* ============================================
-   MOBILE HEADER WITH HAMBURGER
-   ============================================ */
-
 .mobile-header {
     display: none;
     position: fixed;
