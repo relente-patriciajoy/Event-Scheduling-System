@@ -1,5 +1,6 @@
 <?php
-session_start();
+require_once('../../includes/session.php');
+require_once('../../includes/role_protection.php');
 if (!isset($_SESSION['user_id'])) {
     header("Location: ../auth/index.php");
     exit();

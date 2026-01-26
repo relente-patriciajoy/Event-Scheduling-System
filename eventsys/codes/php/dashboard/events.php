@@ -1,11 +1,11 @@
 <?php
-session_start();
+require_once('../../includes/session.php');
+require_once('../../includes/role_protection.php');
 if (!isset($_SESSION['user_id'])) {
   header("Location: ../auth/index.php");
   exit();
 }
 
-require_once('../../includes/role_protection.php');
 // No requireRole() = all logged-in users
 
 include('../../includes/db.php');
@@ -79,7 +79,6 @@ $result = $conn->query($query);
             . htmlspecialchars($_SESSION['register_status']) .
             '</div>';
         unset($_SESSION['register_status']);
-        
     }
     ?>
 

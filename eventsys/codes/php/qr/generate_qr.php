@@ -1,4 +1,6 @@
 <?php
+require_once('../../includes/session.php');
+require_once('../../includes/role_protection.php');
 /**
  * QR Code Generation
  * Automatically generates QR code when user completes registration

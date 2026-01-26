@@ -21,6 +21,7 @@ require_once('../../includes/db.php');
 require_once('../../includes/otp_function.php');
 require_once('../../includes/device_recognition.php');
 require_once('../../includes/login_attempt_logger.php');
+require_once('../../includes/permission_functions.php');
 
 $error = "";
 $email_value = "";
@@ -106,8 +107,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         // TRUSTED DEVICE - Direct login (NO OTP)
 
                         $_SESSION['user_id'] = $user_id;
-                        $_SESSION['full_name'] = trim($first_name . ' ' . $middle_name . ' ' . $last_name);
-                        $_SESSION['role'] = $role;
+                        $full_name = trim($first_name . ' ' . $middle_name . ' ' . $last_name);
+                        $_SESSION['full_name'] = $full_name;
+
+                        // ADD ROLE NAME ASSIGNMENT
+                        $role_name = getUserRole($conn, $user_id);
+                        $_SESSION['role'] = $role_name; // For backward compatibility
+                        $_SESSION['role_name'] = $role_name; // New way
+
                         $_SESSION['email'] = $email;
                         $_SESSION['login_time'] = time();
 

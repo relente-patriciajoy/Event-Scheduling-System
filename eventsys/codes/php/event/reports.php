@@ -1,24 +1,33 @@
 <?php
-session_start();
-if (!isset($_SESSION['user_id'])) {
-    header("Location: ../auth/index.php");
-    exit();
-}
+require_once('../../includes/session.php');
+require_once('../../includes/role_protection.php');
+requireRole(['event_head', 'admin']);
 
 include('../../includes/db.php');
+require_once('../../includes/permission_functions.php');
 
 $user_id = $_SESSION['user_id'];
+$user_role = $_SESSION['role_name'];
 
-// Check role - MUST be event_head
-$role_stmt = $conn->prepare("SELECT role FROM user WHERE user_id = ?");
-$role_stmt->bind_param("i", $user_id);
-$role_stmt->execute();
-$role_stmt->bind_result($role);
-$role_stmt->fetch();
-$role_stmt->close();
-
-if ($role !== 'event_head') {
-    die("Access denied. This feature is only available for Event Organizers.");
+// CHECK PERMISSION - Must have reports permission
+if (!hasPermission($conn, $user_id, 'system.reports') && !hasPermission($conn, $user_id, 'attendance.export')) {
+    die('
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <title>Access Denied</title>
+            <link rel="stylesheet" href="../../css/style.css">
+        </head>
+        <body style="display: flex; align-items: center; justify-content: center; height: 100vh; background: #f3f4f6;">
+            <div style="text-align: center; padding: 40px; background: white; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                <h1 style="color: #ef4444; margin-bottom: 16px;">🚫 Access Denied</h1>
+                <p style="color: #6b6b6b; margin-bottom: 24px;">You don\'t have permission to generate reports.</p>
+                <a href="../event/manage_events.php" style="display: inline-block; padding: 12px 24px; background: #e63946; color: white; text-decoration: none; border-radius: 8px;">← Back to Dashboard</a>
+            </div>
+        </body>
+        </html>
+    ');
 }
 
 // Get user's email to find their events
@@ -37,17 +46,32 @@ $org_stmt->bind_result($organizer_id);
 $org_stmt->fetch();
 $org_stmt->close();
 
-// Fetch all events for this organizer
-$events_query = $conn->prepare("
-    SELECT e.event_id, e.title, e.start_time, e.end_time, 
-           e.capacity, v.name as venue_name
-    FROM event e
-    JOIN venue v ON e.venue_id = v.venue_id
-    WHERE e.organizer_id = ?
-    ORDER BY e.start_time DESC
-");
-$events_query->bind_param("i", $organizer_id);
-$events_query->execute();
+// Fetch events based on permissions
+if ($user_role === 'admin' || hasPermission($conn, $user_id, 'event.view.all')) {
+    // Admin sees all events
+    $events_query = $conn->prepare("
+        SELECT e.event_id, e.title, e.start_time, e.end_time,
+               e.capacity, v.name as venue_name
+        FROM event e
+        JOIN venue v ON e.venue_id = v.venue_id
+        ORDER BY e.start_time DESC
+    ");
+    $events_query->execute();
+} else {
+    // Event heads see only their events or events with export permission
+    $events_query = $conn->prepare("
+        SELECT DISTINCT e.event_id, e.title, e.start_time, e.end_time,
+               e.capacity, v.name as venue_name
+        FROM event e
+        JOIN venue v ON e.venue_id = v.venue_id
+        LEFT JOIN event_access ea ON e.event_id = ea.event_id AND ea.user_id = ?
+        WHERE e.organizer_id = ? OR ea.can_export_data = 1
+        ORDER BY e.start_time DESC
+    ");
+    $events_query->bind_param("ii", $user_id, $organizer_id);
+    $events_query->execute();
+}
+
 $events = $events_query->get_result();
 
 // Handle report generation
@@ -55,18 +79,26 @@ $selected_event = $_GET['event_id'] ?? null;
 $report_data = null;
 
 if ($selected_event) {
-    // Verify this event belongs to the organizer
-    $verify_stmt = $conn->prepare("SELECT title FROM event WHERE event_id = ? AND organizer_id = ?");
-    $verify_stmt->bind_param("ii", $selected_event, $organizer_id);
-    $verify_stmt->execute();
-    $verify_result = $verify_stmt->get_result();
-    
-    if ($verify_result->num_rows === 0) {
-        die("Unauthorized access to this event.");
+    // ✅ VERIFY USER CAN ACCESS THIS EVENT'S REPORTS
+    if (!canAccessEvent($conn, $user_id, $selected_event, 'export_data')) {
+        die('
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset="UTF-8">
+                <title>Access Denied</title>
+                <link rel="stylesheet" href="../../css/style.css">
+            </head>
+            <body style="display: flex; align-items: center; justify-content: center; height: 100vh; background: #f3f4f6;">
+                <div style="text-align: center; padding: 40px; background: white; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                    <h1 style="color: #ef4444; margin-bottom: 16px;">🚫 Access Denied</h1>
+                    <p style="color: #6b6b6b; margin-bottom: 24px;">You don\'t have permission to view reports for this event.</p>
+                    <a href="reports.php" style="display: inline-block; padding: 12px 24px; background: #e63946; color: white; text-decoration: none; border-radius: 8px;">← Back to Reports</a>
+                </div>
+            </body>
+            </html>
+        ');
     }
-    
-    $event_info = $verify_result->fetch_assoc();
-    $verify_stmt->close();
     
     // Gather comprehensive report data
     $report_data = generateEventReport($conn, $selected_event);
@@ -189,10 +221,9 @@ function generateEventReport($conn, $event_id) {
                 <form method="GET">
                     <select name="event_id" required class="report-select">
                         <option value="">-- Select Event --</option>
-                        <?php
+                        <?php 
                         $events->data_seek(0);
-                        while ($event = $events->fetch_assoc()):
-                        ?>
+                        while ($event = $events->fetch_assoc()): ?>
                             <option value="<?= $event['event_id'] ?>" <?= $selected_event == $event['event_id'] ? 'selected' : '' ?>>
                                 <?= htmlspecialchars($event['title']) ?> -
                                 <?= date('M j, Y', strtotime($event['start_time'])) ?>

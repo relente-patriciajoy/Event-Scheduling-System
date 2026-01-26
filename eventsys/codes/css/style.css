@@ -743,8 +743,7 @@ select:focus {
 }
 
 h1,
-h2,
-.banner h1 {
+h2 {
   color: var(--color-headline);
 }
 

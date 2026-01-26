@@ -1,9 +1,10 @@
 <?php
+require_once('../../includes/session.php');
+require_once('../../includes/role_protection.php');
 /**
  * View QR Code Page
  * Users can view and download their event QR code
  */
-session_start();
 if (!isset($_SESSION['user_id'])) {
     header("Location: ../auth/index.php");
     exit();

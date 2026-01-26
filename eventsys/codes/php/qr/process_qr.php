@@ -1,9 +1,10 @@
 <?php
+require_once('../../includes/session.php');
+require_once('../../includes/role_protection.php');
 /**
  * QR Code Processing Backend
  * Handles check-in/check-out requests from scanner
  */
-session_start();
 header('Content-Type: application/json');
 
 // Check authentication
