@@ -1,7 +1,6 @@
 <?php
 /**
  * OTP Functions for Eventix System
- * FIXED: Prevents "already used" errors
  */
 
 // OTP Configuration
