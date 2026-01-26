@@ -1,9 +1,12 @@
 <?php
+require_once('../../includes/session.php');
+require_once('../../includes/role_protection.php');
+requireRole('admin');
+
 /**
  * ADMIN - Database Backup & Restore System
  * Allows admins to backup and restore the database
  */
-session_start();
 
 // Set timezone to Philippines
 date_default_timezone_set('Asia/Manila');
@@ -423,7 +426,7 @@ $logs_query = $conn->query("
                     </div>
                 </div>
                 <div class="stat-card-value">
-                    <?php 
+                    <?php
                         $total_size = array_sum(array_column($backups, 'size'));
                         echo $total_size > 1048576 ? round($total_size / 1048576, 2) . ' MB' : round($total_size / 1024, 2) . ' KB';
                     ?>

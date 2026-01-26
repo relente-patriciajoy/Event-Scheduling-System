@@ -1,9 +1,12 @@
 <?php
+require_once('../../includes/session.php');
+require_once('../../includes/role_protection.php');
+requireRole('admin');
+
 /**
  * ADMIN - View All Attendance
  * Admins can view attendance for ALL events
  */
-session_start();
 
 // Admin access control
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {

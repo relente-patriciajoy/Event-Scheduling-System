@@ -1,5 +1,8 @@
 <?php
-session_start();
+require_once('../../includes/session.php');
+require_once('../../includes/role_protection.php');
+requireRole('admin');
+
 if (!isset($_SESSION['user_id'])) {
     header("Location: ../auth/index.php");
     exit();
@@ -216,8 +219,7 @@ if (!empty($search)) {
 
       <?php if (isset($_GET['status'])): ?>
           <div class="management-alert <?= $_GET['status'] === 'error' ? 'error' : 'success' ?>">
-              <?php
-                  if ($_GET['status'] === 'added') echo "✅ Venue added successfully.";
+                                if ($_GET['status'] === 'added') echo "✅ Venue added successfully.";
                   elseif ($_GET['status'] === 'updated') echo "✏️ Venue updated successfully.";
                   elseif ($_GET['status'] === 'deleted') echo "🗑️ Venue deleted successfully.";
                   elseif ($_GET['status'] === 'error') echo "❌ Error: Venue might be linked to existing events.";

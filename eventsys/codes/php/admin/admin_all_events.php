@@ -1,9 +1,12 @@
 <?php
+require_once('../../includes/session.php');
+require_once('../../includes/role_protection.php');
+requireRole('admin');
+
 /**
  * ADMIN - Manage All Events
  * Admins can view and manage ALL events in the system
  */
-session_start();
 
 // Admin access control
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
@@ -92,8 +95,7 @@ $events = $stmt->get_result();
         <!-- Alert Messages -->
         <?php if (isset($_GET['status'])): ?>
             <div class="management-alert success">
-                <?php
-                    if ($_GET['status'] === 'deleted') echo "🗑️ Event deleted successfully.";
+                                    if ($_GET['status'] === 'deleted') echo "🗑️ Event deleted successfully.";
                 ?>
                 <span class="close-btn" onclick="this.parentElement.style.display='none';">×</span>
             </div>

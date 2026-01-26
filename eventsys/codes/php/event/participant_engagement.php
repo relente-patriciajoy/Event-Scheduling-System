@@ -1,5 +1,8 @@
 <?php
-session_start();
+require_once('../../includes/session.php');
+require_once('../../includes/role_protection.php');
+requireRole(['event_head', 'admin']);
+
 if (!isset($_SESSION['user_id'])) {
     header("Location: ../auth/index.php");
     exit();
@@ -157,6 +160,21 @@ $trends_query = $conn->prepare("
 $trends_query->bind_param("i", $organizer_id);
 $trends_query->execute();
 $trends = $trends_query->get_result();
+
+// Prepare trends data for JavaScript
+$trends_months = [];
+$trends_regs = [];
+$trends_attended = [];
+$trends->data_seek(0);
+while ($t = $trends->fetch_assoc()) {
+    $trends_months[] = $t['month_name'];
+    $trends_regs[] = $t['total_registrations'];
+    $trends_attended[] = $t['attended'];
+}
+// Reverse to show chronological order
+$trends_months = array_reverse($trends_months);
+$trends_regs = array_reverse($trends_regs);
+$trends_attended = array_reverse($trends_attended);
 ?>
 
 <!DOCTYPE html>
@@ -284,7 +302,7 @@ $trends = $trends_query->get_result();
             </div>
 
             <!-- Trends Chart -->
-            <?php if ($trends->num_rows > 0): ?>
+            <?php if (count($trends_months) > 0): ?>
             <div class="trends-section">
                 <h3>
                     <i data-lucide="activity"></i>
@@ -379,47 +397,20 @@ $trends = $trends_query->get_result();
         lucide.createIcons();
 
         // Trends Chart
-        <?php if ($trends->num_rows > 0): ?>
+        <?php if (count($trends_months) > 0): ?>
         const trendsData = {
-            labels: [
-                <?php
-                $trends->data_seek(0);
-                $months = [];
-                while ($t = $trends->fetch_assoc()) {
-                    $months[] = "'" . $t['month_name'] . "'";
-                }
-                echo implode(', ', array_reverse($months));
-                ?>
-            ],
+            labels: <?= json_encode($trends_months) ?>,
             datasets: [
                 {
                     label: 'Registrations',
-                    data: [
-                        <?php
-                        $trends->data_seek(0);
-                        $regs = [];
-                        while ($t = $trends->fetch_assoc()) {
-                            $regs[] = $t['total_registrations'];
-                        }
-                        echo implode(', ', array_reverse($regs));
-                        ?>
-                    ],
+                    data: <?= json_encode($trends_regs) ?>,
                     borderColor: '#e63946',
                     backgroundColor: 'rgba(230, 57, 70, 0.1)',
                     tension: 0.4
                 },
                 {
                     label: 'Attended',
-                    data: [
-                        <?php
-                        $trends->data_seek(0);
-                        $attended = [];
-                        while ($t = $trends->fetch_assoc()) {
-                            $attended[] = $t['attended'];
-                        }
-                        echo implode(', ', array_reverse($attended));
-                        ?>
-                    ],
+                    data: <?= json_encode($trends_attended) ?>,
                     borderColor: '#10b981',
                     backgroundColor: 'rgba(16, 185, 129, 0.1)',
                     tension: 0.4

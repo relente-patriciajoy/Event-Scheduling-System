@@ -1,5 +1,8 @@
 <?php
-session_start();
+require_once('../../includes/session.php');
+require_once('../../includes/role_protection.php');
+requireRole(['event_head', 'admin']);
+
 if (!isset($_SESSION['user_id'])) {
     header("Location: ../auth/index.php");
     exit();
@@ -176,10 +179,9 @@ $inactive_members->data_seek(0);
                             </tr>
                         </thead>
                         <tbody>
-                            <?php while ($member = $inactive_members->fetch_assoc()): ?>
-                                <?php
-                                $full_name = trim($member['first_name'] . ' ' . ($member['middle_name'] ?: '') . ' ' . $member['last_name']);
-                                ?>
+                            <?php while ($member = $inactive_members->fetch_assoc()):
+                                $full_name = trim($member['middle_name'] ? $member['middle_name'] . ' ' : '')
+                            ?>
                                 <tr>
                                     <td><?= htmlspecialchars($full_name) ?></td>
                                     <td><?= htmlspecialchars($member['email']) ?></td>

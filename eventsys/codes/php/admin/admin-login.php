@@ -32,15 +32,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $error = "Please enter a valid email address.";
     } else {
         // Verify admin credentials - ONLY ADMIN ROLE ALLOWED
-        $stmt = $conn->prepare("SELECT user_id, password, first_name, middle_name, last_name, phone, role FROM user WHERE email = ? AND status = 'active' AND role = 'admin'");
-        
+        $stmt = $conn->prepare("
+            SELECT u.user_id, u.password, u.first_name, u.middle_name, u.last_name, u.phone, r.role_name
+            FROM user u
+            JOIN role r ON u.role_id = r.role_id
+            WHERE u.email = ? AND u.status = 'active' AND r.role_name = 'admin'
+        ");
+
         if ($stmt) {
             $stmt->bind_param("s", $email);
             $stmt->execute();
             $stmt->store_result();
             
             if ($stmt->num_rows === 1) {
-                $stmt->bind_result($user_id, $hashed_password, $first_name, $middle_name, $last_name, $phone, $role);
+                $stmt->bind_result($user_id, $hashed_password, $first_name, $middle_name, $last_name, $phone, $role_name);
                 $stmt->fetch();
 
                 // Verify password
@@ -101,7 +106,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         
                         $_SESSION['user_id'] = $user_id;
                         $_SESSION['full_name'] = trim($first_name . ' ' . $middle_name . ' ' . $last_name);
-                        $_SESSION['role'] = 'admin';
+                        $_SESSION['role'] = 'admin'; // Set role as admin
+                        $_SESSION['role_name'] = 'admin'; // For compatibility
                         $_SESSION['email'] = $email;
                         $_SESSION['login_time'] = time();
                         $_SESSION['is_admin_portal'] = true;

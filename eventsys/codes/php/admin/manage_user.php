@@ -1,5 +1,8 @@
 <?php
-session_start();
+require_once('../../includes/session.php');
+require_once('../../includes/role_protection.php');
+requireRole('admin');
+
 if (!isset($_SESSION['user_id'])) {
     header("Location: ../auth/index.php");
     exit();
@@ -193,8 +196,7 @@ if (isset($_GET['edit'])) {
       <!-- Alert Messages -->
       <?php if (isset($_GET['status'])): ?>
           <div class="management-alert success">
-              <?php
-                  if ($_GET['status'] === 'added') echo "✅ User added successfully.";
+                                if ($_GET['status'] === 'added') echo "✅ User added successfully.";
                   elseif ($_GET['status'] === 'updated') echo "✏️ User updated successfully.";
                   elseif ($_GET['status'] === 'deleted') echo "🗑️ User deleted successfully.";
               ?>

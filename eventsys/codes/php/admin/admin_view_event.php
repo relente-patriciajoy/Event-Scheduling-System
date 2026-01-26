@@ -1,9 +1,12 @@
 <?php
+require_once('../../includes/session.php');
+require_once('../../includes/role_protection.php');
+requireRole('admin');
+
 /**
  * ADMIN - View Event Details
  * View detailed information about a specific event
  */
-session_start();
 
 // Admin access control
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
